@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>KIMEM BINGO — Live Game</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+*{box-sizing:border-box}body{font-family:Inter,sans-serif;background:#02050e;color:#fff;margin:0;-webkit-user-select:none;user-select:none}.cosmic-bg{background:radial-gradient(circle at 50% 0%,rgba(0,102,255,.35),transparent 60%),radial-gradient(circle at 50% 100%,rgba(0,60,180,.25),transparent 50%),linear-gradient(180deg,#020716,#030a21 50%,#010410)}.neon-panel{background:rgba(6,18,46,.75);backdrop-filter:blur(12px);border:1px solid rgba(0,140,255,.4);box-shadow:0 0 15px rgba(0,100,255,.15),inset 0 0 12px rgba(0,120,255,.1)}.hero-banner{background:linear-gradient(135deg,rgba(3,20,65,.9),rgba(10,40,110,.95) 50%,rgba(2,15,50,.9));border:1.5px solid #0099ff;box-shadow:0 0 25px rgba(0,140,255,.4),inset 0 0 15px rgba(0,150,255,.2)}.glow-text-white{text-shadow:0 0 10px #ffffff80,0 0 20px #00b4ff99}.glow-text-gold{background:linear-gradient(180deg,#fff7ad,#ffa800 50%,#d17a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px #ffb40099)}
+.card-scroll-area{height:288px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#0077ff #020a1e}.card-scroll-area::-webkit-scrollbar{width:3px}.card-scroll-area::-webkit-scrollbar-thumb{background:#0077ff;border-radius:5px}.card-grid-item{min-width:0;height:34px;position:relative;border-radius:7px;background:linear-gradient(180deg,#102850,#030f2b);border:1px solid rgba(66,153,255,.48);box-shadow:inset 0 1px 0 #ffffff25,0 2px 3px #0005;color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}.card-grid-item.soft-match:not(.selected){border-color:#5de3ff;box-shadow:0 0 0 1px #63ddff99,0 0 10px #26c8ff50;background:linear-gradient(180deg,#1a4770,#0b2247)}.card-grid-item.selected{background:linear-gradient(180deg,#ffe985,#d9961d)!important;border:1px solid #fff0a1!important;color:#4b3200!important;box-shadow:0 0 9px #ffbf42a6,inset 0 1px 0 #fff9!important}.card-grid-item .lock{font-size:8px;margin-left:2px;color:#7b560c}.card-grid-item:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.locked-row{display:flex;gap:6px;overflow-x:auto;min-height:31px;align-items:center}.locked-chip{flex-shrink:0;border:1px solid #4465a5;border-radius:8px;padding:5px 8px;background:#07142f;color:#d9e5ff;font-size:11px;font-weight:800}.locked-chip.active{border-color:#ffc24e;background:linear-gradient(180deg,#6b511e,#27203a);color:#ffe49a}.locked-chip span{margin-left:8px;opacity:.7}
+.bingo-tile{height:24px;min-width:0;border-radius:7px;background:linear-gradient(180deg,#f0f0ed,#a7a7a6 52%,#777777);border:1px solid #34373f;color:#292a2f;box-shadow:inset 0 2px 1px #fff9,0 2px 2px #0009;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}.bingo-hdr{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;background:linear-gradient(180deg,#243456,#0a1228);border:1px solid currentColor;box-shadow:inset 0 2px 1px #ffffff36,0 2px 4px #0009}.tile-free{background:linear-gradient(180deg,#ffe47e,#b8872b);color:#51380d;border-color:#f7d269}.btn-action-glow{background:linear-gradient(90deg,#1264ed,#8030e5);border:1px solid #66c2ff;box-shadow:0 0 16px #0088ff77}.btn-action-glow:active{transform:scale(.98)}.live-pulse{background:linear-gradient(180deg,#e52c47,#971329);border:1px solid #ff8b9c;box-shadow:0 0 8px #ed334766;animation:liveGlow 1.2s ease-in-out infinite alternate}@keyframes liveGlow{from{box-shadow:0 0 3px #e3294477;opacity:.8}to{box-shadow:0 0 14px #ff3959;opacity:1}}.stats-panel{padding:9px 4px!important;min-height:65px}.stat-icon{display:block;margin:0 auto 4px;font-size:14px}.stat-label{font-size:8px;font-weight:800;color:#74b6ff}.stat-value{font-size:11px;font-weight:900;margin-top:3px}.bonus-row button{padding:4px!important;gap:4px}.bonus-row button>div:first-child{width:19px;height:19px;flex-shrink:0}.bonus-row button>div:last-child>div:last-child{font-size:9px}.footer-actions{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px}.footer-actions button{min-height:31px;padding:6px 8px;font-size:10px;border-radius:8px}
+@media(max-width:350px){.card-grid-item{font-size:10px;height:30px}.bingo-tile{height:27px;font-size:12px}.bingo-hdr{height:29px}}@media(min-height:780px){.card-scroll-area{height:clamp(235px,36dvh,410px)}}
+/* Full-screen, balanced mobile and desktop proportions */
+html,body{width:100%;height:100%;overflow:hidden}
+body>div{height:100dvh;max-height:100dvh;width:100%;max-width:none}
+.card-scroll-area{height:clamp(180px,30dvh,360px)}
+main{scrollbar-width:thin;scrollbar-color:#1767be #06102a}
+@media(min-width:700px){main{width:min(100%,960px);margin-inline:auto}.card-scroll-area{height:clamp(200px,32dvh,390px)}.card-grid-item{height:38px}.bingo-tile{height:29px}.bingo-hdr{height:31px}}
+@media(max-height:700px){.card-scroll-area{height:clamp(140px,25dvh,210px)}.hero-banner{padding:8px}.stats-panel{min-height:57px}.bingo-tile{height:22px}.bingo-hdr{height:24px}}
+
+
+/* Card matrix priority: ten columns x at least nine visible rows (90 cards). */
+.card-scroll-area{height:310px!important;min-height:310px!important;flex-shrink:0;gap:3px!important;grid-auto-rows:28px;align-content:start}
+.card-grid-item{height:28px!important;font-size:11px!important;border-radius:5px}
+/* Miniature preview frees space for the card selection matrix. */
+#bingo-board,#bingo-header{gap:2px!important}
+.bingo-tile{height:15px!important;font-size:9px!important;border-radius:3px}
+.bingo-hdr{height:17px!important;font-size:11px!important;border-radius:3px}
+#bingo-board{max-width:220px;margin-inline:auto}
+#bingo-header{max-width:220px;margin-inline:auto}
+@media(min-width:700px){.card-scroll-area{height:340px!important;min-height:340px!important;grid-auto-rows:30px}.card-grid-item{height:30px!important}}
+
+/* Approved update: inline locked-card chips and readable preview; card matrix untouched. */
+.locked-inline{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:nowrap}
+.locked-inline .locked-label{flex-shrink:0;margin:0;font-size:10px;letter-spacing:.08em;color:#93c5fd;font-weight:900}
+.locked-inline .locked-row{min-width:0;flex:1;white-space:nowrap;min-height:31px}
+.locked-inline .locked-chip{padding:5px 7px;font-size:10px}
+#bingo-board,#bingo-header{max-width:370px!important;width:100%;gap:3px!important;margin-inline:auto}
+.bingo-tile{height:clamp(26px,4.3dvh,39px)!important;font-size:clamp(13px,3.5vw,18px)!important;border-radius:6px!important}
+.bingo-hdr{height:clamp(27px,4dvh,37px)!important;font-size:clamp(16px,4vw,22px)!important;border-radius:6px!important}
+/* Full viewport cinematic five-second countdown. */
+#countdown-scene{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;background:radial-gradient(ellipse at center,#14377b 0%,#07142e 45%,#01040e 100%);overflow:hidden;isolation:isolate}
+#countdown-scene.visible{display:flex;animation:sceneEnter .45s ease-out both}
+#countdown-scene::before{content:'';position:absolute;width:130vmax;height:130vmax;border-radius:50%;background:repeating-conic-gradient(from 10deg,#20adff11 0deg 10deg,transparent 10deg 25deg);animation:slowSpin 18s linear infinite;pointer-events:none}
+#countdown-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,transparent 25%,#01030b88 90%);pointer-events:none}
+.scene-heading{position:relative;z-index:2;font-size:clamp(20px,5.7vw,42px);letter-spacing:.15em;text-align:center;font-weight:900;color:#fff;text-shadow:0 0 14px #43baff,0 0 35px #007bff;margin-bottom:clamp(30px,8vh,75px)}
+.countdown-balls{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(5px,1.6vw,20px);width:100%;max-width:740px;perspective:900px}
+.countdown-ball{--tone:#ee424c;position:relative;flex:0 1 125px;aspect-ratio:1;min-width:0;max-width:125px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 31% 22%,#ffffffed 0%,#ffffff66 8%,transparent 29%),radial-gradient(circle at 32% 26%,color-mix(in srgb,var(--tone),white 35%),var(--tone) 50%,color-mix(in srgb,var(--tone),black 62%) 100%);border:2px solid #ffffff80;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff7,0 13px 17px #000b,0 0 19px var(--tone);transform-style:preserve-3d}
+.countdown-ball::after{content:'';position:absolute;top:9%;left:16%;width:49%;height:24%;border-radius:50%;background:linear-gradient(#fff9,#fff0);transform:rotate(-25deg);filter:blur(2px)}
+.ball-face{font-size:clamp(22px,7vw,65px);font-weight:1000;color:#fff;text-shadow:0 3px 5px #0008,0 0 9px #fff9;backface-visibility:hidden;line-height:1;position:relative;z-index:1}
+.countdown-ball.is-active{animation:ballBounce .9s cubic-bezier(.2,.6,.3,1) both;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff9,0 24px 27px #0009,0 0 28px 10px var(--tone),0 0 70px var(--tone)}
+.countdown-ball.is-active .ball-face{animation:faceFlip .7s ease-in-out both}
+.countdown-ball.is-done{filter:brightness(1.1)}
+.scene-footer{z-index:2;position:relative;color:#b7d5ff;font-size:clamp(11px,2.7vw,16px);font-weight:800;letter-spacing:.2em;margin-top:clamp(30px,7vh,65px)}
+@keyframes sceneEnter{from{opacity:0;transform:scale(.87)}to{opacity:1;transform:scale(1)}}
+@keyframes ballBounce{0%{transform:translateY(0) rotateY(0) scale(1)}30%{transform:translateY(-35px) rotateY(90deg) scale(1.16)}55%{transform:translateY(-47px) rotateY(180deg) scale(1.22)}75%{transform:translateY(6px) rotateY(300deg) scale(1.08)}100%{transform:translateY(0) rotateY(360deg) scale(1.05)}}
+@keyframes faceFlip{0%,42%{opacity:1}48%,60%{opacity:.05}75%,100%{opacity:1}}
+@keyframes slowSpin{to{transform:rotate(360deg)}}
+@media(max-width:370px){.locked-inline{gap:5px}.locked-inline .locked-label{font-size:9px}.locked-inline .locked-chip{font-size:9px;padding:4px 5px}.countdown-balls{gap:5px}.countdown-ball{border-width:1px}}
+@media(prefers-reduced-motion:reduce){#countdown-scene.visible,.countdown-ball.is-active,.countdown-ball.is-active .ball-face{animation:none}}
+
+/* Live game extension; the approved lobby header, stats and bonus markup is reused verbatim. */
+.live-stage{border:1px solid #24539a;background:radial-gradient(ellipse at 50% 36%,#123e79,#07142c 60%,#030a1d);border-radius:16px;overflow:hidden;padding:10px;position:relative}
+.stage-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.stage-title{font-size:12px;font-weight:900;letter-spacing:.09em;color:#f7d27b}.live-status{font-size:10px;color:#90b5f0;font-weight:800}
+.machine{height:clamp(185px,30dvh,295px);position:relative;overflow:hidden;border-radius:13px;border:1px solid #2b5c99;background:radial-gradient(circle at 30% 30%,#2d72ad55,transparent 50%),linear-gradient(135deg,#08152c,#0d2550 50%,#040b1e)}
+.machine:before{content:'';position:absolute;inset:8px 20% 15px 5%;border-radius:50%;border:2px solid #6bb7ff66;background:radial-gradient(ellipse at 28% 22%,#ffffff25,transparent 55%);box-shadow:inset 0 0 24px #7cbbff29,0 0 20px #0d70ff35;pointer-events:none;z-index:2}
+.machine:after{content:'';position:absolute;top:12px;left:13%;width:20%;height:35%;border-radius:50%;transform:rotate(-25deg);background:linear-gradient(110deg,#ffffff25,transparent);pointer-events:none;z-index:4}
+.shuffle-ball,.result-ball,.history-ball{display:grid;place-items:center;border-radius:50%;font-weight:1000;color:#fff;text-shadow:0 2px 3px #0009;box-shadow:inset -8px -10px 13px #0008,inset 4px 5px 9px #fff8,0 5px 10px #0008;background:radial-gradient(circle at 28% 20%,#ffffffb5,transparent 25%),radial-gradient(circle at 40% 35%,var(--ball-light),var(--ball-color) 63%,#080e24 100%)}
+.shuffle-ball{position:absolute;width:clamp(24px,7vw,43px);aspect-ratio:1;font-size:11px;left:var(--x);top:var(--y);animation:mix var(--speed) ease-in-out infinite alternate;animation-delay:var(--delay);z-index:1}
+@keyframes mix{0%{transform:translate(-10px,10px) rotate(-40deg)}50%{transform:translate(20px,-22px) rotate(100deg)}100%{transform:translate(-17px,20px) rotate(240deg)}}
+.machine:not(.shuffling) .shuffle-ball{animation-play-state:paused;opacity:.72}
+.exit-tube{position:absolute;right:14%;top:5%;height:70%;width:13%;border:3px solid #8dd5ff88;border-radius:40px 40px 18px 18px;background:linear-gradient(90deg,#b4e8ff22,#b9f2ff08,#b9f2ff3d);box-shadow:inset 0 0 10px #a7dfff55;z-index:3;pointer-events:none}
+.result-ball{position:absolute;z-index:6;width:clamp(65px,19vw,112px);aspect-ratio:1;right:1%;bottom:6%;font-size:clamp(21px,5vw,37px);border:2px solid #ffffff7d;opacity:0;transform:translate(-95px,-140px) scale(.4)}
+.result-ball.out{animation:ballTravel 1.35s cubic-bezier(.2,.7,.3,1.05) forwards}
+@keyframes ballTravel{0%{opacity:1;transform:translate(-90px,-140px) scale(.35) rotate(-220deg)}40%{opacity:1;transform:translate(-25px,-85px) scale(.7) rotate(110deg)}75%{opacity:1;transform:translate(4px,8px) scale(1.13) rotate(320deg)}100%{opacity:1;transform:translate(0,0) scale(1) rotate(360deg)}}
+.last-five{display:flex;align-items:center;gap:6px;min-height:42px;flex-wrap:wrap}.history-ball{width:32px;height:32px;font-size:11px;border:1px solid #fff6}.history-ball small{font-size:7px}.last-label{font-size:10px;font-weight:900;color:#9db7e4;margin-right:4px}
+.number-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.board-column{display:flex;flex-direction:column;gap:3px;min-width:0}.board-letter{height:30px;display:grid;place-items:center;border-radius:6px;font-size:18px;font-weight:1000;color:white}.board-number{height:clamp(23px,3.7dvh,34px);display:grid;place-items:center;border:1px solid #30446c;background:#142541;border-radius:5px;color:#cbd9f1;font-weight:800;font-size:clamp(11px,3vw,15px)}.board-number.called{background:linear-gradient(145deg,#ffe79b,#e9ad25 55%,#8e5509);color:#322000;border-color:#fff1a9;box-shadow:0 0 10px #ffcc44aa,inset 0 1px 2px #fff9}
+.cards-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.mode-group{display:flex;gap:4px;background:#08172f;border:1px solid #24416d;padding:3px;border-radius:9px}.mode-btn{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:900;color:#95afd9}.mode-btn.active{background:#246be6;color:white}.my-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:8px}.play-card{background:#09172e;border:1px solid #315285;border-radius:10px;padding:8px;min-width:0}.play-card-title{font-size:11px;font-weight:900;color:#f8d16c;margin-bottom:6px}.play-letters,.play-numbers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.play-letters span{text-align:center;font-size:17px;font-weight:1000}.play-numbers{margin-top:4px}.play-cell{height:clamp(29px,7vw,43px);display:grid;place-items:center;border-radius:5px;background:linear-gradient(#f1f1eb,#999a9a);color:#172031;font-weight:900;font-size:clamp(12px,3vw,16px);border:1px solid #ffffff77}.play-cell.marked{background:linear-gradient(#ffeaa5,#d99d20);color:#352409;box-shadow:0 0 9px #eec34e88}.play-cell.free{background:linear-gradient(#72e7bd,#168568);color:white;font-size:10px}.play-cell.manual-touch{cursor:pointer}.bingo-action{background:linear-gradient(120deg,#e9b52e,#f7d775);color:#1b1830;border-radius:8px;padding:7px 18px;font-weight:1000;font-size:12px}.control-row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}.demo-control{background:#154eaa;border:1px solid #4a8ff9;border-radius:8px;padding:8px 12px;font-weight:800;font-size:11px}.demo-control:disabled{opacity:.4}.live-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#142a51;border:1px solid #5b9efc;padding:10px 16px;border-radius:9px;z-index:90;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+@media(min-width:700px){.live-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:12px}.live-layout>div{min-width:0}.machine{height:320px}}
+
+/* KIMEM signature transparent drum and visibly connected draw channel */
+.machine{height:clamp(250px,37dvh,380px);background:radial-gradient(ellipse at 34% 36%,#19457c 0%,#091a37 52%,#030916 100%);border:1px solid #3466a6;box-shadow:inset 0 0 30px #010819,0 0 16px #0a61c12b}
+.machine-globe{position:absolute;left:5%;top:6%;width:65%;height:82%;border-radius:50%;border:3px solid #86caffaa;background:radial-gradient(ellipse at 35% 28%,#a8dfff22,transparent 56%),radial-gradient(ellipse at 55% 65%,#21559a36,#05112b55 76%);box-shadow:inset 9px 10px 25px #a4d9ff18,inset -12px -15px 28px #0009,0 0 24px #1591ff36;z-index:2;pointer-events:none}
+.machine-globe:after{content:'';position:absolute;inset:5%;border:1px solid #b9edff20;border-radius:50%}
+.globe-glint{position:absolute;left:12%;top:10%;width:23%;height:43%;border-radius:50%;transform:rotate(26deg);background:linear-gradient(90deg,#ffffff25,transparent);filter:blur(3px)}
+.globe-floor{position:absolute;left:23%;right:23%;bottom:7%;height:6px;border-radius:50%;background:#9ad6ff66;filter:blur(4px)}
+.machine:before,.machine:after{display:none}
+.machine-chute{position:absolute;z-index:4;left:65%;top:40%;width:18%;height:15%;border-top:3px solid #9edfffaa;border-bottom:3px solid #9edfffaa;background:linear-gradient(#9cddff1c,#e6faff09,#73bfff2a);box-shadow:0 0 12px #3a9bff44;pointer-events:none}
+.chute-highlight{position:absolute;left:0;right:0;top:2px;height:2px;background:#ffffff5c}
+.draw-pocket{position:absolute;z-index:3;right:3%;top:34%;width:20%;height:31%;border:2px solid #f5c76c88;border-radius:30px;background:radial-gradient(ellipse at center,#183963,#061328);box-shadow:inset 0 0 15px #f4b84618,0 0 17px #e8ae4a26}
+.pocket-caption{position:absolute;bottom:-22px;left:-15%;width:130%;text-align:center;color:#d8b979;font-size:8px;font-weight:900;letter-spacing:.08em}
+.machine-foot{position:absolute;bottom:5px;left:0;right:0;text-align:center;color:#75a5d4;font-size:8px;letter-spacing:.17em;font-weight:900}
+.shuffle-ball{z-index:1;width:clamp(25px,6.6vw,42px);font-size:clamp(8px,2vw,11px)}
+.result-ball{width:clamp(55px,14vw,88px);right:6%;top:39%;bottom:auto;font-size:clamp(18px,4vw,28px);z-index:8;opacity:0;transform:translate(-160%,5%) scale(.55)}
+.result-ball.out{animation:kimemBallExit 1.8s cubic-bezier(.24,.75,.3,1) forwards}
+@keyframes kimemBallExit{0%{opacity:1;transform:translate(-210%,10%) scale(.62) rotate(-160deg)}30%{opacity:1;transform:translate(-120%,0%) scale(.73) rotate(-60deg)}60%{opacity:1;transform:translate(-52%,0%) scale(.83) rotate(120deg)}83%{opacity:1;transform:translate(6%,0%) scale(1.07) rotate(310deg)}100%{opacity:1;transform:translate(0,0) scale(1) rotate(360deg)}}
+@media(max-width:420px){.machine{height:265px}.machine-globe{width:65%;height:73%;top:12%}.machine-chute{top:43%}.draw-pocket{top:36%;height:29%}.result-ball{top:40%;width:58px;height:58px}.shuffle-ball{width:26px;height:26px;font-size:8px}}
+
+/* Minimal digital draw: scoped to live draw only. */
+.machine.digital-machine{height:clamp(225px,33dvh,320px);border:1px solid #2c4265;background:linear-gradient(150deg,#0c1930,#060f20 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:none}
+.machine.digital-machine:before,.machine.digital-machine:after{display:none}
+.digital-letter{color:#f4c75e;font-weight:900;letter-spacing:.25em;font-size:13px;min-height:18px}
+.digital-number{font-size:clamp(95px,21vw,155px);line-height:1.08;letter-spacing:-.075em;padding-right:.075em;font-weight:900;font-variant-numeric:tabular-nums;color:#fff}
+.digital-number.reveal{animation:digitalReveal .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes digitalReveal{from{opacity:.25;filter:blur(8px);transform:translateY(12px) scale(.95)}to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
+.digital-progress{height:4px;background:#1b2d47;border-radius:12px;overflow:hidden;width:78%;margin:8px auto 0}
+.digital-progress-fill{height:100%;width:0;background:#f4c75e}
+.digital-side{display:grid;grid-template-columns:minmax(0,1fr) 108px;gap:9px;margin-top:10px;align-items:stretch}
+.digital-side-card{border:1px solid #263f64;border-radius:10px;background:#08162b;padding:9px;min-width:0}
+.digital-side-title{font-size:10px;color:#9db7e4;font-weight:900;letter-spacing:.06em;margin-bottom:8px}
+.digital-side .last-five{gap:5px;min-height:32px}
+.digital-current{font-size:32px;line-height:1;font-weight:900;color:#f4c75e;text-align:center;font-variant-numeric:tabular-nums}
+.digital-current-letter{font-size:10px;color:#adc7e7;text-align:center;margin-top:4px}
+@media(prefers-reduced-motion:reduce){.digital-number.reveal{animation:none}}
+
+/* Compact ball draw: ONLY the live draw component is restyled. */
+.draw-compact{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(116px,.85fr);gap:9px;align-items:stretch}
+.machine.digital-machine{height:192px!important;min-height:0;display:flex;justify-content:center;align-items:center;gap:5px;position:relative;padding:9px 8px 15px;border-radius:13px;border:1px solid #24508a;background:radial-gradient(ellipse at 48% 40%,#1c4074 0%,#0a1d3d 48%,#050d21 100%);box-shadow:inset 0 0 28px #010917,0 5px 16px #0004}
+.ball-shell{width:132px;height:132px;max-width:100%;aspect-ratio:1;flex-shrink:0;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;isolation:isolate;border:2px solid #e8d28a;background:radial-gradient(circle at 29% 20%,#fffef1 0%,#ffedb6 15%,#e5b75b 38%,#a46a1f 74%,#503010 100%);box-shadow:inset 5px 6px 12px #fff8,inset -12px -14px 20px #48260c9c,0 8px 16px #0009,0 0 17px #dba94a22;overflow:hidden}
+.ball-shell:before{content:'';position:absolute;top:9%;left:15%;width:53%;height:24%;border-radius:50%;background:#fff9;filter:blur(8px);transform:rotate(-25deg);pointer-events:none}
+.ball-shell:after{content:'';position:absolute;inset:15%;border-radius:50%;border:1px solid #fff6;pointer-events:none}
+.digital-letter{z-index:1;min-height:0;font-size:10px;letter-spacing:.16em;color:#51340e;text-shadow:0 1px #fff6}
+.digital-number{z-index:1;font-size:clamp(43px,11vw,67px)!important;letter-spacing:-.055em;padding-right:.055em;line-height:1;color:#241b15;text-shadow:0 1px 1px #fff9}
+.digital-number.reveal{animation:cleanBallReveal .45s cubic-bezier(.22,.8,.3,1) both}
+@keyframes cleanBallReveal{from{opacity:.3;transform:scale(.83);filter:blur(3px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+.digital-progress{position:absolute;bottom:8px;width:76%;height:3px;margin:0;background:#193357}
+.digital-side{display:flex;flex-direction:column;gap:8px;margin:0;min-width:0}
+.digital-side-card{flex:1;padding:9px 8px;border-color:#264772;background:linear-gradient(145deg,#0c2142,#07142a);border-radius:10px;min-height:0}
+.digital-side-title{font-size:9px;margin-bottom:7px}
+.digital-side .last-five{gap:4px;min-height:24px}
+.digital-side .history-ball{width:26px;height:26px;font-size:9px}
+.digital-current{font-size:24px}
+.digital-current-letter{font-size:9px;margin-top:2px}
+@media(max-width:380px){.draw-compact{grid-template-columns:minmax(0,1.2fr) minmax(108px,.8fr);gap:6px}.machine.digital-machine{height:170px!important}.ball-shell{width:112px;height:112px}.digital-number{font-size:49px!important}.digital-side-card{padding:7px 6px}.digital-side .history-ball{width:23px;height:23px;font-size:8px}}
+@media(min-width:700px){.machine.digital-machine{height:215px!important}.ball-shell{width:156px;height:156px}.digital-number{font-size:70px!important}}
+@media(prefers-reduced-motion:reduce){.digital-number.reveal{animation:none}}
+
+/* KIMEM LED STUDIO — compact visual upgrade */
+.machine.digital-machine{--studio-tone:#2d83e8;height:166px!important;background:radial-gradient(ellipse at 50% 49%,color-mix(in srgb,var(--studio-tone),transparent 78%) 0%,transparent 61%),repeating-linear-gradient(0deg,transparent 0px,transparent 3px,#a7d6ff07 4px),repeating-linear-gradient(90deg,#9bcfff07 0px,#9bcfff07 1px,transparent 2px,transparent 5px),linear-gradient(145deg,#0a1b3c,#020a1c 80%);border:1px solid #3b6899;box-shadow:inset 0 1px 0 #a2d8ff2e,inset 0 0 28px #000b,0 0 12px color-mix(in srgb,var(--studio-tone),transparent 84%);transition:background .45s,border-color .45s}
+.machine.digital-machine::before{display:block!important;content:'KIMEM BINGO';position:absolute;inset:auto;top:48%;left:50%;transform:translate(-50%,-50%);width:100%;height:auto;border:0;border-radius:0;background:none;box-shadow:none;color:#d3e8ff;opacity:.075;font-size:clamp(17px,4vw,32px);font-weight:1000;letter-spacing:.11em;white-space:nowrap;text-align:center;z-index:0}
+.machine.digital-machine::after{display:block!important;content:'';position:absolute;inset:7px;border:1px solid #7abaff21;border-radius:8px;background:linear-gradient(110deg,#b6deff0a,transparent 35%,#ffffff06 65%,transparent);pointer-events:none;z-index:0}
+.ball-shell{--ball-tone:#e6ad36;z-index:1;width:112px;height:112px;border:2px solid color-mix(in srgb,var(--ball-tone),white 45%);background:radial-gradient(circle at 30% 19%,#ffffffeb 0%,color-mix(in srgb,var(--ball-tone),white 43%) 17%,var(--ball-tone) 52%,color-mix(in srgb,var(--ball-tone),black 68%) 100%);box-shadow:inset 5px 5px 11px #fff7,inset -10px -12px 18px #0009,0 7px 14px #0009,0 0 22px color-mix(in srgb,var(--ball-tone),transparent 55%);transition:background .35s,border-color .35s,box-shadow .35s}
+.digital-letter{font-size:clamp(20px,5.5vw,28px)!important;letter-spacing:.03em!important;line-height:1;font-weight:1000;color:#fff!important;text-shadow:0 2px 5px #000b,0 0 9px #fff8}
+.digital-number{font-size:clamp(37px,10vw,54px)!important;color:#fff!important;text-shadow:0 2px 5px #000c,0 0 8px #fff6}
+.digital-progress-fill{background:var(--studio-tone,#f4c75e);box-shadow:0 0 7px var(--studio-tone,#f4c75e)}
+.board-letter{font-size:22px;text-shadow:0 2px 3px #0008}
+.board-number.called{background:linear-gradient(145deg,color-mix(in srgb,var(--cell-tone),white 30%),var(--cell-tone) 58%,color-mix(in srgb,var(--cell-tone),black 42%));border-color:color-mix(in srgb,var(--cell-tone),white 50%);color:#fff;text-shadow:0 1px 3px #0009;box-shadow:0 0 8px color-mix(in srgb,var(--cell-tone),transparent 55%)}
+.play-letters span{font-size:22px;text-shadow:0 0 8px currentColor}
+.play-cell.marked{background:linear-gradient(155deg,color-mix(in srgb,var(--cell-tone),white 32%),var(--cell-tone) 60%,color-mix(in srgb,var(--cell-tone),black 34%));color:#fff;text-shadow:0 1px 3px #0009;border-color:color-mix(in srgb,var(--cell-tone),white 45%);box-shadow:0 0 7px color-mix(in srgb,var(--cell-tone),transparent 58%)}
+.digital-current{color:var(--current-tone,#f4c75e)}
+@media(max-width:380px){.machine.digital-machine{height:154px!important}.ball-shell{width:104px;height:104px}.digital-letter{font-size:21px!important}.digital-number{font-size:42px!important}}
+@media(min-width:700px){.machine.digital-machine{height:190px!important}.ball-shell{width:130px;height:130px}.digital-letter{font-size:29px!important}.digital-number{font-size:60px!important}}
+</style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● DEMO</span></div><main class="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2.5 pb-8">
+<div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
+<div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
+
+<div class="live-layout"><div class="space-y-2.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">LIVE BALL DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><div class="ball-shell"><div id="digital-letter" class="digital-letter">READY</div><div id="digital-number" class="digital-number" aria-live="polite">--</div></div><div class="digital-progress"><div id="digital-progress-fill" class="digital-progress-fill"></div></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div><div class="digital-side-card"><div class="digital-side-title">CURRENT BALL</div><div id="digital-current" class="digital-current">--</div><div id="digital-current-letter" class="digital-current-letter">READY</div></div></div></div></section><section class="neon-panel rounded-xl p-2.5"><div class="flex justify-between items-center mb-2"><h2 class="text-xs font-black tracking-wider">BINGO NUMBER BOARD</h2><span id="called-total" class="text-[10px] text-amber-400 font-bold">0 CALLED</span></div><div class="number-board" id="number-board"></div></section></div>
+<div class="space-y-2.5"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div><div class="mt-2 flex justify-end"><button class="bingo-action" onclick="claimBingo()">BINGO!</button></div></section><section class="neon-panel rounded-xl p-2.5"><div class="control-row"><div class="text-[10px] font-bold text-blue-200">DIGITAL NUMBER REVEAL • EVERY 3 SECONDS</div><div class="flex gap-2"><button id="start-btn" class="demo-control" onclick="startGame()">START DEMO</button><button class="demo-control" onclick="resetGame()">RESET</button></div></div><div class="text-[10px] text-slate-400 mt-2">Local demo — not a synchronized multiplayer draw.</div></section></div></div></main></div><div id="live-toast" class="live-toast"></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const colors=['#1687f8','#e64655','#18ad78','#9a57e8','#e6a529'];
+const lights=['#9ed4ff','#ffaaa2','#a0f9d4','#e0b7ff','#ffe49d'];
+const letter=n=>'BINGO'[Math.floor((n-1)/15)];
+const tone=n=>Math.floor((n-1)/15);
+let selected=[],mode='auto',drawn=[],running=false,runId=0,manualMarks={};
+function cardFor(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const cols=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}cols.push(pool.slice(0,5).sort((a,b)=>a-b))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?0:cols[c][r]));}
+function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}if(!selected.length){const q=new URLSearchParams(location.search).get('cards');if(q)selected=q.split(',').map(Number).filter(n=>n>=1&&n<=1000).slice(0,3)}}
+function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5;c++){const col=document.createElement('div');col.className='board-column';const h=document.createElement('div');h.className='board-letter';h.style.background=colors[c];h.textContent='BINGO'[c];col.append(h);for(let j=1;j<=15;j++){const n=c*15+j;const d=document.createElement('div');d.className='board-number'+(drawn.includes(n)?' called':'');d.textContent=n;d.id='board-'+n;d.style.setProperty('--cell-tone',colors[c]);col.append(d)}el.append(col)}}
+function cards(){const area=$('my-cards');area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">No cards selected. Return to Lobby and select 1–3 cards.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
+function setMode(next){mode=next;$('manual-btn').classList.toggle('active',mode==='manual');$('auto-btn').classList.toggle('active',mode==='auto');cards()}
+function toast(msg){const el=$('live-toast');el.textContent=msg;el.style.opacity=1;clearTimeout(window.toastHandle);window.toastHandle=setTimeout(()=>el.style.opacity=0,2300)}
+function claimBingo(){if(!selected.length){toast('Select a card in Lobby first');return}const wins=selected.filter(id=>{const g=cardFor(id);const marked=n=>n===0||(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]);return [...g,...Array.from({length:5},(_,c)=>g.map(r=>r[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])].some(line=>line.every(marked))});toast(wins.length?'BINGO on card #'+wins.join(', #')+'! (Demo only)':'No completed Bingo line yet')}
+function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d.style.setProperty('--ball-color',colors[tone(n)]);d.style.setProperty('--ball-light',lights[tone(n)]);d.textContent=letter(n)+' '+n;return d}
+function initMachine(){}
+function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
+function updateDraw(n){drawn.push(n);$('countdown').textContent=drawn.length+'/75';$('called-total').textContent=drawn.length+' CALLED';const cell=$('board-'+n);if(cell)cell.classList.add('called');const history=$('last-five');history.replaceChildren();drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));cards()}
+let digitalTimer=null, nextDrawAt=0, drawRemaining=3000;
+function digitalDraw(){
+ if(drawn.length>=75){running=false;$('start-btn').disabled=true;$('draw-status').textContent='DRAW COMPLETE';return}
+ const remaining=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
+ const n=remaining[Math.floor(Math.random()*remaining.length)];
+ $('digital-letter').textContent=letter(n);$('machine').style.setProperty('--studio-tone',colors[tone(n)]);document.querySelector('.ball-shell').style.setProperty('--ball-tone',colors[tone(n)]);$('digital-current').style.setProperty('--current-tone',colors[tone(n)]);
+ const el=$('digital-number');el.classList.remove('reveal');el.textContent=String(n).padStart(2,'0');void el.offsetWidth;el.classList.add('reveal');
+ $('digital-current').textContent=String(n).padStart(2,'0');$('digital-current-letter').textContent=letter(n);
+ updateDraw(n);
+ $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
+ if(drawn.length===75){running=false;$('start-btn').disabled=true;$('start-btn').textContent='FINISHED';$('digital-progress-fill').style.width='100%'}
+}
+function digitalTick(){
+ if(!running)return;
+ const now=performance.now();
+ if(now>=nextDrawAt){digitalDraw();nextDrawAt+=3000;if(nextDrawAt<now)nextDrawAt=now+3000}
+ if(!running)return;
+ drawRemaining=Math.max(0,nextDrawAt-performance.now());
+ $('digital-progress-fill').style.width=(100-drawRemaining/3000*100)+'%';
+ digitalTimer=requestAnimationFrame(digitalTick);
+}
+function startGame(){
+ if(drawn.length===75)return;
+ if(running){running=false;if(digitalTimer!==null)cancelAnimationFrame(digitalTimer);digitalTimer=null;drawRemaining=Math.max(0,nextDrawAt-performance.now());$('start-btn').textContent='RESUME';$('draw-status').textContent='PAUSED';return}
+ running=true;nextDrawAt=performance.now()+drawRemaining;$('start-btn').textContent='PAUSE';$('draw-status').textContent='NEXT DRAW IN 3s';digitalTimer=requestAnimationFrame(digitalTick);
+}
+function resetGame(){
+ running=false;if(digitalTimer!==null)cancelAnimationFrame(digitalTimer);digitalTimer=null;drawRemaining=3000;runId++;drawn=[];manualMarks={};
+ $('countdown').textContent='0/75';$('called-total').textContent='0 CALLED';$('draw-status').textContent='READY TO START';
+ $('start-btn').disabled=false;$('start-btn').textContent='START DEMO';
+ $('last-five').innerHTML='<span class="text-xs text-slate-500">Waiting for first number…</span>';
+ $('digital-number').textContent='--';$('digital-number').classList.remove('reveal');$('digital-letter').textContent='READY';
+ $('digital-current').textContent='--';$('digital-current').style.setProperty('--current-tone','#f4c75e');$('machine').style.setProperty('--studio-tone','#2d83e8');document.querySelector('.ball-shell').style.setProperty('--ball-tone','#e6ad36');$('digital-current-letter').textContent='READY';$('digital-progress-fill').style.width='0%';board();cards();
+}
+readCards();initMachine();board();cards();
+</script></body></html>
