@@ -525,6 +525,35 @@ html,body{overflow:hidden!important}
 #live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine .digital-status{bottom:0!important}
 #live-main #kimem-cards-mount .cards-head{margin-bottom:0!important}
 }
+</style><style id="kimem-final-mobile-alignment-v8">
+/* Final alignment only: no changes to gameplay, card values, or 1–75 board. */
+@media(max-width:699px){
+/* Position SHUFFLING in the free space below LAST 5 BALLS. */
+#live-main>.live-layout>div>.live-stage>.draw-compact{position:relative!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact #shuffle-status{
+position:absolute!important;left:auto!important;right:2px!important;bottom:5px!important;
+width:47%!important;text-align:left!important;padding-left:6px!important;
+font-size:9px!important;line-height:12px!important;letter-spacing:.025em!important;
+white-space:nowrap!important;z-index:9!important;pointer-events:none!important
+}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side>.digital-side-card{
+justify-content:flex-start!important;padding-top:12px!important;padding-bottom:18px!important
+}
+/* Shorter toolbar, same three-column card widths. */
+#live-main #kimem-cards-mount .cards-head{min-height:0!important;margin:0 0 2px!important;gap:4px!important;align-items:center!important}
+#live-main #kimem-cards-mount .cards-head h2{font-size:9px!important;line-height:12px!important}
+#live-main #kimem-cards-mount .bingo-head-action{
+min-height:0!important;height:23px!important;padding:2px 5px!important;
+font-size:11px!important;line-height:19px!important
+}
+#live-main #kimem-cards-mount .mode-group{padding:1px!important}
+#live-main #kimem-cards-mount .mode-btn{padding:3px 5px!important;font-size:9px!important;line-height:15px!important}
+/* Give recovered vertical room to cards without changing their width or count. */
+#live-main .live-layout #kimem-cards-mount #my-cards .play-cell{
+height:clamp(19px,4.95vw,25px)!important
+}
+#live-main #kimem-cards-mount .mobile-card-priority>section{padding:4px 5px 6px!important}
+}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
