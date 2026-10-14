@@ -794,6 +794,29 @@ function sphereRender(now){
 
 }
 function initMachine(){sphereRender(performance.now())}
+/* Amharic number calling: uses only a genuine Amharic system voice. */
+const kimemAmharicOnes=['','አንድ','ሁለት','ሶስት','አራት','አምስት','ስድስት','ሰባት','ስምንት','ዘጠኝ'];
+const kimemAmharicTens=['','','ሃያ','ሰላሳ','አርባ','ሃምሳ','ስልሳ','ሰባ'];
+function kimemAmharicNumber(n){
+ if(n===10)return 'አስር';
+ if(n>10&&n<20)return n===11?'አስራ አንድ':'አስራ '+kimemAmharicOnes[n-10];
+ if(n<10)return kimemAmharicOnes[n]||String(n);
+ const t=Math.floor(n/10),o=n%10;
+ return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
+}
+function kimemCallBallAmharic(n){
+ if(!('speechSynthesis' in window)||!('SpeechSynthesisUtterance' in window))return;
+ const synth=window.speechSynthesis;
+ const voice=synth.getVoices().find(v=>/^am(?:-|$)/i.test(v.lang||''));
+ if(!voice)return; // Do not pronounce Amharic text using an unrelated English voice.
+ const letterName={B:'ቢ',I:'አይ',N:'ኤን',G:'ጂ',O:'ኦ'}[letter(n)]||'';
+ try{
+  synth.cancel();
+  const utter=new SpeechSynthesisUtterance(letterName+'፣ '+kimemAmharicNumber(n));
+  utter.lang='am-ET';utter.voice=voice;utter.rate=.87;utter.pitch=1;utter.volume=1;
+  synth.speak(utter);
+ }catch(e){}
+}
 function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
@@ -825,6 +848,7 @@ function finishSphereReveal(now){
  $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
 
  updateDraw(n);
+ kimemCallBallAmharic(n);
  // In AUTO, immediately finish when any selected card completes a real drawn line.
  if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishGame(wins);return}}
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
