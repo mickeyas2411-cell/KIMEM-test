@@ -174,31 +174,48 @@ body>div:first-child{height:100dvh!important;min-height:100dvh!important;width:1
 @media(max-width:699px){.stats-panel{padding:3px!important}.bonus-row{display:none!important}.mobile-card-priority .neon-panel{padding:6px!important}.live-layout{display:block}.digital-machine{height:150px!important}.mobile-card-priority .play-card{padding:3px!important}}
 @media(min-width:700px){.mobile-card-priority{max-width:100%;margin:6px auto}.mobile-card-priority .my-cards{max-width:100%}}
 
-/* Full-screen, no page sliding; draw and cards always visible */
-html,body{height:100%;height:100dvh;width:100%;overflow:hidden!important;overscroll-behavior:none}
-body>div:first-child{height:100dvh!important;min-height:0!important;max-height:100dvh!important}
-#live-main{display:flex!important;flex-direction:column!important;gap:4px!important;overflow:hidden!important;min-height:0!important;padding-bottom:max(3px,env(safe-area-inset-bottom))!important}
-#live-main>*{flex-shrink:0;margin:0!important}
-#live-main .bonus-row{display:none!important}
-#live-main .stats-panel{padding:2px!important}
-#live-main .live-layout{flex:1 1 auto!important;min-height:0!important;display:flex!important;flex-direction:column!important;gap:4px!important}
-#live-main .live-layout>div:first-child{min-height:0!important;display:flex!important;flex-direction:column!important;gap:4px!important}
-#live-main .live-layout>div:last-child{min-height:0!important;overflow:hidden!important}
-#live-main .live-stage{flex:0 0 auto!important;padding:4px!important}
-#live-main .digital-machine{height:clamp(75px,17dvh,155px)!important;min-height:0!important}
-#live-main .draw-compact{min-height:0!important}
-#live-main .live-layout section:has(#number-board){flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;padding:4px!important}
-#live-main #number-board{height:100%;min-height:0;overflow:hidden}
-#live-main .mobile-card-priority{flex:0 0 auto!important;min-height:0!important;margin:0!important}
-#live-main .mobile-card-priority section{padding:4px!important}
-#live-main .mobile-card-priority .play-card{padding:2px!important}
-#live-main .mobile-card-priority .play-letters span{font-size:clamp(9px,2.5vw,15px)!important}
-#live-main .mobile-card-priority .play-cell{height:clamp(15px,3.8dvh,31px)!important;aspect-ratio:auto!important;font-size:clamp(7px,2.3vw,13px)!important}
+/* Stable mobile live game: compact draw, full 1–75 board, cards at bottom */
+:root{--live-height:100dvh}
+html,body{height:100%;width:100%;overflow:hidden!important;overscroll-behavior:none}
+body>div:first-child{height:var(--live-height)!important;max-height:var(--live-height)!important;min-height:0!important;overflow:hidden!important}
+#live-main{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:4px!important;overflow:hidden!important;min-height:0!important;padding:4px 7px max(4px,env(safe-area-inset-bottom))!important}
+#live-main>*{min-width:0!important;margin:0!important;min-height:0}
+#live-main .stats-panel{padding:3px!important}
+#live-main>.bonus-row{display:none!important}
+#live-main .live-layout{display:flex!important;flex-direction:column!important;min-height:0!important;gap:4px!important;overflow:hidden!important}
+#live-main .live-layout>div:first-child{display:flex!important;flex-direction:column!important;min-height:0!important;flex:1 1 auto!important;gap:4px!important}
+#live-main .live-layout>div:last-child{display:none!important}
+#live-main .live-stage{flex:0 0 auto!important;padding:4px 6px!important;min-height:0!important}
+#live-main .stage-top{margin-bottom:3px!important}
+#live-main .draw-compact{height:clamp(80px,14dvh,120px)!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:5px!important}
+#live-main .digital-machine{height:100%!important;min-height:0!important}
+#live-main .digital-side{min-height:0!important;overflow:hidden!important}
+#live-main .digital-side-card{padding:3px 5px!important}
+#live-main .digital-number{font-size:clamp(25px,7vw,44px)!important}
+#live-main .live-layout section:has(#number-board){display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;padding:4px 6px!important}
+#live-main .live-layout section:has(#number-board)>div:first-child{flex:0 0 auto!important;margin-bottom:3px!important}
+#live-main #number-board{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow:hidden!important;gap:3px!important}
+#live-main .board-column{display:grid!important;grid-template-rows:repeat(16,minmax(0,1fr))!important;gap:2px!important;min-height:0!important;overflow:hidden!important}
+#live-main .board-letter,#live-main .board-number{height:100%!important;min-height:0!important;min-width:0!important;line-height:1!important;border-radius:3px!important;font-size:clamp(9px,2.6vw,13px)!important;padding:0!important}
+#live-main .board-letter{font-size:clamp(11px,3vw,15px)!important}
+#live-main .mobile-card-priority{display:block!important;flex:0 0 auto!important;min-height:0!important;overflow:hidden!important;margin:0!important}
+#live-main .mobile-card-priority section{padding:4px 6px!important}
+#live-main .mobile-card-priority .cards-head{margin-bottom:3px!important}
+#live-main .mobile-card-priority .play-card{padding:2px!important;min-width:0!important}
+#live-main .mobile-card-priority .play-card-title{font-size:clamp(8px,2vw,10px)!important;margin-bottom:2px!important}
+#live-main .mobile-card-priority .play-letters{gap:1px!important}
+#live-main .mobile-card-priority .play-letters span{font-size:clamp(9px,2.7vw,14px)!important;line-height:1!important}
 #live-main .mobile-card-priority .play-numbers{gap:1px!important;margin-top:2px!important}
-#live-main .mobile-card-priority .play-card-title{font-size:9px!important;margin:0!important}
-#live-main .mobile-card-priority .bingo-action{padding:4px 13px!important}
+#live-main .mobile-card-priority .play-cell{height:clamp(15px,3dvh,23px)!important;aspect-ratio:auto!important;font-size:clamp(8px,2.4vw,13px)!important;border-radius:2px!important}
+#live-main .mobile-card-priority .play-cell.free{font-size:clamp(6px,1.7vw,10px)!important}
 #live-main .mobile-card-priority .mt-2{margin-top:3px!important}
-@media(max-height:700px){#live-main .digital-machine{height:85px!important}#live-main .mobile-card-priority .play-cell{height:clamp(14px,3dvh,22px)!important}#live-main .live-layout section:has(#number-board){padding:2px!important}}
+#live-main .mobile-card-priority .bingo-action{padding:3px 13px!important}
+#my-cards{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:4px!important;max-width:none!important}
+#my-cards[data-count="1"]{max-width:320px!important;margin:0 auto!important}
+#my-cards[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#my-cards[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-height:660px){#live-main{gap:2px!important}#live-main .draw-compact{height:72px!important}#live-main .mobile-card-priority .play-cell{height:14px!important}#live-main .mobile-card-priority .cards-head{margin-bottom:1px!important}#live-main .board-column{gap:1px!important}}
+@media(min-width:800px){#live-main .draw-compact{height:120px!important}#my-cards[data-count="2"],#my-cards[data-count="3"]{max-width:750px!important;margin:0 auto!important}}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -259,6 +276,7 @@ function resetGame(){
  $('digital-number').textContent='--';$('digital-number').classList.remove('reveal');$('digital-letter').textContent='READY';
  $('digital-current').textContent='--';$('digital-current').style.setProperty('--current-tone','#f4c75e');$('machine').style.setProperty('--studio-tone','#2d83e8');document.querySelector('.ball-shell').style.setProperty('--ball-tone','#e6ad36');$('digital-current-letter').textContent='READY';$('digital-progress-fill').style.width='0%';board();cards();
 }
+(function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
 readCards();initMachine();board();cards();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
 (function autoStartLiveDraw(){
