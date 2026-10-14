@@ -805,32 +805,33 @@ function kimemAmharicNumber(n){
  return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
 }
 const KIMEM_VOICE_ENDPOINT='https://good-bingo-telegram.floot.app/_cdn/static/kimem-ball-';
-const kimemVoiceQueue=[];
-const kimemVoiceCache=new Map();
 const kimemVoicePlayer=new Audio();
-kimemVoicePlayer.preload='auto';kimemVoicePlayer.volume=1;
-let kimemVoiceActive=false,kimemVoiceUnlocked=false,kimemVoiceUnlockPrompt=null,kimemVoiceCurrent=null;
-function kimemVoiceFile(n){
- if(!kimemVoiceCache.has(n))kimemVoiceCache.set(n,KIMEM_VOICE_ENDPOINT+n+'.mp3');
- return kimemVoiceCache.get(n);
-}
+kimemVoicePlayer.preload='auto';
+kimemVoicePlayer.volume=1;
+const kimemVoiceQueue=[];
+let kimemVoiceActive=false,kimemVoiceUnlocked=false,kimemVoicePriming=false;
 function kimemVoiceNext(){
- if(kimemVoiceActive||!kimemVoiceQueue.length||!kimemVoiceUnlocked)return;
+ if(!kimemVoiceUnlocked||kimemVoicePriming||kimemVoiceActive||!kimemVoiceQueue.length)return;
  const n=kimemVoiceQueue.shift();
- kimemVoiceCurrent=n;
  kimemVoiceActive=true;
- kimemVoicePlayer.src=kimemVoiceFile(n);
- kimemVoicePlayer.load();
+ kimemVoicePlayer.volume=1;
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
  const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(e=>{
+ if(p&&p.catch)p.catch(err=>{
+  console.warn('KIMEM ball audio playback:',err);
   kimemVoiceActive=false;
   kimemVoiceQueue.unshift(n);
   kimemVoiceUnlocked=false;
-  
  });
 }
-kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceActive=false;kimemVoiceNext()});
-kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceActive=false;kimemVoiceUnlocked=false;kimemVoiceQueue.unshift(kimemVoiceCurrent);kimemShowVoiceUnlock()});
+kimemVoicePlayer.addEventListener('ended',()=>{
+ if(kimemVoicePriming){kimemVoicePriming=false;kimemVoicePlayer.volume=1;kimemVoiceNext();return}
+ kimemVoiceActive=false;kimemVoiceNext();
+});
+kimemVoicePlayer.addEventListener('error',()=>{
+ if(kimemVoicePriming){kimemVoicePriming=false;kimemVoiceUnlocked=false;return}
+ kimemVoiceActive=false;kimemVoiceUnlocked=false;
+});
 function kimemCallBallAmharic(n){
  if(!Number.isInteger(n)||n<1||n>75)return;
  kimemVoiceQueue.push(n);
@@ -839,11 +840,24 @@ function kimemCallBallAmharic(n){
 function kimemUnlockVoice(){
  if(kimemVoiceUnlocked)return;
  kimemVoiceUnlocked=true;
- // START GAME is the existing user gesture that permits playback.
- kimemVoicePlayer.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
+ kimemVoicePriming=true;
+ // Use a real, playable MP3 during the existing START GAME user gesture.
+ kimemVoicePlayer.volume=0;
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
  const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(()=>{kimemVoiceUnlocked=false});
+ if(p&&p.then)p.then(()=>{
+  kimemVoicePlayer.pause();
+  kimemVoicePlayer.currentTime=0;
+  kimemVoicePlayer.volume=1;
+  kimemVoicePriming=false;
+  kimemVoiceNext();
+ }).catch(err=>{
+  console.warn('KIMEM audio activation:',err);
+  kimemVoicePriming=false;
+  kimemVoiceUnlocked=false;
+ });
 }
+
 function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
