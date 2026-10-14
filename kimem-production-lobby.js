@@ -20,5 +20,6 @@ window.KimemProductionLobby={
   return result;
  },
  current(){return this.request("current")},
+ wallet(){return this.request("wallet")},
  join(cards){return this.request("join",cards)}
 };
