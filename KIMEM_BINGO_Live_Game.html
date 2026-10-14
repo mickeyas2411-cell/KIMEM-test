@@ -654,17 +654,29 @@ function kimemSmallNotice(message){
  clearTimeout(window.kimemNoticeTimeout);
  window.kimemNoticeTimeout=setTimeout(()=>{box.style.setProperty('display','none','important')},2000);
 }
-const kimemBingoWinSound=new Audio('https://good-bingo-telegram.floot.app/_cdn/static/d0a65a92-3e5a-4251-864f-a7b544382fca-kimem-bingo-win.mp3');
-const kimemBingoWrongSound=new Audio('https://good-bingo-telegram.floot.app/_cdn/static/f58ef00f-6217-4bfb-94b2-05a4b045efc5-kimem-bingo-wrong.wav');
+const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href).href);
+const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
 function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
 function claimBingo(){
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
  const wins=kimemWinningCards();
- if(wins.length)kimemFinishGame(wins);
+ if(wins.length)kimemFinishAfterBall(wins);
  else {kimemPlayBingoSound(kimemBingoWrongSound);kimemSmallNotice('NO BINGO YET')}
 }
 let kimemFinished=false,kimemReturnTimer=null;
+let kimemPendingFinish=null;
+function kimemFinishAfterBall(ids){
+ if(kimemFinished||kimemPendingFinish!==null)return;
+ running=false;spherePhase='idle';
+ kimemPendingFinish=ids;
+ const finish=()=>{if(kimemPendingFinish===null)return;const result=kimemPendingFinish;kimemPendingFinish=null;kimemFinishGame(result)};
+ if(!kimemVoiceBusy&&!kimemVoiceQueue.length){finish();return}
+ const previousEnded=()=>{if(!kimemVoiceBusy&&!kimemVoiceQueue.length){cleanup();finish()}};
+ const cleanup=()=>{kimemVoicePlayer.removeEventListener('ended',previousEnded);kimemVoicePlayer.removeEventListener('error',previousEnded);clearTimeout(timeout)};
+ kimemVoicePlayer.addEventListener('ended',previousEnded);kimemVoicePlayer.addEventListener('error',previousEnded);
+ const timeout=setTimeout(()=>{cleanup();finish()},9000);
+}
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
  if(kimemFinished)return;
@@ -893,9 +905,9 @@ function finishSphereReveal(now){
  updateDraw(n);
  if(!kimemRevealVoiceStarted){kimemRevealVoiceStarted=true;kimemCallBallAmharic(n)}
  // In AUTO, immediately finish when any selected card completes a real drawn line.
- if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishGame(wins);return}}
+ if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins);return}}
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
- if(drawn.length===75){running=false;spherePhase='idle';kimemFinishGame(kimemWinningCards())}
+ if(drawn.length===75){running=false;spherePhase='idle';kimemFinishAfterBall(kimemWinningCards())}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
@@ -934,6 +946,7 @@ function startGame(){
 function resetGame(){
  running=false;drawn=[];manualMarks={};kimemFinished=false;clearInterval(kimemReturnTimer);document.getElementById('kimem-winner-overlay')?.classList.remove('visible');
  spherePhase='idle';sphereCurrent=0;spherePending=0;sphereReveal=null;
+ kimemPendingFinish=null;
  sphereAngle=0;spherePitch=0;sphereSamples=[];
  $('countdown').textContent='0/75';$('called-total').textContent='0 CALLED';
  $('draw-status').textContent='READY TO START';
