@@ -904,7 +904,7 @@ function digitalTick(now){
    }
   }else { $('machine').classList.remove('kimem-shuffling');beginSphereReveal(now); }
  }else if(spherePhase==='reveal'){
-  if(!kimemRevealVoiceStarted&&spherePending&&now-sphereStart>=600){kimemRevealVoiceStarted=true;kimemCallBallAmharic(spherePending)}
+  if(!kimemRevealVoiceStarted&&spherePending&&now-sphereStart>=250){kimemRevealVoiceStarted=true;kimemCallBallAmharic(spherePending)}
   const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
   sphereAngle=sphereFromAngle+(Math.ceil(sphereFromAngle/TAU)+3)*TAU*e-sphereFromAngle*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.18*(1-t);
