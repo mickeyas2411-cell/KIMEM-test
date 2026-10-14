@@ -804,7 +804,7 @@ function kimemAmharicNumber(n){
  const t=Math.floor(n/10),o=n%10;
  return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
 }
-const KIMEM_VOICE_ENDPOINT='https://good-bingo-telegram.floot.app/_cdn/static/kimem-ball-';
+const KIMEM_VOICE_ENDPOINT=new URL('kimem-ball-',window.location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 let kimemVoiceContext=null,kimemVoiceReady=false,kimemVoiceBusy=false;
