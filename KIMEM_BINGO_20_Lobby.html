@@ -137,11 +137,26 @@ function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$(
 function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=1000){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
 function clearSearch(){$('card-search-input').value='';searchQuery='';renderCardGrid()}
 function leaveToLobby(){window.location.href='./index.html'}
-function enterLiveGame(){
+let productionGame=null,productionClock=null,productionSubmitting=false;
+async function syncProductionGame(){
+ try{
+  productionGame=await window.KimemProductionLobby.current();
+  const remaining=Math.max(0,Math.ceil((new Date(productionGame.startsAt).getTime()-Date.now())/1000));
+  secondsRemaining=remaining;$('countdown').textContent=remaining+'s';
+  if(remaining===0){clearInterval(productionClock);productionClock=null;if(selectedCards.length)await enterLiveGame()}
+ }catch(e){clearInterval(productionClock);productionClock=null;triggerToast(e.message);$('countdown').textContent='OFFLINE'}
+}
+async function enterLiveGame(){
+ if(productionSubmitting)return;
  if(!selectedCards.length){triggerToast('Select at least 1 card to play!');return}
- const ids=selectedCards.slice(0,3);
- try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids));localStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
- window.location.href='./KIMEM_BINGO_20_Live_Game.html?cards='+encodeURIComponent(ids.join(','));
+ productionSubmitting=true;
+ try{
+  const ids=selectedCards.slice(0,3);
+  const joined=await window.KimemProductionLobby.join(ids);
+  try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids));localStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
+  const params=new URLSearchParams({cards:ids.join(','),stake:String(window.KimemProductionLobby.stake()),gameId:joined.gameId});
+  window.location.href='./KIMEM_BINGO_20_Live_Game.html?'+params;
+ }catch(e){triggerToast(e.message)}finally{productionSubmitting=false}
 }
 function handleActionSubmit(){enterLiveGame()}
 function triggerToast(text){const el=$('toast-msg');el.textContent=text;el.style.opacity='1';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity='0',2200)}
@@ -153,7 +168,19 @@ document.addEventListener('pointerdown',function primeKimemAudio(){try{kimemCoun
 let timerHandle=null,secondsRemaining=35;
 function resetCountdownScene(){const scene=$('countdown-scene');scene.classList.remove('visible');scene.setAttribute('aria-hidden','true');const balls=[...scene.querySelectorAll('.countdown-ball')];balls.forEach((ball,i)=>{ball.classList.remove('is-active','is-done');ball.querySelector('.ball-face').textContent='BINGO'[i]})}
 function showCountdownSecond(n){const scene=$('countdown-scene');if(!scene.classList.contains('visible')){scene.classList.add('visible');scene.setAttribute('aria-hidden','false')};const balls=[...scene.querySelectorAll('.countdown-ball')];const idx=5-n;balls.forEach((ball,i)=>{ball.classList.remove('is-active');if(i<idx)ball.classList.add('is-done')});const ball=balls[idx];if(ball){ball.classList.remove('is-done');void ball.offsetWidth;ball.classList.add('is-active');setTimeout(()=>{if(ball.classList.contains('is-active'))ball.querySelector('.ball-face').textContent=String(n)},350)}}
-function startTimer(){if(timerHandle)clearInterval(timerHandle);secondsRemaining=35;$('countdown').textContent='35s';resetCountdownScene();timerHandle=setInterval(()=>{secondsRemaining--;$('countdown').textContent=Math.max(0,secondsRemaining)+'s';if(secondsRemaining===5){kimemPlayCountdown();const link=document.createElement('link');link.rel='prefetch';link.href='./KIMEM_BINGO_20_Live_Game.html?cards='+encodeURIComponent(selectedCards.slice(0,3).join(','));document.head.append(link)}if(secondsRemaining>=1&&secondsRemaining<=5)showCountdownSecond(secondsRemaining);if(secondsRemaining===0){resetCountdownScene();clearInterval(timerHandle);timerHandle=null;if(selectedCards.length){enterLiveGame()}else{triggerToast('Time is up — select a card for the next game');startTimer()}}},1000)}
+function startTimer(){
+ if(timerHandle)clearInterval(timerHandle);
+ if(productionClock)clearInterval(productionClock);
+ secondsRemaining=35;resetCountdownScene();
+ syncProductionGame();
+ productionClock=setInterval(()=>{
+  if(!productionGame)return;
+  secondsRemaining=Math.max(0,Math.ceil((new Date(productionGame.startsAt).getTime()-Date.now())/1000));
+  $('countdown').textContent=secondsRemaining+'s';
+  if(secondsRemaining>=1&&secondsRemaining<=5)showCountdownSecond(secondsRemaining);
+  if(secondsRemaining===0){clearInterval(productionClock);productionClock=null;resetCountdownScene();if(selectedCards.length)enterLiveGame()}
+ },250);
+}
 function syncTelegramViewport(){
  const tg=window.Telegram?.WebApp;
  const height=(tg&&tg.viewportStableHeight&&tg.viewportStableHeight>250)?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);
@@ -170,5 +197,5 @@ function init(){
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
  updateUI();startTimer();
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-</script></body></html>
+</script><script src="./kimem-production-lobby.js"></script></body></html>
 
