@@ -805,17 +805,58 @@ function kimemAmharicNumber(n){
  return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
 }
 const KIMEM_VOICE_ENDPOINT='https://good-bingo-telegram.floot.app/_api/bingo-voice?n=';
-let kimemBallVoiceAudio=null;
+const kimemVoiceClips=new Map();
+const kimemVoiceQueue=[];
+let kimemVoicePlaying=false;
+let kimemVoicePrimed=false;
+// Keep each spoken call intact; later balls wait their turn instead of cutting it off.
+function kimemGetVoiceClip(n){
+ if(!kimemVoiceClips.has(n)){
+  const clip=new Audio(KIMEM_VOICE_ENDPOINT+n);
+  clip.preload='auto';clip.volume=1;
+  kimemVoiceClips.set(n,clip);
+ }
+ return kimemVoiceClips.get(n);
+}
+function kimemPlayQueuedVoice(){
+ if(kimemVoicePlaying||!kimemVoiceQueue.length)return;
+ const n=kimemVoiceQueue.shift(),clip=kimemGetVoiceClip(n);
+ kimemVoicePlaying=true;
+ let settled=false;
+ const done=()=>{
+  if(settled)return;settled=true;
+  clip.removeEventListener('ended',done);clip.removeEventListener('error',done);
+  kimemVoicePlaying=false;
+  kimemPlayQueuedVoice();
+ };
+ clip.addEventListener('ended',done);
+ clip.addEventListener('error',done);
+ try{clip.currentTime=0;const p=clip.play();if(p&&p.catch)p.catch(done)}
+ catch(e){done()}
+}
 function kimemCallBallAmharic(n){
  if(!Number.isInteger(n)||n<1||n>75)return;
- try{
-  if(kimemBallVoiceAudio){kimemBallVoiceAudio.pause();kimemBallVoiceAudio.currentTime=0;}
-  const audio=new Audio(KIMEM_VOICE_ENDPOINT+n);
-  kimemBallVoiceAudio=audio;
-  audio.preload='auto';audio.volume=1;
-  audio.play().catch(e=>console.warn('KIMEM ball voice playback unavailable:',e));
- }catch(e){console.warn('KIMEM ball voice error:',e)}
+ kimemVoiceQueue.push(n);
+ kimemPlayQueuedVoice();
 }
+// Warm the 75 voice clips gradually so a ball call doesn't wait for live TTS generation.
+// This does not modify the countdown, drawing pace, or any game visuals.
+function kimemWarmVoiceClips(){
+ if(kimemVoicePrimed)return;
+ kimemVoicePrimed=true;
+ let next=1;
+ function warmBatch(){
+  let count=0;
+  while(next<=75&&count++<3){
+   const clip=kimemGetVoiceClip(next++);
+   try{clip.load()}catch(e){}
+  }
+  if(next<=75)setTimeout(warmBatch,850);
+ }
+ warmBatch();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kimemWarmVoiceClips,{once:true});
+else kimemWarmVoiceClips();
 function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
