@@ -808,6 +808,23 @@ const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 kimemVoicePlayer.preload='auto';
+/* Warm the browser's HTTP media cache without changing the working HTML Audio player. */
+(function kimemWarmVoiceCache(){
+ const total=75;
+ let next=1;
+ async function worker(){
+  while(next<=total){
+   const n=next++;
+   try{
+    const response=await fetch(KIMEM_VOICE_ENDPOINT+n+'.mp3',{cache:'force-cache'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    await response.arrayBuffer();
+   }catch(e){console.warn('KIMEM voice cache '+n,e)}
+  }
+ }
+ for(let i=0;i<6;i++)worker();
+})();
+
 let kimemVoiceBusy=false;
 function kimemVoiceNext(){
  if(kimemVoiceBusy||!kimemVoiceQueue.length)return;
