@@ -805,58 +805,57 @@ function kimemAmharicNumber(n){
  return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
 }
 const KIMEM_VOICE_ENDPOINT='https://good-bingo-telegram.floot.app/_api/bingo-voice?n=';
-const kimemVoiceClips=new Map();
 const kimemVoiceQueue=[];
-let kimemVoicePlaying=false;
-let kimemVoicePrimed=false;
-// Keep each spoken call intact; later balls wait their turn instead of cutting it off.
-function kimemGetVoiceClip(n){
- if(!kimemVoiceClips.has(n)){
-  const clip=new Audio(KIMEM_VOICE_ENDPOINT+n);
-  clip.preload='auto';clip.volume=1;
-  kimemVoiceClips.set(n,clip);
- }
- return kimemVoiceClips.get(n);
+const kimemVoiceCache=new Map();
+const kimemVoicePlayer=new Audio();
+kimemVoicePlayer.preload='auto';kimemVoicePlayer.volume=1;
+let kimemVoiceActive=false,kimemVoiceUnlocked=false,kimemVoiceUnlockPrompt=null;
+function kimemVoiceFile(n){
+ if(!kimemVoiceCache.has(n))kimemVoiceCache.set(n,KIMEM_VOICE_ENDPOINT+n);
+ return kimemVoiceCache.get(n);
 }
-function kimemPlayQueuedVoice(){
- if(kimemVoicePlaying||!kimemVoiceQueue.length)return;
- const n=kimemVoiceQueue.shift(),clip=kimemGetVoiceClip(n);
- kimemVoicePlaying=true;
- let settled=false;
- const done=()=>{
-  if(settled)return;settled=true;
-  clip.removeEventListener('ended',done);clip.removeEventListener('error',done);
-  kimemVoicePlaying=false;
-  kimemPlayQueuedVoice();
- };
- clip.addEventListener('ended',done);
- clip.addEventListener('error',done);
- try{clip.currentTime=0;const p=clip.play();if(p&&p.catch)p.catch(done)}
- catch(e){done()}
+function kimemVoiceNext(){
+ if(kimemVoiceActive||!kimemVoiceQueue.length||!kimemVoiceUnlocked)return;
+ const n=kimemVoiceQueue.shift();
+ kimemVoiceActive=true;
+ kimemVoicePlayer.src=kimemVoiceFile(n);
+ kimemVoicePlayer.load();
+ const p=kimemVoicePlayer.play();
+ if(p&&p.catch)p.catch(e=>{
+  kimemVoiceActive=false;
+  kimemVoiceQueue.unshift(n);
+  kimemVoiceUnlocked=false;
+  kimemShowVoiceUnlock();
+ });
 }
+kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceActive=false;kimemVoiceNext()});
+kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceActive=false;kimemVoiceNext()});
 function kimemCallBallAmharic(n){
  if(!Number.isInteger(n)||n<1||n>75)return;
  kimemVoiceQueue.push(n);
- kimemPlayQueuedVoice();
+ kimemVoiceNext();
 }
-// Warm the 75 voice clips gradually so a ball call doesn't wait for live TTS generation.
-// This does not modify the countdown, drawing pace, or any game visuals.
-function kimemWarmVoiceClips(){
- if(kimemVoicePrimed)return;
- kimemVoicePrimed=true;
- let next=1;
- function warmBatch(){
-  let count=0;
-  while(next<=75&&count++<3){
-   const clip=kimemGetVoiceClip(next++);
-   try{clip.load()}catch(e){}
-  }
-  if(next<=75)setTimeout(warmBatch,850);
- }
- warmBatch();
+function kimemShowVoiceUnlock(){
+ if(kimemVoiceUnlockPrompt)return;
+ const b=document.createElement('button');
+ b.type='button';b.textContent='🔊 ENABLE BALL VOICE';
+ b.setAttribute('aria-label','Enable Amharic ball calling sound');
+ b.style.cssText='position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:9999;background:#1454ad;color:white;border:1px solid #70caff;border-radius:22px;padding:12px 18px;font:800 13px Inter,sans-serif;box-shadow:0 5px 24px #000a;white-space:nowrap;cursor:pointer';
+ b.addEventListener('click',kimemUnlockVoice);
+ document.body.appendChild(b);kimemVoiceUnlockPrompt=b;
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kimemWarmVoiceClips,{once:true});
-else kimemWarmVoiceClips();
+function kimemUnlockVoice(){
+ // iOS/WebKit only permits the first playback after a real tap.
+ kimemVoiceUnlocked=true;
+ if(kimemVoiceUnlockPrompt){kimemVoiceUnlockPrompt.remove();kimemVoiceUnlockPrompt=null;}
+ if(kimemVoiceQueue.length){kimemVoiceNext();return}
+ // Unlock the same reusable media element while inside this click event.
+ const p=kimemVoicePlayer.play();
+ if(p&&p.catch)p.catch(()=>{kimemVoiceUnlocked=false;kimemShowVoiceUnlock()});
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kimemShowVoiceUnlock,{once:true});
+else kimemShowVoiceUnlock();
+
 function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
