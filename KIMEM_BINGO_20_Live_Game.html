@@ -676,7 +676,7 @@ const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
 function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
 let kimemClaimPending=false;
-async function claimBingo(){
+async async function claimBingo(){
  if(kimemClaimPending)return;
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
  if(!kimemDrawConnected){kimemSmallNotice('SERVER CONNECTION REQUIRED');return}
@@ -746,6 +746,8 @@ function kimemFinishGame(ids){
    const isHit=n=>n===0||drawn.includes(n);
    const candidateLines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
    const winningNumbers=new Set(candidateLines.filter(line=>line.every(isHit)).flat());
+   const corners=[g[0][0],g[0][4],g[4][0],g[4][4]];
+   if(corners.every(isHit))corners.forEach(n=>winningNumbers.add(n));
    const grid=document.createElement('div');grid.className='play-numbers';
    cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';grid.append(cell)}));temp.append(grid);host.append(temp);
   }
@@ -929,6 +931,14 @@ function updateDraw(n){
 }
 // Numbers come only from the authenticated server; never invent a local draw.
 let kimemServerNumbers=[],kimemDrawPollInFlight=false,kimemDrawConnected=false;
+let kimemServerFinished=false,kimemServerWinnerCards=[],kimemServerResultShown=false;
+function kimemShowServerResultIfReady(){
+ if(!kimemServerFinished||kimemServerResultShown||spherePhase==='reveal'||drawn.length!==kimemServerNumbers.length)return;
+ kimemServerResultShown=true;
+ running=false;spherePhase='idle';
+ $('draw-status').textContent=kimemServerWinnerCards.length?'BINGO WINNER VERIFIED':'ROUND COMPLETE';
+ kimemFinishAfterBall(kimemServerWinnerCards);
+}
 async function kimemSyncServerDraw(){
  if(kimemDrawPollInFlight)return;
  kimemDrawPollInFlight=true;
@@ -939,10 +949,13 @@ async function kimemSyncServerDraw(){
      kimemServerNumbers.some((number,index)=>snapshot.drawnNumbers[index]!==number))
    throw Error('Server draw sequence changed');
   kimemServerNumbers=snapshot.drawnNumbers.slice();
+  kimemServerFinished=snapshot.status==='finished';
+  kimemServerWinnerCards=Array.isArray(snapshot.winningCardIds)?snapshot.winningCardIds.filter(n=>Number.isInteger(n)&&n>=1&&n<=1000):[];
   kimemDrawConnected=true;
-  if(!running&&drawn.length<75)running=true;
+  if(!running&&!kimemFinished&&drawn.length<kimemServerNumbers.length)running=true;
   if(spherePhase==='idle'&&drawn.length<75){spherePhase='waiting';nextDrawAt=performance.now()}
   if(drawn.length===75)running=false;
+  kimemShowServerResultIfReady();
  }catch(error){
   kimemDrawConnected=false;running=false;
   $('draw-status').textContent='SERVER CONNECTION REQUIRED';
@@ -975,7 +988,8 @@ function finishSphereReveal(now){
   $('draw-status').textContent='BINGO PATTERN • VERIFICATION PENDING';
  }
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
- if(drawn.length===75){running=false;spherePhase='idle';$('draw-status').textContent='DRAW COMPLETE • VERIFICATION PENDING'}
+ if(kimemServerFinished&&drawn.length===kimemServerNumbers.length){spherePhase='waiting';running=false;kimemShowServerResultIfReady()}
+ else if(drawn.length===75){running=false;spherePhase='idle';$('draw-status').textContent='DRAW COMPLETE • VERIFICATION PENDING'}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
