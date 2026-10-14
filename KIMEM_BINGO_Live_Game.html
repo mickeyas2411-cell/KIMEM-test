@@ -805,60 +805,48 @@ function kimemAmharicNumber(n){
  return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
 }
 const KIMEM_VOICE_ENDPOINT='https://good-bingo-telegram.floot.app/_cdn/static/kimem-ball-';
-const kimemVoicePlayer=new Audio();
-kimemVoicePlayer.preload='auto';
-kimemVoicePlayer.volume=1;
 const kimemVoiceQueue=[];
-let kimemVoiceActive=false,kimemVoiceUnlocked=false,kimemVoicePriming=false;
+const kimemVoicePlayer=new Audio();
+let kimemVoiceContext=null,kimemVoiceReady=false,kimemVoiceBusy=false;
+const kimemVoiceBuffers=new Map(),kimemVoicePending=new Map();
+function kimemVoiceLoad(n){
+ if(kimemVoiceBuffers.has(n))return Promise.resolve(kimemVoiceBuffers.get(n));
+ if(kimemVoicePending.has(n))return kimemVoicePending.get(n);
+ const p=fetch(KIMEM_VOICE_ENDPOINT+n+'.mp3').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.arrayBuffer()}).then(a=>kimemVoiceContext.decodeAudioData(a)).then(b=>{kimemVoiceBuffers.set(n,b);return b}).finally(()=>kimemVoicePending.delete(n));
+ kimemVoicePending.set(n,p);return p;
+}
 function kimemVoiceNext(){
- if(!kimemVoiceUnlocked||kimemVoicePriming||kimemVoiceActive||!kimemVoiceQueue.length)return;
- const n=kimemVoiceQueue.shift();
- kimemVoiceActive=true;
- kimemVoicePlayer.volume=1;
- kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
- const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(err=>{
-  console.warn('KIMEM ball audio playback:',err);
-  kimemVoiceActive=false;
-  kimemVoiceQueue.unshift(n);
-  kimemVoiceUnlocked=false;
+ if(!kimemVoiceReady||kimemVoiceBusy||!kimemVoiceQueue.length)return;
+ const n=kimemVoiceQueue.shift();kimemVoiceBusy=true;
+ kimemVoiceLoad(n).then(b=>{
+  const source=kimemVoiceContext.createBufferSource();source.buffer=b;source.connect(kimemVoiceContext.destination);
+  source.onended=()=>{kimemVoiceBusy=false;kimemVoiceNext()};source.start();
+ }).catch(err=>{
+  console.warn('KIMEM WebAudio fallback',err);
+  kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
+  const p=kimemVoicePlayer.play();
+  if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice playback',e);kimemVoiceBusy=false;kimemVoiceNext()});
  });
 }
-kimemVoicePlayer.addEventListener('ended',()=>{
- if(kimemVoicePriming){kimemVoicePriming=false;kimemVoicePlayer.volume=1;kimemVoiceNext();return}
- kimemVoiceActive=false;kimemVoiceNext();
-});
-kimemVoicePlayer.addEventListener('error',()=>{
- if(kimemVoicePriming){kimemVoicePriming=false;kimemVoiceUnlocked=false;return}
- kimemVoiceActive=false;kimemVoiceUnlocked=false;
-});
+kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
+kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
 function kimemCallBallAmharic(n){
  if(!Number.isInteger(n)||n<1||n>75)return;
- kimemVoiceQueue.push(n);
- kimemVoiceNext();
+ kimemVoiceQueue.push(n);kimemVoiceNext();
 }
 function kimemUnlockVoice(){
- if(kimemVoiceUnlocked)return;
- kimemVoiceUnlocked=true;
- kimemVoicePriming=true;
- kimemVoicePlayer.volume=0;
- kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
- const p=kimemVoicePlayer.play();
- if(p&&p.then)p.then(()=>{
-  kimemVoicePlayer.pause();
-  kimemVoicePlayer.currentTime=0;
-  kimemVoicePlayer.volume=1;
-  kimemVoicePriming=false;
-  kimemVoiceNext();
- }).catch(err=>{
-  console.warn('KIMEM voice activation failed',err);
-  kimemVoicePriming=false;
-  kimemVoiceUnlocked=false;
- });
+ if(kimemVoiceReady)return;
+ try{
+  const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+  if(!kimemVoiceContext)kimemVoiceContext=new C();
+  const source=kimemVoiceContext.createBufferSource();
+  source.buffer=kimemVoiceContext.createBuffer(1,1,22050);
+  source.connect(kimemVoiceContext.destination);source.start();
+  kimemVoiceContext.resume().then(()=>{kimemVoiceReady=true;kimemVoiceNext()}).catch(console.warn);
+ }catch(e){console.warn('KIMEM voice unlock',e)}
 }
-// Live game begins automatically: the first real touch, not START GAME, unlocks audio.
-document.addEventListener('touchend',kimemUnlockVoice,{capture:true,passive:true});
-document.addEventListener('pointerup',kimemUnlockVoice,{capture:true,passive:true});
+document.addEventListener('touchstart',kimemUnlockVoice,{capture:true,passive:true});
+document.addEventListener('pointerdown',kimemUnlockVoice,{capture:true,passive:true});
 document.addEventListener('click',kimemUnlockVoice,true);
 
 function updateDraw(n){
