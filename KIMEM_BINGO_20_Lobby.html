@@ -124,6 +124,7 @@ body>div{background:transparent!important}
 <section class="neon-panel rounded-xl p-2 space-y-1.5"><div class="flex items-center justify-between px-0.5"><h2 class="text-xs font-black tracking-wide">CARD PREVIEW</h2><div id="preview-title" class="text-[9px] font-black text-blue-400 tracking-wider uppercase">NO CARD SELECTED</div></div><div class="bg-[#020a22] border border-blue-900/80 rounded-lg p-1.5 space-y-1"><div id="bingo-header" class="grid grid-cols-5 gap-1 text-center"></div><div id="bingo-board" class="grid grid-cols-5 gap-1 text-center"></div></div></section>
 </main><div class="absolute bottom-0 left-0 right-0 p-2.5 bg-gradient-to-t from-[#02050e] via-[#02050e]/95 to-transparent z-40"><div class="footer-actions"><button type="button" onclick="leaveToLobby()" class="live-pulse text-white font-black tracking-wider flex items-center justify-center gap-1"><i class="fa-solid fa-arrow-left text-[9px]"></i> LEAVE</button><button type="button" id="main-action-btn" onclick="handleActionSubmit()" class="btn-action-glow text-white font-black tracking-wider flex items-center justify-center gap-1"><span id="btn-label">SELECT A CARD</span><i class="fa-solid fa-arrow-right text-[9px]"></i></button></div></div><div id="toast-msg" role="status" class="absolute top-12 left-1/2 -translate-x-1/2 bg-blue-900/95 border border-cyan-400 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50 whitespace-nowrap max-w-[95%] overflow-hidden text-ellipsis">Notification</div></div>
 <div id="countdown-scene" role="dialog" aria-label="Game starts in countdown" aria-modal="true" aria-hidden="true"><div class="scene-heading">GAME STARTS IN</div><div class="countdown-balls" id="countdown-balls"><div class="countdown-ball" style="--tone:#f0444f"><span class="ball-face">B</span></div><div class="countdown-ball" style="--tone:#318bff"><span class="ball-face">I</span></div><div class="countdown-ball" style="--tone:#f5ac2c"><span class="ball-face">N</span></div><div class="countdown-ball" style="--tone:#19b97b"><span class="ball-face">G</span></div><div class="countdown-ball" style="--tone:#a45df6"><span class="ball-face">O</span></div></div><div class="scene-footer">KIMEM BINGO</div></div>
+<script src="./kimem-production-lobby.js"></script>
 <script>
 'use strict';
 const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
@@ -169,7 +170,7 @@ async function syncProductionGame(){
   const remaining=Math.max(0,Math.ceil((new Date(productionGame.startsAt).getTime()-Date.now())/1000));
   secondsRemaining=remaining;$('countdown').textContent=remaining+'s';
   if(remaining===0){clearInterval(productionClock);productionClock=null;if(selectedCards.length)await enterLiveGame()}
- }catch(e){clearInterval(productionClock);productionClock=null;triggerToast(e.message);$('countdown').textContent='OFFLINE'}
+ }catch(e){productionGame=null;clearInterval(productionClock);productionClock=null;triggerToast(e.message);$('countdown').textContent='OFFLINE';$('players-value').textContent='—';$('game-id-value').textContent='—'}
 }
 async function enterLiveGame(){
  if(productionSubmitting)return;
@@ -226,5 +227,5 @@ function init(){
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
  updateUI();startTimer();
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-</script><script src="./kimem-production-lobby.js"></script></body></html>
+</script></body></html>
 
