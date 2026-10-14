@@ -145,7 +145,46 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 #bingo .bl-play{z-index:3}
 @media(max-width:420px){#bingo .bl-patterns{left:42%;right:22%;gap:4px}#bingo .bl-pattern{width:27px;height:27px;gap:1px;padding:2px}#bingo .bl-gold .bl-pattern{width:43px;height:43px}#bingo .bl-ball.bl-emblem{width:49px;height:49px}#bingo .bl-ball-core{font-size:19px}#bingo .bl-room-main{gap:9px}#bingo .bl-price{font-size:21px}}
 @media(max-width:340px){#bingo .bl-patterns{left:46%;right:22%;gap:2px}#bingo .bl-pattern{width:21px;height:21px;padding:1px}#bingo .bl-play{min-width:72px;padding:8px 6px;font-size:9px}#bingo .bl-gold-title{font-size:16px}}
-</style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">Q</div><div><strong>QIMEM GAMES</strong><small>GAME ARENA</small></div></div><span class="live"><i></i> TEST EDITION</span></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">WELCOME TO QIMEM GAMES</div><h1 id="greeting">Welcome, Player</h1><p>Your arena. Your games. Your experience.</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">DISCOVER THE ARENA</div><h2>Choose Your Game</h2></div><p>4 game experiences</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>QIMEM ORIGINAL</small>BINGO</div><div class="g-sub">Classic 75-ball experience</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">PLAY BINGO &nbsp; ↗</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>QIMEM SPORTS</small>SPORT BETTING</div><div class="g-sub">Match odds &amp; live action</div><div class="art"><div class="stadium"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="showScreen('sport')">EXPLORE &nbsp; ↗</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>QIMEM LUCKY</small>SPIN GAMES</div><div class="g-sub">Discover the spin collection</div><div class="art"><div class="pointer"></div><div class="wheel"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>QIMEM ORIGINAL</small>KENO</div><div class="g-sub">Numbers. Draws. Excitement.</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b> · TEST BUILD</footer></section><section class="screen bingo-redesign" id="bingo">
+</style><style id="kimem-main-lobby-luxury-20261014">
+/* Visual scope strictly limited to #lobby; game screens and navigation unchanged. */
+#lobby{font-family:Outfit,"Noto Sans Ethiopic",system-ui,sans-serif}
+.top .brand strong{font-family:Outfit,"Noto Sans Ethiopic",system-ui,sans-serif;letter-spacing:.2px;color:#f5d58b}
+.top .mark{background:linear-gradient(140deg,#fff0af,#e9b956 50%,#956022);border:1px solid #ffe9a4;box-shadow:inset 0 2px 5px #fff7cb88,0 5px 18px #dba84c44}
+#lobby .welcome{background:linear-gradient(120deg,#071b3a,#0b2754 54%,#06132e);border-color:#4b77ae;box-shadow:inset 0 1px #c6dcff28,0 12px 28px #0008}
+#lobby .welcome:after{content:"K";font-size:clamp(90px,17vw,170px);right:10px;top:-12px;transform:rotate(-10deg);color:#b5d8ff0c}
+#lobby .eyebrow{color:#f1d18b;letter-spacing:1.5px}
+#lobby .games{gap:12px}
+#lobby .game{border-width:1.5px;box-shadow:0 10px 24px #000a,inset 0 1px #ffffff20}
+#lobby .game .g-inner{isolation:isolate}
+#lobby .game .g-title{color:#ffe4a2;text-shadow:0 2px 7px #000b,0 0 13px #ffc86a40}
+#lobby .game .g-title small{color:#f3d79a;letter-spacing:1px}
+#lobby .game .g-sub{color:#e2e7ee}
+#lobby .game.bingo{border-color:#49bbff}
+#lobby .game.bingo:before{background:radial-gradient(ellipse at 60% 40%,#186bce,#0b2d70 57%,#05132e)}
+#lobby .game.sport{border-color:#efbd72}
+#lobby .game.sport:before{background:radial-gradient(ellipse at 72% 75%,#8e2714 0%,#571b1d 33%,#260e21 66%,#120e1b)}
+#lobby .game.sport .stadium{inset:3px -18px 18px;background:radial-gradient(ellipse at 55% 110%,#29a45080,transparent 49%),repeating-radial-gradient(ellipse at 50% 100%,transparent 0 16px,#ffcf9b25 17px 18px),linear-gradient(150deg,#ffbd8e2c,transparent 55%);box-shadow:inset 0 -20px 25px #0a321f70}
+#lobby .game.sport .football{filter:drop-shadow(0 8px 5px #000a) drop-shadow(0 0 12px #ffab5b88);transform:rotate(-16deg) scale(1.13)}
+#lobby .sport-lights{position:absolute;inset:0;background:linear-gradient(140deg,transparent 25%,#ffe0a51c 32%,transparent 43%),radial-gradient(circle at 84% 8%,#fff8d7 0 2px,#ffd18b 4px,transparent 22px);pointer-events:none}
+#lobby .game.spin{border-color:#f4b96a}
+#lobby .game.spin:before{background:radial-gradient(ellipse at 55% 46%,#97501d 0%,#4a200e 45%,#1e0c08 100%)}
+#lobby .game.spin .wheel{border:9px solid #d7953d;box-shadow:inset 0 0 0 3px #fff0b5,inset 0 0 22px #2c0b02,0 0 0 3px #6d300f,0 0 22px #ffa93b70,0 15px 25px #000a;background:conic-gradient(#f4b65a 0deg 30deg,#5e240e 30deg 60deg,#e7a64e 60deg 90deg,#a52d19 90deg 120deg,#f4b65a 120deg 150deg,#5e240e 150deg 180deg,#e7a64e 180deg 210deg,#a52d19 210deg 240deg,#f4b65a 240deg 270deg,#5e240e 270deg 300deg,#e7a64e 300deg 330deg,#a52d19 330deg 360deg)}
+#lobby .game.spin .wheel:after{width:37px;height:37px;background:radial-gradient(circle at 28% 20%,#fff2bb,#e6a748 48%,#8a3e16);border:3px solid #ffde8e}
+#lobby .game.spin .pointer{background:linear-gradient(#fff0b6,#d77a2b);width:25px;height:30px;top:0}
+#lobby .spin-stand{position:absolute;bottom:4px;width:70%;height:12px;border-radius:50%;background:radial-gradient(ellipse,#ffc06b,#7e3b19 70%,transparent);z-index:-1}
+#lobby .game.keno{border-color:#4ee2c4}
+#lobby .game.keno:before{background:radial-gradient(ellipse at 62% 42%,#0d7e79 0%,#075249 48%,#032d32 85%)}
+#lobby .game.keno .keno-board{position:relative;z-index:1;transform:rotate(-4deg) scale(.91);margin-right:20px;border-color:#8fe9d6;background:linear-gradient(125deg,#064f50,#072c34)}
+#lobby .keno-drum{position:absolute;right:-8px;top:6%;height:74%;width:35%;border:4px solid #9de9d5;border-radius:48% 48% 42% 42%;background:radial-gradient(circle at 25% 25%,#ffffff45,#32bd9e1c 43%,#012c3f90);box-shadow:inset 0 0 16px #c4fff75e,0 0 12px #59dfc25a;transform:rotate(6deg);display:flex;align-items:center;justify-content:center;gap:2px;color:#e9fefa;font-size:15px}
+#lobby .keno-drum span:nth-child(2){color:#f4cf76;transform:translateY(17px)}
+#lobby .keno-drum span:nth-child(3){transform:translateY(-20px)}
+#lobby .game .g-action{border-radius:12px;font-family:Outfit,"Noto Sans Ethiopic",system-ui,sans-serif;letter-spacing:0;font-size:clamp(10px,2.5vw,13px);box-shadow:inset 0 1px #ffffff66,0 5px 14px #0008}
+#lobby .game.bingo .g-action{background:linear-gradient(100deg,#0751bf,#1988ef,#0644a4);border-color:#64d8ff;color:white}
+#lobby .game.sport .g-action{background:linear-gradient(100deg,#f5bd5c,#ffe39b,#c88a2d);border-color:#fff0bd;color:#28170b}
+#lobby .game.spin .g-action{background:linear-gradient(100deg,#b96828,#ffd08b,#bb6b2a);border-color:#ffe3a1;color:#351909}
+#lobby .game.keno .g-action{background:linear-gradient(100deg,#008d77,#10d6af,#007f70);border-color:#8af9df;color:white}
+@media(max-width:365px){#lobby .keno-drum{right:-12px;width:32%}#lobby .game.spin .wheel{border-width:7px}}
+</style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div><span class="live"><i></i> TEST EDITION</span></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>4 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="showScreen('sport')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b> · TEST BUILD</footer></section><section class="screen bingo-redesign" id="bingo">
 <div class="bl-top"><button class="bl-back" onclick="showScreen('lobby')" aria-label="Back to games">‹</button><div class="bl-head"><small>QIMEM GAME ARENA</small><strong>QIMEM <em>BINGO</em></strong></div><div class="bl-live">LIVE</div></div>
 <div class="bl-credit"><div class="bl-credit-left"><span class="bl-wallet-icon">▣</span><div><small>YOUR GAME CREDIT</small><b>— ETB</b></div></div><span style="color:#879bb7">›</span></div>
 <div class="bl-arena"><small>PREMIUM LIVE ARENA</small><h2>Choose Your Game</h2><p>Choose a game mode below</p></div>
@@ -162,4 +201,20 @@ const tg=window.Telegram?.WebApp;try{tg?.ready();tg?.expand();const u=tg?.initDa
 function showScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.toggle('active',x.id===id));window.scrollTo({top:0,behavior:'smooth'});try{tg?.HapticFeedback?.impactOccurred('light')}catch(e){}}function bingoLobbyNotice(message){const el=document.getElementById('blNotice');el.textContent=message;el.classList.add('visible')}
 function bingoLobbyTab(name){if(name==='Game'){document.getElementById('blNotice').classList.remove('visible');return}bingoLobbyNotice(name+' is not available in this test build.')}
 function newBoard(){const el=document.getElementById('board');el.innerHTML='';const columns=Array.from({length:5},(_,c)=>{let a=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,5)});for(let r=0;r<5;r++)for(let c=0;c<5;c++){const b=document.createElement('button');b.className='cell';b.textContent=r===2&&c===2?'★':columns[c][r];if(r===2&&c===2)b.classList.add('marked');b.onclick=()=>{b.classList.toggle('marked');try{tg?.HapticFeedback?.selectionChanged()}catch(e){}};el.appendChild(b)}}const mini=document.getElementById('miniTicket');'BINGO'.split('').forEach(x=>{let s=document.createElement('span');s.textContent=x;mini.appendChild(s)});for(let i=0;i<25;i++){let s=document.createElement('span');s.textContent=i===12?'★':(i*7+11)%75+1;mini.appendChild(s)}const kb=document.getElementById('kenoBoard');for(let i=1;i<=40;i++){let s=document.createElement('span');s.textContent=i;if([5,11,24,37].includes(i))s.className='hit';kb.appendChild(s)}newBoard();
+</script><script id="kimem-main-lobby-amharic-greeting">
+(function(){
+  function translateGreeting(){
+    var el=document.getElementById('greeting');
+    if(!el)return;
+    var t=el.textContent.trim();
+    if(t.startsWith('Welcome,'))el.textContent='እንኳን ደህና መጡ፣ '+t.slice(8).trim();
+    var u=document.getElementById('username');
+    if(u&&u.textContent.trim()==='Open in Telegram to see your profile')u.textContent='መገለጫዎን ለማየት በTelegram ይክፈቱ';
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    translateGreeting();
+    var el=document.getElementById('greeting');
+    if(el)new MutationObserver(translateGreeting).observe(el,{childList:true,characterData:true,subtree:true});
+  });
+})();
 </script></body></html>
