@@ -233,7 +233,7 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #live-main .digital-machine .ball-shell{width:min(88px,10.5dvh)!important;height:min(88px,10.5dvh)!important;min-width:0!important;min-height:0!important;aspect-ratio:1/1!important;flex:0 0 auto!important;transform:none!important;border-radius:50%!important}
 #live-main .digital-machine .digital-progress{position:absolute!important;bottom:5px!important;left:14%!important;width:72%!important}
 #live-main .digital-machine{position:relative!important;min-width:0!important}
-#live-main .digital-side{display:grid!important;grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;gap:3px!important;overflow:hidden!important}
+#live-main .digital-side{display:flex!important;flex-direction:column!important;justify-content:center!important;gap:3px!important;overflow:hidden!important}
 #live-main .digital-side-card{display:flex!important;flex-direction:column!important;justify-content:center!important;min-height:0!important;padding:3px 5px!important;overflow:hidden!important}
 #live-main .digital-side-title{font-size:clamp(8px,2vw,11px)!important;line-height:1!important;margin:0 0 3px!important}
 #live-main .digital-side .last-five{display:flex!important;flex-wrap:nowrap!important;gap:2px!important;min-height:0!important;align-items:center!important;overflow:hidden!important}
@@ -256,7 +256,7 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
 
-<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">LIVE BALL DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><div class="ball-shell"><canvas id="kimem-sphere" width="220" height="220" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div><div class="digital-progress"><div id="digital-progress-fill" class="digital-progress-fill"></div></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div><div class="digital-side-card"><div class="digital-side-title">CURRENT BALL</div><div id="digital-current" class="digital-current">--</div><div id="digital-current-letter" class="digital-current-letter">READY</div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section></div>
+<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">LIVE BALL DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section></div>
 <div class="space-y-2.5"><section class="neon-panel rounded-xl p-2.5"><div class="control-row"><div class="text-[10px] font-bold text-blue-200">DIGITAL NUMBER REVEAL • EVERY 3 SECONDS</div><span id="shuffle-status" class="text-[10px] font-black text-amber-400">SHUFFLING • 4s</span></div><div class="text-[10px] text-slate-400 mt-2">Automatic local draw • 4-second shuffle • 3-second interval. Multiplayer sync requires a backend.</div></section></div></div><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div>
 </main></div><div id="live-toast" class="live-toast"></div>
 <script>
@@ -278,7 +278,7 @@ function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d
 
 /* KIMEM approved 3D ball renderer — isolated from cards/board logic */
 const sphereCanvas=$('kimem-sphere'),sphereCtx=sphereCanvas.getContext('2d');
-const SZ=220,CTR=110,RAD=99,TAU=Math.PI*2;
+const SZ=160,CTR=80,RAD=72,TAU=Math.PI*2;
 const clamp3=(x,a,b)=>Math.max(a,Math.min(b,x));
 const smooth3=t=>t*t*(3-2*t);
 const ease3=t=>1-Math.pow(1-t,4);
@@ -350,11 +350,22 @@ function sphereRender(now){
  sphereCtx.clearRect(0,0,SZ,SZ);
  sphereCtx.putImageData(sphereImage,0,0);
  sphereCtx.save();sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,RAD,0,TAU);sphereCtx.clip();
- const gloss=sphereCtx.createRadialGradient(77,60,0,85,70,61);
+ const gloss=sphereCtx.createRadialGradient(56,44,0,62,51,44);
  gloss.addColorStop(0,'#ffffff5c');gloss.addColorStop(.35,'#ffffff1a');gloss.addColorStop(1,'#ffffff00');
  sphereCtx.fillStyle=gloss;sphereCtx.fillRect(0,0,SZ,SZ);sphereCtx.restore();
  sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,RAD-.5,0,TAU);
  sphereCtx.strokeStyle='#ffffff60';sphereCtx.lineWidth=1.2;sphereCtx.stroke();
+ if(spherePhase==='waiting'||spherePhase==='idle'){
+  const n=sphereCurrent,fr=RAD*.66;
+  const grad=sphereCtx.createRadialGradient(CTR-fr*.35,CTR-fr*.45,2,CTR,CTR,fr);
+  grad.addColorStop(0,'#fff');grad.addColorStop(.68,'#f8fbff');grad.addColorStop(1,'#bfcee0');
+  sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,fr,0,TAU);
+  sphereCtx.fillStyle=grad;sphereCtx.fill();sphereCtx.strokeStyle='#dce6f2';sphereCtx.lineWidth=1.3;sphereCtx.stroke();
+  sphereCtx.fillStyle='#173355';sphereCtx.textAlign='center';sphereCtx.textBaseline='middle';
+  sphereCtx.font='900 '+Math.round(RAD*.35)+'px Arial';sphereCtx.fillText(n?letter(n):'B',CTR,CTR-fr*.32);
+  sphereCtx.font='900 '+Math.round(RAD*.56)+'px Arial';sphereCtx.fillText(n?String(n).padStart(2,'0'):'--',CTR,CTR+fr*.31);
+ }
+
 }
 function initMachine(){sphereRender(performance.now())}
 function updateDraw(n){
@@ -386,9 +397,7 @@ function finishSphereReveal(now){
  $('digital-letter').textContent=letter(n);
  $('digital-number').textContent=String(n).padStart(2,'0');
  $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
- $('digital-current').style.setProperty('--current-tone',colors[tone(n)]);
- $('digital-current').textContent=String(n).padStart(2,'0');
- $('digital-current-letter').textContent=letter(n);
+
  updateDraw(n);
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
  if(drawn.length===75){running=false;spherePhase='idle';$('digital-progress-fill').style.width='100%'}
@@ -413,9 +422,9 @@ function digitalTick(now){
   sphereAngle=0;spherePitch=0;
   if(now>=nextDrawAt)beginSphereReveal(now);
   const left=Math.max(0,nextDrawAt-now);
-  $('digital-progress-fill').style.width=(100-left/1900*100)+'%';
+
  }
- sphereRender(now);
+ if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=30){sphereRender(now);digitalTick.lastFrame=now}
  digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
@@ -433,10 +442,9 @@ function resetGame(){
  $('draw-status').textContent='READY TO START';
  $('last-five').innerHTML='<span class="text-xs text-slate-500">Waiting for first number…</span>';
  $('digital-number').textContent='--';$('digital-letter').textContent='READY';
- $('digital-current').textContent='--';$('digital-current').style.setProperty('--current-tone','#f4c75e');
+
  $('machine').style.setProperty('--studio-tone','#2d83e8');
- $('digital-current-letter').textContent='READY';
- $('digital-progress-fill').style.width='0%';
+
  board();cards();sphereRender(performance.now());
 }
 (function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
