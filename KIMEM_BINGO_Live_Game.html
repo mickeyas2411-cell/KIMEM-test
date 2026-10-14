@@ -266,6 +266,15 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #live-main .mobile-card-priority{display:block!important;flex:0 0 auto!important;overflow:visible!important;padding-bottom:8px!important}
 #live-main .mobile-card-priority section{overflow:visible!important}
 #live-main .digital-side-card{flex:1!important}
+</style><style id="kimem-card-winner-fix">
+#live-main{overflow-y:auto!important;overscroll-behavior:contain!important;padding-bottom:22px!important}
+#live-main .mobile-card-priority{display:block!important;visibility:visible!important;min-height:185px!important;flex-shrink:0!important}
+#my-cards{display:grid!important;visibility:visible!important;min-height:125px!important}
+#kimem-winner-overlay{position:fixed;inset:0;z-index:3000;background:radial-gradient(circle at 50% 20%,#173e7b,#020713 75%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;color:white;text-align:center}
+#kimem-winner-overlay.visible{display:flex}
+#kimem-winner-overlay .play-card{width:min(94vw,360px);margin:10px auto;text-align:left}
+#kimem-winner-overlay .play-cell{height:clamp(36px,10vw,54px);font-size:17px}
+#kimem-winner-timer{font-size:58px;font-weight:900;color:#f5cb67}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -287,7 +296,34 @@ function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5
 function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">No cards selected. Return to Lobby and choose 1–3 cards.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
 function setMode(next){mode=next;$('manual-btn').classList.toggle('active',mode==='manual');$('auto-btn').classList.toggle('active',mode==='auto');cards()}
 function toast(msg){const el=$('live-toast');el.textContent=msg;el.style.opacity=1;clearTimeout(window.toastHandle);window.toastHandle=setTimeout(()=>el.style.opacity=0,2300)}
-function claimBingo(){if(!selected.length){toast('Select a card in Lobby first');return}const wins=selected.filter(id=>{const g=cardFor(id);const marked=n=>n===0||(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]);return [...g,...Array.from({length:5},(_,c)=>g.map(r=>r[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])].some(line=>line.every(marked))});toast(wins.length?'BINGO on card #'+wins.join(', #')+'! (Demo only)':'No completed Bingo line yet')}
+function claimBingo(){if(!selected.length){toast('Select a card in Lobby first');return}const wins=selected.filter(id=>{const g=cardFor(id);const marked=n=>n===0||(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]);return [...g,...Array.from({length:5},(_,c)=>g.map(r=>r[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])].some(line=>line.every(marked))});if(wins.length)kimemFinishGame(wins[0]);else toast('No completed Bingo line yet')}
+let kimemFinished=false,kimemReturnTimer=null;
+function kimemWinningCard(){
+ const marked=n=>n===0||drawn.includes(n);
+ for(const id of selected){const g=cardFor(id);const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];if(lines.some(line=>line.every(marked)))return id}
+ return null;
+}
+function kimemFinishGame(id){
+ if(kimemFinished)return;
+ kimemFinished=true;running=false;spherePhase='idle';
+ const overlay=document.getElementById('kimem-winner-overlay');
+ const host=document.getElementById('kimem-winner-card');
+ host.replaceChildren();
+ if(id!==null){
+  const temp=document.createElement('div');temp.className='play-card';
+  const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.append(title);
+  const headers=document.createElement('div');headers.className='play-letters';
+  'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
+  const grid=document.createElement('div');grid.className='play-numbers';
+  cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';grid.append(cell)}));temp.append(grid);host.append(temp);
+ }else{host.textContent='No winning card in this round'}
+ const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
+ document.getElementById('kimem-winner-user').textContent=username?'@'+username:'Demo player';
+ overlay.classList.add('visible');
+ let left=7;document.getElementById('kimem-winner-timer').textContent=left;
+ const audio=()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=kimemFinishGame.audioCtx||(kimemFinishGame.audioCtx=new C());if(ctx.state==='suspended')ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=660;gain.gain.value=.055;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12)}catch(e){}};
+ audio();kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.href='./KIMEM_BINGO_Game_Lobby.html';return}document.getElementById('kimem-winner-timer').textContent=left;audio()},1000);
+}
 function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d.style.setProperty('--ball-color',colors[tone(n)]);d.style.setProperty('--ball-light',lights[tone(n)]);d.textContent=letter(n)+' '+n;return d}
 
 /* KIMEM approved 3D ball renderer — isolated from cards/board logic */
@@ -416,7 +452,7 @@ function finishSphereReveal(now){
 
  updateDraw(n);
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
- if(drawn.length===75){running=false;spherePhase='idle'}
+ if(drawn.length===75){running=false;spherePhase='idle';kimemFinishGame(kimemWinningCard())}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
@@ -451,7 +487,7 @@ function startGame(){
  $('draw-status').textContent='NEXT DRAW IN 3s';
 }
 function resetGame(){
- running=false;drawn=[];manualMarks={};
+ running=false;drawn=[];manualMarks={};kimemFinished=false;clearInterval(kimemReturnTimer);document.getElementById('kimem-winner-overlay')?.classList.remove('visible');
  spherePhase='idle';sphereCurrent=0;spherePending=0;sphereReveal=null;
  sphereAngle=0;spherePitch=0;sphereSamples=[];
  $('countdown').textContent='0/75';$('called-total').textContent='0 CALLED';
@@ -485,4 +521,4 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
  },200);
  digitalTimer=requestAnimationFrame(digitalTick);
 })();
-</script></body></html>
+</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div></body></html>
