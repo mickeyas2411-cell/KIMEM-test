@@ -93,6 +93,16 @@ body>div:first-child>div:first-child{flex-shrink:0!important;min-height:42px;pad
 body>div:first-child>div:has(.footer-actions){position:relative!important;inset:auto!important;flex-shrink:0!important;padding:4px 9px max(6px,var(--kimem-bottom))!important}
 @media(max-height:730px){#lobby-main{gap:3px!important;padding-top:3px!important}#lobby-main .hero-banner{min-height:45px!important;padding:3px 8px!important}#lobby-main .stats-panel{min-height:38px!important}#lobby-main .bonus-row{min-height:30px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:16px!important}#lobby-main section:has(#bingo-board){padding:3px!important}}
 @media(max-height:560px){#lobby-main .hero-banner{min-height:36px!important}#lobby-main .hero-banner p{display:none!important}#lobby-main .bonus-row button>div:first-child{display:none!important}#lobby-main .bonus-row{min-height:25px!important}#lobby-main .locked-inline{min-height:22px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:14px!important}}
+
+/* Compact in-lobby countdown card: retain existing five-ball animation */
+#countdown-scene{inset:auto!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(92vw,430px)!important;height:auto!important;min-height:195px!important;max-height:45dvh!important;padding:17px 12px!important;border:1px solid #d6ac49!important;border-radius:20px!important;background:linear-gradient(145deg,#102c59,#08172e)!important;box-shadow:0 14px 45px #000c,0 0 0 100vmax #01050b80!important}
+#countdown-scene.visible{animation:none!important}
+#countdown-scene::before{width:100%!important;height:100%!important;opacity:.18!important}
+#countdown-scene::after{border-radius:20px!important}
+#countdown-scene .scene-heading{font-size:clamp(15px,4vw,20px)!important;letter-spacing:.09em!important}
+#countdown-scene .countdown-balls{gap:clamp(4px,1.3vw,10px)!important;margin:8px 0!important}
+#countdown-scene .countdown-ball{max-width:62px!important;flex:0 1 62px!important}
+#countdown-scene .scene-footer{font-size:11px!important;margin-top:6px!important}
 </style></head>
 <body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
 <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 z-30 shrink-0"><button onclick="leaveToLobby()" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i> Leave</button><div class="text-center"><div class="font-black text-xs tracking-wider">KIMEM GAMES</div><div class="text-[8px] font-bold tracking-widest text-blue-400">MINI APP</div></div><button onclick="triggerToast('Menu opened')" class="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-600/50 text-blue-300"><i class="fa-solid fa-ellipsis"></i></button></div>
