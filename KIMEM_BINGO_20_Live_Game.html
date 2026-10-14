@@ -635,6 +635,7 @@ body>div{background:transparent!important}
 <div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">KIMEM • LIVE DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><span id="shuffle-status" class="kimem-shuffle-label">SHUFFLING • 4s</span><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section><div id="kimem-cards-mount"><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div></div></div>
 </div>
 </main></div><div id="live-toast" class="live-toast"></div>
+<script src="./kimem-production-draw.js"></script>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -894,15 +895,34 @@ function updateDraw(n){
  drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
  cards();
 }
+// Numbers come only from the authenticated server; never invent a local draw.
+let kimemServerNumbers=[],kimemDrawPollInFlight=false,kimemDrawConnected=false;
+async function kimemSyncServerDraw(){
+ if(kimemDrawPollInFlight)return;
+ kimemDrawPollInFlight=true;
+ try{
+  const snapshot=await window.KimemProductionDraw.snapshot();
+  if(snapshot.drawnNumbers.length<drawn.length||
+     drawn.some((number,index)=>snapshot.drawnNumbers[index]!==number)||
+     kimemServerNumbers.some((number,index)=>snapshot.drawnNumbers[index]!==number))
+   throw Error('Server draw sequence changed');
+  kimemServerNumbers=snapshot.drawnNumbers.slice();
+  kimemDrawConnected=true;
+  if(!running&&drawn.length<75)running=true;
+  if(spherePhase==='idle'&&drawn.length<75){spherePhase='waiting';nextDrawAt=performance.now()}
+  if(drawn.length===75)running=false;
+ }catch(error){
+  kimemDrawConnected=false;running=false;
+  $('draw-status').textContent='SERVER CONNECTION REQUIRED';
+  console.error('QIMEM draw synchronization',error);
+ }finally{kimemDrawPollInFlight=false}
+}
 function pickDrawNumber(){
- const available=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
- if(!available.length)return null;
- const a=new Uint32Array(1);
- if(crypto?.getRandomValues){crypto.getRandomValues(a);return available[Math.floor(a[0]/4294967296*available.length)]}
- return available[Math.floor(Math.random()*available.length)];
+ if(!kimemDrawConnected)return null;
+ return kimemServerNumbers[drawn.length]??null;
 }
 function beginSphereReveal(now){
- const n=pickDrawNumber();if(n===null){running=false;spherePhase='idle';return}
+ const n=pickDrawNumber();if(n===null){spherePhase='waiting';nextDrawAt=now+350;return}
  spherePending=n;spherePhase='reveal';sphereStart=now;
  kimemRevealVoiceStarted=false;
  sphereFromAngle=sphereAngle;sphereFromPitch=spherePitch;
@@ -942,7 +962,7 @@ function digitalTick(now){
   if(t>=1)finishSphereReveal(now);
  }else if(spherePhase==='waiting'&&running){
   sphereAngle=0;spherePitch=0;
-  if(now>=nextDrawAt)beginSphereReveal(now);
+  if(now>=nextDrawAt&&kimemDrawConnected)beginSphereReveal(now);
   const left=Math.max(0,nextDrawAt-now);
 
  }
@@ -984,8 +1004,8 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
   [sphereSamples[i],sphereSamples[j]]=[sphereSamples[j],sphereSamples[i]];
  }
  sphereSamples=sphereSamples.slice(0,14);
- running=true;
- $('draw-status').textContent='DRAW IN PROGRESS';
+ running=false;
+ $('draw-status').textContent='CONNECTING TO LIVE DRAW';
  const countdown=setInterval(()=>{
   if(spherePhase!=='shuffle'){clearInterval(countdown);status.textContent='';$('machine').classList.remove('kimem-shuffling');return}
   const left=Math.max(1,Math.ceil((4000-(performance.now()-sphereStart))/1000));
@@ -993,6 +1013,8 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
   $('draw-status').textContent='DRAW IN PROGRESS';
  },200);
  digitalTimer=requestAnimationFrame(digitalTick);
+ kimemSyncServerDraw();
+ setInterval(kimemSyncServerDraw,1200);
 })();
 </script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div><style id="kimem-two-controls-precise-fix-v10">
 @media(max-width:699px){
