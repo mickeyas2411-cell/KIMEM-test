@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>KIMEM BINGO - Mini App</title>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>KIMEM BINGO - Mini App</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 *{box-sizing:border-box}body{font-family:Inter,sans-serif;background:#02050e;color:#fff;margin:0;-webkit-user-select:none;user-select:none}.cosmic-bg{background:radial-gradient(circle at 50% 0%,rgba(0,102,255,.35),transparent 60%),radial-gradient(circle at 50% 100%,rgba(0,60,180,.25),transparent 50%),linear-gradient(180deg,#020716,#030a21 50%,#010410)}.neon-panel{background:rgba(6,18,46,.75);backdrop-filter:blur(12px);border:1px solid rgba(0,140,255,.4);box-shadow:0 0 15px rgba(0,100,255,.15),inset 0 0 12px rgba(0,120,255,.1)}.hero-banner{background:linear-gradient(135deg,rgba(3,20,65,.9),rgba(10,40,110,.95) 50%,rgba(2,15,50,.9));border:1.5px solid #0099ff;box-shadow:0 0 25px rgba(0,140,255,.4),inset 0 0 15px rgba(0,150,255,.2)}.glow-text-white{text-shadow:0 0 10px #ffffff80,0 0 20px #00b4ff99}.glow-text-gold{background:linear-gradient(180deg,#fff7ad,#ffa800 50%,#d17a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px #ffb40099)}
@@ -60,24 +60,26 @@ html,body{width:100%;height:100%;height:100dvh;margin:0;padding:0;overflow:hidde
 body{min-height:100dvh!important;max-height:100dvh!important}
 body>div{height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
 
-/* Locked screen: card grid is the only independently scrollable region */
-html,body{height:100%;height:100dvh;width:100%;margin:0;overflow:hidden!important;overscroll-behavior:none}
-body>div:first-child{height:100dvh!important;min-height:0!important;max-height:100dvh!important;width:100%!important}
-main{display:flex;flex-direction:column;gap:clamp(3px,.7dvh,8px)!important;overflow:hidden!important;min-height:0!important;padding-bottom:3px!important}
-main>*{flex-shrink:0;margin-top:0!important;margin-bottom:0!important}
-main .hero-banner{padding:clamp(4px,.7dvh,12px)!important}
-main .bonus-row{display:none!important}
-main section:has(#card-matrix){flex:1 1 auto!important;min-height:80px!important;display:flex;flex-direction:column;gap:3px!important;padding:5px!important}
-#card-matrix{height:auto!important;min-height:0!important;flex:1 1 auto!important;overflow-y:auto!important;overscroll-behavior:contain}
-.card-grid-item{height:clamp(23px,3.8dvh,34px)!important;font-size:clamp(9px,2.5vw,12px)}
-main section:has(#bingo-board){display:none!important}
-main .locked-inline{padding:3px!important}
-body>div:first-child>div:has(.footer-actions){position:relative!important;inset:auto!important;flex-shrink:0;padding:4px 8px max(4px,env(safe-area-inset-bottom))!important}
-@media(max-height:680px){main .hero-banner{display:none!important}.stat-icon{display:none!important}main section:has(#card-matrix){min-height:70px!important}}
+/* Telegram viewport-aware fixed layout: only card picker scrolls */
+:root{--kimem-vh:100dvh;--kimem-top:0px;--kimem-bottom:0px}
+html,body{width:100%;height:100%;margin:0;overflow:hidden!important;overscroll-behavior:none}
+body{height:var(--kimem-vh)!important;min-height:0!important;padding:0!important;display:block!important}
+body>div:first-child{height:var(--kimem-vh)!important;max-height:var(--kimem-vh)!important;min-height:0!important;width:100%!important;overflow:hidden!important;border-radius:0!important}
+body>div:first-child>div:first-child{flex-shrink:0;padding-top:max(7px,var(--kimem-top))!important}
+#lobby-main{display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important;gap:clamp(4px,.7dvh,9px)!important;padding:5px 10px 2px!important}
+#lobby-main>*{margin:0!important;flex-shrink:0!important}
+#lobby-main .hero-banner{padding:clamp(7px,1.1dvh,12px)!important}
+#lobby-main .bonus-row{display:none!important}
+#lobby-main section:has(#card-matrix){display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:90px!important;overflow:hidden!important;gap:5px!important;padding:8px!important}
+#card-matrix{flex:1 1 0!important;height:0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start!important}
+#lobby-main section:has(#bingo-board){display:none!important}
+#lobby-main .locked-inline{padding:3px 5px!important}
+body>div:first-child>div:has(.footer-actions){position:relative!important;inset:auto!important;flex-shrink:0!important;padding:4px 9px max(6px,var(--kimem-bottom))!important}
+@media(max-height:650px){#lobby-main .hero-banner{display:none!important}#lobby-main .stat-icon{display:none!important}}
 </style></head>
 <body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
 <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 z-30 shrink-0"><button onclick="leaveToLobby()" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i> Leave</button><div class="text-center"><div class="font-black text-xs tracking-wider">KIMEM GAMES</div><div class="text-[8px] font-bold tracking-widest text-blue-400">MINI APP</div></div><button onclick="triggerToast('Menu opened')" class="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-600/50 text-blue-300"><i class="fa-solid fa-ellipsis"></i></button></div>
-<main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1">
+<main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="lobby-main">
 <div class="hero-banner rounded-xl p-3 relative overflow-hidden flex items-center justify-between"><div class="z-10 max-w-[65%]"><div class="text-amber-400 text-[9px] font-black tracking-widest mb-0.5">PREMIUM LIVE ARENA</div><h1 class="text-xl font-black italic tracking-wide leading-none my-0.5"><span class="glow-text-white">KIMEM </span><span class="glow-text-gold">BINGO</span></h1><p class="text-[8px] font-bold text-blue-200/90 tracking-wider">THE ULTIMATE BINGO EXPERIENCE</p></div><div class="relative z-10 flex -space-x-2 items-center"><div class="w-7 h-7 rounded-full bg-gradient-to-b from-red-400 to-red-700 border border-red-200 flex items-center justify-center font-black text-[11px]">B</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-blue-400 to-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">I</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-amber-300 to-amber-600 border border-amber-100 flex items-center justify-center font-black text-[11px]">N</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-[11px]">G</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-purple-400 to-purple-700 border border-purple-200 flex items-center justify-center font-black text-[11px]">O</div></div></div>
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-clock stat-icon text-yellow-300"></i><div class="stat-label">STARTS IN</div><div id="countdown" class="stat-value text-yellow-300">35s</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -111,6 +113,21 @@ let timerHandle=null,secondsRemaining=35;
 function resetCountdownScene(){const scene=$('countdown-scene');scene.classList.remove('visible');scene.setAttribute('aria-hidden','true');const balls=[...scene.querySelectorAll('.countdown-ball')];balls.forEach((ball,i)=>{ball.classList.remove('is-active','is-done');ball.querySelector('.ball-face').textContent='BINGO'[i]})}
 function showCountdownSecond(n){const scene=$('countdown-scene');if(!scene.classList.contains('visible')){scene.classList.add('visible');scene.setAttribute('aria-hidden','false')};const balls=[...scene.querySelectorAll('.countdown-ball')];const idx=5-n;balls.forEach((ball,i)=>{ball.classList.remove('is-active');if(i<idx)ball.classList.add('is-done')});const ball=balls[idx];if(ball){ball.classList.remove('is-done');void ball.offsetWidth;ball.classList.add('is-active');setTimeout(()=>{if(ball.classList.contains('is-active'))ball.querySelector('.ball-face').textContent=String(n)},350)}}
 function startTimer(){if(timerHandle)clearInterval(timerHandle);secondsRemaining=35;$('countdown').textContent='35s';resetCountdownScene();timerHandle=setInterval(()=>{secondsRemaining--;$('countdown').textContent=Math.max(0,secondsRemaining)+'s';if(secondsRemaining>=1&&secondsRemaining<=5)showCountdownSecond(secondsRemaining);if(secondsRemaining===0){resetCountdownScene();clearInterval(timerHandle);timerHandle=null;if(selectedCards.length){enterLiveGame()}else{triggerToast('Time is up — select a card for the next game')}}},1000)}
-function init(){try{const tg=window.Telegram?.WebApp;if(tg){tg.ready();tg.expand();if(typeof tg.requestFullscreen==='function'){try{tg.requestFullscreen()}catch(e){}}}}catch(e){}updateUI();startTimer()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+function syncTelegramViewport(){
+ const tg=window.Telegram?.WebApp;
+ const height=(tg&&tg.viewportStableHeight&&tg.viewportStableHeight>250)?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);
+ document.documentElement.style.setProperty('--kimem-vh',Math.round(height)+'px');
+ const fullscreen=!!tg?.isFullscreen;
+ const safeTop=fullscreen?(tg?.safeAreaInset?.top||0)+(tg?.contentSafeAreaInset?.top||0):0;
+ const safeBottom=fullscreen?(tg?.safeAreaInset?.bottom||0)+(tg?.contentSafeAreaInset?.bottom||0):0;
+ document.documentElement.style.setProperty('--kimem-top',Math.max(0,safeTop)+'px');
+ document.documentElement.style.setProperty('--kimem-bottom',Math.max(6,safeBottom)+'px');
+}
+function init(){
+ const tg=window.Telegram?.WebApp;
+ try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);if(typeof tg.requestFullscreen==='function')try{tg.requestFullscreen()}catch(e){}}}catch(e){}
+ syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
+ updateUI();startTimer();
+}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script></body></html>
 
