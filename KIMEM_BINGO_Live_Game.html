@@ -826,6 +826,7 @@ kimemVoicePlayer.preload='auto';
 })();
 
 let kimemVoiceBusy=false;
+let kimemRevealVoiceStarted=false;
 function kimemVoiceNext(){
  if(kimemVoiceBusy||!kimemVoiceQueue.length)return;
  const n=kimemVoiceQueue.shift();
@@ -872,6 +873,7 @@ function pickDrawNumber(){
 function beginSphereReveal(now){
  const n=pickDrawNumber();if(n===null){running=false;spherePhase='idle';return}
  spherePending=n;spherePhase='reveal';sphereStart=now;
+ kimemRevealVoiceStarted=false;
  sphereFromAngle=sphereAngle;sphereFromPitch=spherePitch;
  sphereReveal={from:sphereCurrent||1,fromNumber:sphereCurrent,to:n,start:now};
 }
@@ -884,7 +886,7 @@ function finishSphereReveal(now){
  $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
 
  updateDraw(n);
- kimemCallBallAmharic(n);
+ if(!kimemRevealVoiceStarted){kimemRevealVoiceStarted=true;kimemCallBallAmharic(n)}
  // In AUTO, immediately finish when any selected card completes a real drawn line.
  if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishGame(wins);return}}
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
@@ -902,6 +904,7 @@ function digitalTick(now){
    }
   }else { $('machine').classList.remove('kimem-shuffling');beginSphereReveal(now); }
  }else if(spherePhase==='reveal'){
+  if(!kimemRevealVoiceStarted&&spherePending&&now-sphereStart>=600){kimemRevealVoiceStarted=true;kimemCallBallAmharic(spherePending)}
   const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
   sphereAngle=sphereFromAngle+(Math.ceil(sphereFromAngle/TAU)+3)*TAU*e-sphereFromAngle*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.18*(1-t);
