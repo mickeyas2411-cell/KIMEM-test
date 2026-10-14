@@ -647,9 +647,11 @@ function kimemWinningCards(useManual=false){
 function kimemSmallNotice(message){
  let box=document.getElementById('kimem-small-bingo-notice');
  if(!box){box=document.createElement('div');box.id='kimem-small-bingo-notice';box.setAttribute('role','status');document.body.appendChild(box)}
- box.textContent=message;box.classList.add('visible');
+ // Inline important values take precedence over older competing result styles.
+ box.textContent=message;
+ box.style.cssText='display:block!important;position:fixed!important;z-index:99999!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;inset:auto!important;width:max-content!important;max-width:80vw!important;min-width:0!important;height:auto!important;min-height:0!important;max-height:none!important;box-sizing:border-box!important;padding:12px 18px!important;margin:0!important;border:1px solid #d9ab50!important;border-radius:12px!important;background:#10243f!important;box-shadow:0 10px 28px #0009!important;color:#ffe3a1!important;font:800 13px/18px Arial,sans-serif!important;text-align:center!important;white-space:normal!important;transform:translate(-50%,-50%)!important;opacity:1!important;visibility:visible!important;pointer-events:none!important;overflow:visible!important;';
  clearTimeout(window.kimemNoticeTimeout);
- window.kimemNoticeTimeout=setTimeout(()=>box.classList.remove('visible'),2000);
+ window.kimemNoticeTimeout=setTimeout(()=>{box.style.setProperty('display','none','important');box.style.setProperty('visibility','hidden','important')},2000);
 }
 function claimBingo(){
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
