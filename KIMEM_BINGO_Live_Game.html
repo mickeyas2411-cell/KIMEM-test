@@ -252,6 +252,20 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #live-main .digital-machine .ball-shell::before,#live-main .digital-machine .ball-shell::after{display:none!important}
 #kimem-sphere{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 7px #0009)}
 #machine.shuffling .ball-shell{animation:none!important}
+
+/* Keep card area accessible without enlarging the draw box */
+#live-main{display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important;scrollbar-width:none}
+#live-main::-webkit-scrollbar{display:none}
+#live-main .live-stage{flex:0 0 auto!important;overflow:visible!important;min-height:0!important}
+#live-main .live-stage .draw-compact{height:clamp(74px,12dvh,112px)!important;flex:none!important}
+#live-main .live-stage #number-board{flex:none!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main .live-layout section:has(#number-board){flex:none!important;overflow:visible!important}
+#live-main #number-board{flex:none!important;height:auto!important;overflow:visible!important}
+#live-main .board-column{grid-template-rows:repeat(16,minmax(18px,1fr))!important;overflow:visible!important}
+#live-main .board-letter,#live-main .board-number{min-height:18px!important}
+#live-main .mobile-card-priority{display:block!important;flex:0 0 auto!important;overflow:visible!important;padding-bottom:8px!important}
+#live-main .mobile-card-priority section{overflow:visible!important}
+#live-main .digital-side-card{flex:1!important}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -311,7 +325,7 @@ let digitalTimer=null,nextDrawAt=0,drawRemaining=3000;
 function sphereRender(now){
  const rev=sphereReveal;
  const p=rev?clamp3((now-rev.start)/1100,0,1):0;
- const blend=rev?smooth3(p):0;
+ const blend=rev?smooth3(clamp3((p-.24)/.76,0,1)):0;
  const from=rev?rev.from:(sphereCurrent||1),to=rev?rev.to:from;
  const baseA=rgb3(colors[tone(from)]),baseB=rgb3(colors[tone(to)]);
  const lightA=rgb3(lights[tone(from)]),lightB=rgb3(lights[tone(to)]);
@@ -417,7 +431,7 @@ function digitalTick(now){
   }else beginSphereReveal(now);
  }else if(spherePhase==='reveal'){
   const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
-  sphereAngle=sphereFromAngle+TAU*2.8*e;
+  sphereAngle=sphereFromAngle+(Math.ceil(sphereFromAngle/TAU)+3)*TAU*e-sphereFromAngle*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.18*(1-t);
   if(t>=1)finishSphereReveal(now);
  }else if(spherePhase==='waiting'&&running){
