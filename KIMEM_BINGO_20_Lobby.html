@@ -142,6 +142,42 @@ function kimemShowDemoWallet(){
  }
  el.textContent=kimemDemoWalletBalance===null?'DEMO WALLET • Loading...':'DEMO WALLET • '+(kimemDemoWalletBalance/100).toFixed(2)+' ETB';
 }
+function kimemWalletHistoryUI(){
+ let button=document.getElementById('kimem-wallet-history-button');
+ if(button)return;
+ button=document.createElement('button');
+ button.id='kimem-wallet-history-button';
+ button.type='button';
+ button.textContent='History';
+ button.style.cssText='position:fixed;top:96px;right:12px;z-index:90;background:#071b32;color:#e2e8f0;border:1px solid #334155;border-radius:10px;padding:7px 12px;font:600 12px system-ui';
+ const panel=document.createElement('section');
+ panel.id='kimem-wallet-history-panel';
+ panel.hidden=true;
+ panel.style.cssText='position:fixed;top:132px;right:12px;z-index:95;width:min(340px,calc(100vw - 24px));max-height:55vh;overflow:auto;background:#071b32;color:#e2e8f0;border:1px solid #334155;border-radius:12px;padding:12px;font:12px system-ui;box-shadow:0 10px 30px #0008';
+ button.addEventListener('click',async()=>{
+  panel.hidden=!panel.hidden;
+  if(panel.hidden)return;
+  panel.replaceChildren();
+  const title=document.createElement('strong');title.textContent='DEMO WALLET • Transaction History';panel.appendChild(title);
+  const loading=document.createElement('p');loading.textContent='Loading...';panel.appendChild(loading);
+  try{
+   const result=await window.KimemProductionLobby.walletHistory();
+   if(panel.hidden)return;
+   loading.remove();
+   if(!result.demo||result.realMoney!==false)throw Error('Invalid demo wallet history');
+   if(!result.transactions.length){const empty=document.createElement('p');empty.textContent='No transactions yet';panel.appendChild(empty)}
+   for(const item of [...result.transactions].reverse()){
+    const line=document.createElement('div');
+    line.style.cssText='border-top:1px solid #334155;padding:9px 0';
+    const amount=Number(item.amountCents)||0;
+    line.textContent=(amount>0?'+':'')+(amount/100).toFixed(2)+' ETB • '+(item.type==='card_unmark'?'Refund':'Card selection')+' • '+item.gameId+' • '+new Date(item.createdAt).toLocaleString();
+    panel.appendChild(line);
+   }
+  }catch(e){loading.textContent='History unavailable: '+e.message}
+ });
+ document.body.append(button,panel);
+}
+kimemWalletHistoryUI();
 async function kimemRefreshDemoWallet(){
  try{
   const result=await window.KimemProductionLobby.wallet();
