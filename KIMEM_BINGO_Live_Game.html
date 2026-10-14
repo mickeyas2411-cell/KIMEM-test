@@ -283,12 +283,27 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #live-main>.live-layout{flex:0 0 auto!important;min-height:auto!important;overflow:visible!important}
 #live-main>.mobile-card-priority{display:block!important;flex:0 0 auto!important;min-height:0!important;height:auto!important;overflow:visible!important;padding-bottom:18px!important}
 #live-main>.mobile-card-priority section,#live-main #my-cards{overflow:visible!important;height:auto!important}
+</style><style id="kimem-unified-screen-2026">
+/* One unified live display: 3D sphere and last balls on top, full-size 75-board below. */
+#live-main>.live-layout .live-stage{border:1px solid #326ba4!important;border-radius:12px!important;padding:6px!important;background:linear-gradient(160deg,#07152c,#0b2243)!important;overflow:visible!important}
+#live-main>.live-layout .stage-top{margin:0 0 3px!important;padding:0 4px!important;min-height:15px!important}
+#live-main>.live-layout .stage-title{font-size:10px!important}
+#live-main>.live-layout .draw-compact{display:grid!important;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;gap:6px!important;height:clamp(112px,20dvh,170px)!important;min-height:112px!important;overflow:hidden!important;margin-bottom:4px!important}
+#live-main>.live-layout .machine{height:100%!important;min-height:0!important;position:relative!important;overflow:hidden!important}
+#live-main>.live-layout .digital-side{height:100%!important;min-width:0!important;overflow:hidden!important}
+#live-main>.live-layout .digital-side-card{height:100%!important;min-height:0!important;overflow:hidden!important}
+#live-main>.live-layout #number-board{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;min-height:0!important;height:auto!important;overflow:visible!important;padding:3px!important;margin:0!important}
+#live-main>.live-layout .board-column{min-width:0!important;overflow:visible!important}
+#live-main>.live-layout .board-number{font-size:clamp(10px,2.7vw,15px)!important;font-weight:800!important;line-height:1.1!important;min-height:19px!important}
+#live-main>.live-layout .board-letter{font-weight:900!important}
+#live-main .kimem-shuffle-label{position:absolute!important;bottom:4px!important;left:0!important;right:0!important;text-align:center!important;z-index:8!important;color:#f5c86a!important;font-size:10px!important;font-weight:900!important;letter-spacing:.07em!important;text-shadow:0 1px 5px #000!important;pointer-events:none!important}
+#live-main>.live-layout .machine:not(.kimem-shuffling) .kimem-shuffle-label{display:none!important}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
 
-<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">LIVE BALL DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section></div>
-<div class="space-y-2.5"><section class="neon-panel rounded-xl p-2.5"><div class="control-row"><div class="text-[10px] font-bold text-blue-200">DIGITAL NUMBER REVEAL • EVERY 3 SECONDS</div><span id="shuffle-status" class="text-[10px] font-black text-amber-400">SHUFFLING • 4s</span></div><div class="text-[10px] text-slate-400 mt-2">Automatic local draw • 4-second shuffle • 3-second interval. Multiplayer sync requires a backend.</div></section></div></div><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div>
+<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">KIMEM • LIVE DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><span id="shuffle-status" class="kimem-shuffle-label">SHUFFLING • 4s</span><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section></div>
+</div><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div>
 </main></div><div id="live-toast" class="live-toast"></div>
 <script>
 'use strict';
@@ -472,7 +487,7 @@ function digitalTick(now){
    if(t-sphereLastSwap>105&&sphereSamples.length){
     sphereSampleIndex=(sphereSampleIndex+1)%sphereSamples.length;sphereLastSwap=t;
    }
-  }else beginSphereReveal(now);
+  }else { $('machine').classList.remove('kimem-shuffling');beginSphereReveal(now); }
  }else if(spherePhase==='reveal'){
   const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
   sphereAngle=sphereFromAngle+(Math.ceil(sphereFromAngle/TAU)+3)*TAU*e-sphereFromAngle*e;
@@ -512,7 +527,7 @@ readCards();initMachine();board();cards();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
 (function autoStartLiveDraw(){
  const status=$('shuffle-status');
- spherePhase='shuffle';sphereStart=performance.now();sphereLastSwap=0;
+ spherePhase='shuffle';$('machine').classList.add('kimem-shuffling');sphereStart=performance.now();sphereLastSwap=0;
  sphereSamples=Array.from({length:75},(_,i)=>i+1);
  for(let i=sphereSamples.length-1;i>0;i--){
   const j=Math.floor(Math.random()*(i+1));
@@ -522,7 +537,7 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
  running=true;
  $('draw-status').textContent='SHUFFLING • 4s';
  const countdown=setInterval(()=>{
-  if(spherePhase!=='shuffle'){clearInterval(countdown);status.textContent='AUTO DRAW ACTIVE';return}
+  if(spherePhase!=='shuffle'){clearInterval(countdown);status.textContent='';$('machine').classList.remove('kimem-shuffling');return}
   const left=Math.max(1,Math.ceil((4000-(performance.now()-sphereStart))/1000));
   status.textContent='SHUFFLING • '+left+'s';
   $('draw-status').textContent='SHUFFLING • '+left+'s';
