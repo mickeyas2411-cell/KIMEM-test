@@ -675,11 +675,41 @@ const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href
 const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
 function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
-function claimBingo(){
+let kimemClaimPending=false;
+async function claimBingo(){
+ if(kimemClaimPending)return;
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
- const wins=kimemWinningCards();
- if(wins.length)kimemFinishAfterBall(wins);
- else {kimemPlayBingoSound(kimemBingoWrongSound);kimemSmallNotice('NO BINGO YET')}
+ if(!kimemDrawConnected){kimemSmallNotice('SERVER CONNECTION REQUIRED');return}
+ const query=new URLSearchParams(location.search);
+ const gameId=query.get('gameId');
+ if(!gameId){kimemSmallNotice('GAME ID REQUIRED');return}
+ kimemClaimPending=true;
+ kimemSmallNotice('VERIFYING BINGO...');
+ try{
+  const stake=window.KimemProductionDraw.stake();
+  const initData=window.Telegram?.WebApp?.initData;
+  if(!initData)throw Error('Telegram authentication required');
+  const results=[];
+  for(const cardId of selected){
+   const params=new URLSearchParams({cardId:String(cardId),gameId});
+   const response=await fetch(window.KimemProductionDraw.base+'/api/v1/bingo/'+stake+'/verify?'+params,{
+    headers:{'X-Telegram-Init-Data':initData},cache:'no-store'
+   });
+   if(!response.ok)throw Error('Verification failed ('+response.status+')');
+   const result=await response.json();
+   if(result.gameId!==gameId||result.cardId!==cardId||result.verifiedAgainstServerDraw!==true)throw Error('Invalid verification response');
+   if(result.hasBingo)results.push(cardId);
+  }
+  if(results.length){
+   kimemSmallNotice('BINGO PATTERN VERIFIED • PRIZE PENDING');
+  }else{
+   kimemPlayBingoSound(kimemBingoWrongSound);
+   kimemSmallNotice('NO BINGO YET');
+  }
+ }catch(error){
+  console.error('Bingo verification',error);
+  kimemSmallNotice('BINGO VERIFICATION UNAVAILABLE');
+ }finally{kimemClaimPending=false}
 }
 let kimemFinished=false,kimemReturnTimer=null;
 let kimemPendingFinish=null;
