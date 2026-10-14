@@ -298,11 +298,23 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #live-main>.live-layout .board-letter{font-weight:900!important}
 #live-main .kimem-shuffle-label{position:absolute!important;bottom:4px!important;left:0!important;right:0!important;text-align:center!important;z-index:8!important;color:#f5c86a!important;font-size:10px!important;font-weight:900!important;letter-spacing:.07em!important;text-shadow:0 1px 5px #000!important;pointer-events:none!important}
 #live-main>.live-layout .machine:not(.kimem-shuffling) .kimem-shuffle-label{display:none!important}
+</style><style id="kimem-cards-visible-repair">
+/* Keep the approved draw intact; make the full draw+cards column scrollable. */
+#live-main{display:flex!important;flex-direction:column!important;overflow:hidden!important;min-height:0!important}
+#live-main>.stats-panel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.live-layout{display:block!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;padding-bottom:24px!important}
+#live-main>.live-layout>div:first-child{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main>.live-layout .live-stage{height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main>.live-layout .mobile-card-priority{display:block!important;position:relative!important;visibility:visible!important;height:auto!important;min-height:180px!important;max-height:none!important;overflow:visible!important;margin-top:10px!important}
+#live-main>.live-layout .mobile-card-priority section{display:block!important;visibility:visible!important;height:auto!important;overflow:visible!important}
+#live-main>.live-layout #my-cards{display:grid!important;visibility:visible!important;height:auto!important;min-height:130px!important;overflow:visible!important}
+#live-main>.live-layout .play-card{display:block!important}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
 
-<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">KIMEM • LIVE DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><span id="shuffle-status" class="kimem-shuffle-label">SHUFFLING • 4s</span><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section></div>
+<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">KIMEM • LIVE DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><span id="shuffle-status" class="kimem-shuffle-label">SHUFFLING • 4s</span><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section><div id="kimem-cards-mount"></div></div>
 </div><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div>
 </main></div><div id="live-toast" class="live-toast"></div>
 <script>
@@ -523,6 +535,7 @@ function resetGame(){
  board();cards();sphereRender(performance.now());
 }
 (function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
+(function mountCardsUnderBoard(){const mount=document.getElementById('kimem-cards-mount');const panel=document.querySelector('#live-main > .mobile-card-priority');if(mount&&panel)mount.appendChild(panel)})();
 readCards();initMachine();board();cards();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
 (function autoStartLiveDraw(){
@@ -535,12 +548,12 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
  }
  sphereSamples=sphereSamples.slice(0,14);
  running=true;
- $('draw-status').textContent='SHUFFLING • 4s';
+ $('draw-status').textContent='DRAW IN PROGRESS';
  const countdown=setInterval(()=>{
   if(spherePhase!=='shuffle'){clearInterval(countdown);status.textContent='';$('machine').classList.remove('kimem-shuffling');return}
   const left=Math.max(1,Math.ceil((4000-(performance.now()-sphereStart))/1000));
   status.textContent='SHUFFLING • '+left+'s';
-  $('draw-status').textContent='SHUFFLING • '+left+'s';
+  $('draw-status').textContent='DRAW IN PROGRESS';
  },200);
  digitalTimer=requestAnimationFrame(digitalTick);
 })();
