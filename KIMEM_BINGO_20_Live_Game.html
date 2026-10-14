@@ -645,7 +645,7 @@ const letter=n=>'BINGO'[Math.floor((n-1)/15)];
 const tone=n=>Math.floor((n-1)/15);
 let selected=[],mode='auto',drawn=[],running=false,runId=0,manualMarks={};
 function cardFor(id){let seed=(Math.imul(id,2654435761) ^ Math.imul((Number(new URLSearchParams(location.search).get('stake'))===10?10:20),2246822519))>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const cols=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}cols.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?0:cols[c][r]));}
-function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}if(!selected.length)selected=[42];}
+function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}}
 
 function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5;c++){const col=document.createElement('div');col.className='board-column';const h=document.createElement('div');h.className='board-letter';h.style.background=colors[c];h.textContent='BINGO'[c];col.append(h);for(let j=1;j<=15;j++){const n=c*15+j;const d=document.createElement('div');d.className='board-number'+(drawn.includes(n)?' called':'');d.textContent=n;d.id='board-'+n;d.style.setProperty('--cell-tone',colors[c]);col.append(d)}el.append(col)}}
 function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.style.setProperty('--kimem-card-count',String(Math.max(1,Math.min(3,selected.length))));area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">No cards selected. Return to Lobby and choose 1–3 cards.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
@@ -938,10 +938,12 @@ function finishSphereReveal(now){
 
  updateDraw(n);
  if(!kimemRevealVoiceStarted){kimemRevealVoiceStarted=true;kimemCallBallAmharic(n)}
- // In AUTO, immediately finish when any selected card completes a real drawn line.
- if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins);return}}
+ // Local patterns are informational only. Do not declare a prize winner without server verification.
+ if(mode==='auto'&&kimemWinningCards().length&&!kimemFinished){
+  $('draw-status').textContent='BINGO PATTERN • VERIFICATION PENDING';
+ }
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
- if(drawn.length===75){running=false;spherePhase='idle';kimemFinishAfterBall(kimemWinningCards())}
+ if(drawn.length===75){running=false;spherePhase='idle';$('draw-status').textContent='DRAW COMPLETE • VERIFICATION PENDING'}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
@@ -972,12 +974,14 @@ function digitalTick(now){
 function startGame(){
  kimemUnlockVoice();
  if(drawn.length===75)return;
+ if(!kimemDrawConnected){$('draw-status').textContent='SERVER CONNECTION REQUIRED';return}
  if(running){running=false;$('draw-status').textContent='PAUSED';return}
  running=true;
  if(spherePhase==='idle'){spherePhase='waiting';nextDrawAt=performance.now()+3000}
  $('draw-status').textContent='NEXT DRAW IN 3s';
 }
 function resetGame(){
+ if(window.KimemProductionDraw){$('draw-status').textContent='SERVER DRAW CANNOT BE RESET LOCALLY';return}
  running=false;drawn=[];manualMarks={};kimemFinished=false;clearInterval(kimemReturnTimer);document.getElementById('kimem-winner-overlay')?.classList.remove('visible');
  spherePhase='idle';sphereCurrent=0;spherePending=0;sphereReveal=null;
  kimemPendingFinish=null;
