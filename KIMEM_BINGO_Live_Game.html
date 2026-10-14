@@ -814,4 +814,36 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
  },200);
  digitalTimer=requestAnimationFrame(digitalTick);
 })();
-</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div></body></html>
+</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div><style id="kimem-two-controls-precise-fix-v10">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{
+display:grid!important;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr)!important;
+align-items:center!important;column-gap:4px!important
+}
+#live-main #kimem-cards-mount .cards-head>h2{grid-column:1!important;justify-self:start!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{
+grid-column:2!important;justify-self:center!important;
+width:90px!important;min-width:90px!important;max-width:90px!important;
+height:24px!important;min-height:24px!important;max-height:24px!important;
+padding:0 4px!important;margin:0!important;font-size:11px!important;line-height:24px!important
+}
+#live-main #kimem-cards-mount .cards-head>.mode-group{grid-column:3!important;justify-self:end!important}
+#live-main .live-stage .digital-side-card #shuffle-status{
+display:none!important;position:static!important;width:100%!important;
+height:auto!important;min-height:12px!important;margin-top:5px!important;
+padding:0!important;text-align:center!important;font-size:10px!important;
+line-height:12px!important;white-space:nowrap!important;letter-spacing:0!important
+}
+#live-main .live-stage .draw-compact:has(.machine.kimem-shuffling) .digital-side-card #shuffle-status{display:block!important}
+}
+</style><script id="kimem-shuffle-position-only-v10">
+(function(){
+function placeShuffle(){
+const label=document.getElementById('shuffle-status');
+const side=document.querySelector('#live-main .live-stage .draw-compact .digital-side-card');
+if(label&&side&&label.parentElement!==side)side.appendChild(label);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeShuffle,{once:true});
+else placeShuffle();
+})();
+</script></body></html>
