@@ -656,7 +656,10 @@ function kimemWinningCards(useManual=false){
  return selected.filter(id=>{
   const g=cardFor(id);
   const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
-  return lines.some(line=>line.every(n=>marked(id,n)));
+  const lineBingo=lines.some(line=>line.every(n=>marked(id,n)));
+  const fourCorners=[g[0][0],g[0][4],g[4][0],g[4][4]].every(n=>marked(id,n));
+  const fullHouse=g.flat().every(n=>marked(id,n));
+  return lineBingo||fourCorners||fullHouse;
  });
 }
 function kimemSmallNotice(message){
