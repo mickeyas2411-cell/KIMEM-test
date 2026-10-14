@@ -586,6 +586,24 @@ height:24px!important;min-height:24px!important;max-height:24px!important;
 justify-self:center!important
 }
 }
+</style><style id="kimem-bingo-results-v13">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{grid-template-columns:minmax(0,1fr) min(190px,44vw) minmax(0,1fr)!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{width:min(190px,44vw)!important;max-width:min(190px,44vw)!important;min-width:0!important}
+}
+#kimem-small-bingo-notice{position:fixed;z-index:4000;top:43%;left:50%;transform:translate(-50%,-50%) scale(.95);width:max-content;max-width:85vw;background:linear-gradient(145deg,#132a4d,#071329);border:1px solid #d5a848;border-radius:12px;padding:12px 17px;box-shadow:0 12px 38px #000b;color:#f4d381;font-size:13px;font-weight:800;text-align:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,transform .18s,visibility .18s}
+#kimem-small-bingo-notice.visible{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+#kimem-winner-overlay{background:rgba(1,7,20,.94)!important}
+#kimem-winner-overlay:not(.kimem-no-winner)>div:first-child{font-size:19px!important;letter-spacing:.06em;text-shadow:0 0 20px #e6af5680}
+#kimem-winner-card{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:9px;width:100%;max-width:690px;margin:9px auto}
+#kimem-winner-overlay #kimem-winner-card .play-card{width:min(42vw,175px)!important;min-width:0!important;margin:0!important;padding:6px!important;border:1px solid #c89b43!important;border-radius:10px!important;box-shadow:0 0 18px #e5a92c33!important;background:linear-gradient(155deg,#281638,#0a1c38)!important}
+#kimem-winner-overlay #kimem-winner-card .play-card-title{font-size:10px!important;color:#f7cf68!important}
+#kimem-winner-overlay #kimem-winner-card .play-letters span{font-size:12px!important}
+#kimem-winner-overlay #kimem-winner-card .play-numbers{gap:2px!important}
+#kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(21px,5vw,29px)!important;min-height:0!important;font-size:11px!important}
+#kimem-winner-overlay #kimem-winner-timer{font-size:32px!important}
+#kimem-winner-overlay.kimem-no-winner{background:rgba(1,7,20,.75)!important}
+#kimem-winner-overlay.kimem-no-winner .kimem-no-win-message{border:1px solid #41648b;background:linear-gradient(150deg,#142d4b,#09182d);border-radius:12px;padding:16px 24px;color:#d6e4fb;font-weight:800;font-size:15px;box-shadow:0 12px 36px #0008}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -608,33 +626,56 @@ function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5
 function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.style.setProperty('--kimem-card-count',String(Math.max(1,Math.min(3,selected.length))));area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">No cards selected. Return to Lobby and choose 1–3 cards.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
 function setMode(next){mode=next;$('manual-btn').classList.toggle('active',mode==='manual');$('auto-btn').classList.toggle('active',mode==='auto');cards()}
 function toast(msg){const el=$('live-toast');el.textContent=msg;el.style.opacity=1;clearTimeout(window.toastHandle);window.toastHandle=setTimeout(()=>el.style.opacity=0,2300)}
-function claimBingo(){if(!selected.length){toast('Select a card in Lobby first');return}const wins=selected.filter(id=>{const g=cardFor(id);const marked=n=>n===0||(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]);return [...g,...Array.from({length:5},(_,c)=>g.map(r=>r[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])].some(line=>line.every(marked))});if(wins.length)kimemFinishGame(wins[0]);else toast('No completed Bingo line yet')}
-let kimemFinished=false,kimemReturnTimer=null;
-function kimemWinningCard(){
- const marked=n=>n===0||drawn.includes(n);
- for(const id of selected){const g=cardFor(id);const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];if(lines.some(line=>line.every(marked)))return id}
- return null;
+function kimemWinningCards(useManual=false){
+ const marked=(id,n)=>n===0||(useManual&&mode==='manual'?!!manualMarks[id+':'+n]:drawn.includes(n));
+ return selected.filter(id=>{
+  const g=cardFor(id);
+  const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
+  return lines.some(line=>line.every(n=>marked(id,n)));
+ });
 }
-function kimemFinishGame(id){
+function kimemSmallNotice(message){
+ let box=document.getElementById('kimem-small-bingo-notice');
+ if(!box){box=document.createElement('div');box.id='kimem-small-bingo-notice';box.setAttribute('role','status');document.body.appendChild(box)}
+ box.textContent=message;box.classList.add('visible');
+ clearTimeout(window.kimemNoticeTimeout);
+ window.kimemNoticeTimeout=setTimeout(()=>box.classList.remove('visible'),2600);
+}
+function claimBingo(){
+ if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
+ const wins=kimemWinningCards(true);
+ if(wins.length)kimemFinishGame(wins);
+ else kimemSmallNotice('No Bingo Yet • No winning line');
+}
+let kimemFinished=false,kimemReturnTimer=null;
+function kimemWinningCard(){return kimemWinningCards()[0]??null}
+function kimemFinishGame(ids){
  if(kimemFinished)return;
  kimemFinished=true;running=false;spherePhase='idle';
+ const winners=Array.isArray(ids)?ids:(ids===null||ids===undefined?[]:[ids]);
  const overlay=document.getElementById('kimem-winner-overlay');
  const host=document.getElementById('kimem-winner-card');
  host.replaceChildren();
- if(id!==null){
-  const temp=document.createElement('div');temp.className='play-card';
-  const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.append(title);
-  const headers=document.createElement('div');headers.className='play-letters';
-  'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
-  const grid=document.createElement('div');grid.className='play-numbers';
-  cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';grid.append(cell)}));temp.append(grid);host.append(temp);
- }else{host.textContent='No winning card in this round'}
+ overlay.classList.toggle('kimem-no-winner',winners.length===0);
+ const heading=overlay.firstElementChild;
+ if(heading)heading.textContent=winners.length?'BINGO WINNER'+(winners.length>1?'S':'')+'!':'ROUND COMPLETE';
+ if(winners.length){
+  for(const id of winners){
+   const temp=document.createElement('div');temp.className='play-card';
+   const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.append(title);
+   const headers=document.createElement('div');headers.className='play-letters';
+   'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
+   const grid=document.createElement('div');grid.className='play-numbers';
+   cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';grid.append(cell)}));temp.append(grid);host.append(temp);
+  }
+ }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
  const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
  document.getElementById('kimem-winner-user').textContent=username?'@'+username:'Demo player';
  overlay.classList.add('visible');
  let left=7;document.getElementById('kimem-winner-timer').textContent=left;
  const audio=()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=kimemFinishGame.audioCtx||(kimemFinishGame.audioCtx=new C());if(ctx.state==='suspended')ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=660;gain.gain.value=.055;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12)}catch(e){}};
- audio();kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.href='./KIMEM_BINGO_Game_Lobby.html';return}document.getElementById('kimem-winner-timer').textContent=left;audio()},1000);
+ if(winners.length)audio();
+ kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.href='./KIMEM_BINGO_Game_Lobby.html';return}document.getElementById('kimem-winner-timer').textContent=left;if(winners.length)audio()},1000);
 }
 function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d.style.setProperty('--ball-color',colors[tone(n)]);d.style.setProperty('--ball-light',lights[tone(n)]);d.textContent=letter(n)+' '+n;return d}
 
@@ -764,7 +805,7 @@ function finishSphereReveal(now){
 
  updateDraw(n);
  $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
- if(drawn.length===75){running=false;spherePhase='idle';kimemFinishGame(kimemWinningCard())}
+ if(drawn.length===75){running=false;spherePhase='idle';kimemFinishGame(kimemWinningCards())}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
