@@ -11,7 +11,7 @@
     if(!id){id="demo-"+crypto.randomUUID();sessionStorage.setItem(KEY,id)}
     return id;
   })();
-  let startsAt=0, registered=[], busy=false, stopped=false, pollHandle=null;
+  let startsAt=0, registered=[], busy=false, stopped=false, pollHandle=null, lastSecond=null, serverReady=false;
   const notice=msg=>{if(typeof triggerToast==="function")triggerToast(msg);console.info("[QIMEM demo]",msg)};
   async function api(path,options){
     const res=await fetch(API+path,{...options,headers:{"content-type":"application/json",...(options?.headers||{})},cache:"no-store"});
@@ -23,11 +23,12 @@
     const data=await api("/api/demo/games/current");
     startsAt=Date.parse(data.startsAt);
     if(!Number.isFinite(startsAt))throw new Error("invalid_server_start");
+    serverReady=true;
     return data;
   }
   const originalToggle=toggleCard;
   toggleCard=async function(id){
-    if(busy||stopped)return;
+    if(busy||stopped||!serverReady){notice("Wait for demo server connection.");return;}
     busy=true;
     const before=[...selectedCards];
     originalToggle(id);
@@ -50,7 +51,7 @@
     if(stopped||busy||!selectedCards.length||registered.join(",")!==selectedCards.join(",")){
       notice("Please reserve a card before entering live game.");return;
     }
-    if(Date.now()<startsAt){notice("Waiting for the server countdown.");return}
+    if(!serverReady||Date.now()<startsAt){notice("Waiting for the server countdown.");return}
     stopped=true;
     const ids=registered.slice(0,3);
     try{sessionStorage.setItem("kimemSelectedCards",JSON.stringify(ids));localStorage.setItem("kimemSelectedCards",JSON.stringify(ids))}catch{}
@@ -63,8 +64,11 @@
       const left=Math.max(0,Math.ceil((startsAt-Date.now())/1000));
       secondsRemaining=left;
       $("countdown").textContent=left+"s";
-      if(left===5)kimemPlayCountdown();
-      if(left>=1&&left<=5)showCountdownSecond(left);
+      if(left!==lastSecond){
+        if(left===5)kimemPlayCountdown();
+        if(left>=1&&left<=5)showCountdownSecond(left);
+        lastSecond=left;
+      }
       if(left===0){
         clearInterval(timerHandle);timerHandle=null;
         resetCountdownScene();
@@ -74,7 +78,7 @@
     };
     refresh().then(()=>{
       tick();if(!stopped&&secondsRemaining>0)timerHandle=setInterval(tick,250);
-      pollHandle=setInterval(()=>refresh().catch(()=>notice("Server sync unavailable")),5000);
+      pollHandle=setInterval(()=>refresh().catch(()=>{serverReady=false;notice("Server sync unavailable")}),5000);
     }).catch(err=>{$("countdown").textContent="OFFLINE";notice("Demo backend unavailable: "+err.message)});
   };
   window.addEventListener("pagehide",()=>{clearInterval(timerHandle);clearInterval(pollHandle)});
