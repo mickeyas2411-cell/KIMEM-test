@@ -60,22 +60,39 @@ html,body{width:100%;height:100%;height:100dvh;margin:0;padding:0;overflow:hidde
 body{min-height:100dvh!important;max-height:100dvh!important}
 body>div{height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
 
-/* Telegram viewport-aware fixed layout: only card picker scrolls */
+/* Compact Telegram lobby: preserve bonus, jackpot, locked cards & actual 5x5 preview */
 :root{--kimem-vh:100dvh;--kimem-top:0px;--kimem-bottom:0px}
 html,body{width:100%;height:100%;margin:0;overflow:hidden!important;overscroll-behavior:none}
 body{height:var(--kimem-vh)!important;min-height:0!important;padding:0!important;display:block!important}
-body>div:first-child{height:var(--kimem-vh)!important;max-height:var(--kimem-vh)!important;min-height:0!important;width:100%!important;overflow:hidden!important;border-radius:0!important}
-body>div:first-child>div:first-child{flex-shrink:0;padding-top:max(7px,var(--kimem-top))!important}
-#lobby-main{display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important;gap:clamp(4px,.7dvh,9px)!important;padding:5px 10px 2px!important}
-#lobby-main>*{margin:0!important;flex-shrink:0!important}
-#lobby-main .hero-banner{padding:clamp(5px,.7dvh,9px)!important}
-#lobby-main .bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px!important}#lobby-main .bonus-row button{padding:3px!important;min-width:0}
-#lobby-main section:has(#card-matrix){display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:65px!important;overflow:hidden!important;gap:4px!important;padding:8px!important}
-#card-matrix{flex:1 1 0!important;height:0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;align-content:start!important}
-#lobby-main section:has(#bingo-board){display:block!important;padding:4px!important}#lobby-main section:has(#bingo-board)>div:last-child{padding:3px!important}#bingo-board .bingo-tile{height:clamp(17px,2.7dvh,27px)!important;font-size:clamp(10px,2.7vw,14px)!important}#bingo-header .bingo-hdr{height:clamp(18px,2.7dvh,26px)!important;font-size:clamp(12px,3vw,16px)!important}
-#lobby-main .locked-inline{padding:3px 5px!important}
+body>div:first-child{display:flex!important;flex-direction:column!important;height:var(--kimem-vh)!important;max-height:var(--kimem-vh)!important;min-height:0!important;overflow:hidden!important;border-radius:0!important}
+body>div:first-child>div:first-child{flex-shrink:0!important;min-height:42px;padding:6px 12px!important}
+#lobby-main{display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important;gap:4px!important;padding:4px 9px 2px!important}
+#lobby-main>*{margin:0!important;flex-shrink:0!important;min-width:0}
+#lobby-main .hero-banner{padding:6px 9px!important;min-height:57px!important;border-radius:12px!important}
+#lobby-main .hero-banner h1{font-size:clamp(15px,4.8vw,21px)!important}
+#lobby-main .stats-panel{padding:4px 1px!important;min-height:49px!important}
+#lobby-main .stat-icon{font-size:12px!important}
+#lobby-main .stat-label{font-size:8px!important}
+#lobby-main .stat-value{font-size:clamp(10px,3vw,15px)!important}
+#lobby-main .bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;min-height:35px!important}
+#lobby-main .bonus-row button{display:flex!important;min-width:0!important;padding:4px!important;gap:4px!important}
+#lobby-main .bonus-row button>div:first-child{width:21px!important;height:21px!important;flex-shrink:0}
+#lobby-main .bonus-row button>div:last-child{min-width:0}
+#lobby-main section:has(#card-matrix){display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:60px!important;overflow:hidden!important;gap:4px!important;padding:6px!important}
+#lobby-main section:has(#card-matrix)>*{flex-shrink:0!important;margin:0!important}
+#card-matrix{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr))!important;align-content:start!important;flex:1 1 0!important;height:0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.card-grid-item{height:clamp(24px,3.8dvh,34px)!important}
+#lobby-main .locked-inline{display:flex!important;align-items:center!important;gap:7px!important;padding:2px 4px!important;min-height:27px!important}
+#lobby-main .locked-inline .locked-row{min-height:27px!important}
+#lobby-main section:has(#bingo-board){display:block!important;min-height:0!important;overflow:hidden!important;padding:5px!important}
+#lobby-main section:has(#bingo-board)>div:first-child{margin:0 0 3px!important}
+#lobby-main section:has(#bingo-board)>div:last-child{padding:3px!important}
+#bingo-board,#bingo-header{max-width:100%!important;gap:2px!important}
+#bingo-header .bingo-hdr{height:clamp(16px,2.35dvh,23px)!important;font-size:clamp(11px,3vw,15px)!important}
+#bingo-board .bingo-tile{height:clamp(16px,2.35dvh,23px)!important;font-size:clamp(10px,2.75vw,14px)!important}
 body>div:first-child>div:has(.footer-actions){position:relative!important;inset:auto!important;flex-shrink:0!important;padding:4px 9px max(6px,var(--kimem-bottom))!important}
-@media(max-height:650px){#lobby-main .hero-banner{padding:3px!important}#lobby-main .stat-icon{display:none!important}#bingo-board .bingo-tile{height:17px!important}}
+@media(max-height:730px){#lobby-main{gap:3px!important;padding-top:3px!important}#lobby-main .hero-banner{min-height:45px!important;padding:3px 8px!important}#lobby-main .stats-panel{min-height:38px!important}#lobby-main .bonus-row{min-height:30px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:16px!important}#lobby-main section:has(#bingo-board){padding:3px!important}}
+@media(max-height:560px){#lobby-main .hero-banner{min-height:36px!important}#lobby-main .hero-banner p{display:none!important}#lobby-main .bonus-row button>div:first-child{display:none!important}#lobby-main .bonus-row{min-height:25px!important}#lobby-main .locked-inline{min-height:22px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:14px!important}}
 </style></head>
 <body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
 <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 z-30 shrink-0"><button onclick="leaveToLobby()" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i> Leave</button><div class="text-center"><div class="font-black text-xs tracking-wider">KIMEM GAMES</div><div class="text-[8px] font-bold tracking-widest text-blue-400">MINI APP</div></div><button onclick="triggerToast('Menu opened')" class="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-600/50 text-blue-300"><i class="fa-solid fa-ellipsis"></i></button></div>
@@ -125,7 +142,7 @@ function syncTelegramViewport(){
 }
 function init(){
  const tg=window.Telegram?.WebApp;
- try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);if(typeof tg.requestFullscreen==='function')try{tg.requestFullscreen()}catch(e){}}}catch(e){}
+ try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
  updateUI();startTimer();
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
