@@ -132,6 +132,27 @@ const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761) ^ Math.imul((Number(new URLSearchParams(location.search).get('stake'))===10?10:20),2246822519))>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
 let reservationBusy=false,reservedSelection=[];
+let kimemDemoWalletBalance=null;
+function kimemShowDemoWallet(){
+ let el=document.getElementById('kimem-demo-wallet-balance');
+ if(!el){
+  el=document.createElement('div');el.id='kimem-demo-wallet-balance';
+  el.style.cssText='position:fixed;top:56px;right:12px;z-index:90;background:#071b32;color:#e2e8f0;border:1px solid #334155;border-radius:12px;padding:8px 12px;font:600 12px system-ui;box-shadow:0 8px 24px #0005';
+  document.body.appendChild(el);
+ }
+ el.textContent=kimemDemoWalletBalance===null?'DEMO WALLET • Loading...':'DEMO WALLET • '+(kimemDemoWalletBalance/100).toFixed(2)+' ETB';
+}
+async function kimemRefreshDemoWallet(){
+ try{
+  const result=await window.KimemProductionLobby.wallet();
+  if(result.demo!==true||result.realMoney!==false)throw Error('Demo wallet response invalid');
+  kimemDemoWalletBalance=result.balanceCents;
+  kimemShowDemoWallet();
+ }catch(e){kimemDemoWalletBalance=null;kimemShowDemoWallet();console.error('Demo wallet',e)}
+}
+kimemShowDemoWallet();
+kimemRefreshDemoWallet();
+
 async function toggleCard(id){
  if(reservationBusy)return;
  const next=selectedCards.slice(),index=next.indexOf(id);
@@ -139,11 +160,10 @@ async function toggleCard(id){
  else{if(next.length>=3){triggerToast('Maximum 3 cards allowed!');return}next.push(id)}
  reservationBusy=true;
  try{
-  if(next.length){
-   const joined=await window.KimemProductionLobby.join(next);
-   productionGame={...productionGame,...joined};
-  }else{
-   await window.KimemProductionLobby.join([]);
+  const joined=await window.KimemProductionLobby.join(next);
+  productionGame={...productionGame,...joined};
+  if(joined.demo===true&&joined.realMoney===false&&Number.isSafeInteger(joined.balanceCents)){
+   kimemDemoWalletBalance=joined.balanceCents;kimemShowDemoWallet();
   }
   selectedCards.splice(0,selectedCards.length,...next);
   reservedSelection=next.slice();
