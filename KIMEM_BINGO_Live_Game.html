@@ -808,22 +808,21 @@ const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 kimemVoicePlayer.preload='auto';
-/* Preload actual MP3 bytes and use local Blob URLs for immediate HTML Audio playback. */
-const kimemVoiceLocalUrls=new Map();
+/* Warm the browser's HTTP media cache without changing the working HTML Audio player. */
 (function kimemWarmVoiceCache(){
+ const total=75;
  let next=1;
  async function worker(){
-  while(next<=75){
+  while(next<=total){
    const n=next++;
    try{
     const response=await fetch(KIMEM_VOICE_ENDPOINT+n+'.mp3',{cache:'force-cache'});
     if(!response.ok)throw Error('HTTP '+response.status);
-    const bytes=await response.blob();
-    kimemVoiceLocalUrls.set(n,URL.createObjectURL(new Blob([bytes],{type:'audio/mpeg'})));
+    await response.arrayBuffer();
    }catch(e){console.warn('KIMEM voice cache '+n,e)}
   }
  }
- for(let i=0;i<8;i++)worker();
+ for(let i=0;i<6;i++)worker();
 })();
 
 let kimemVoiceBusy=false;
@@ -831,7 +830,7 @@ function kimemVoiceNext(){
  if(kimemVoiceBusy||!kimemVoiceQueue.length)return;
  const n=kimemVoiceQueue.shift();
  kimemVoiceBusy=true;
- kimemVoicePlayer.src=kimemVoiceLocalUrls.get(n)||KIMEM_VOICE_ENDPOINT+n+'.mp3';
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
  const p=kimemVoicePlayer.play();
  if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.unshift(n)});
 }
