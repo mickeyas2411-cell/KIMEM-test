@@ -275,20 +275,14 @@ body>div:first-child{height:var(--live-height)!important;max-height:var(--live-h
 #kimem-winner-overlay .play-card{width:min(94vw,360px);margin:10px auto;text-align:left}
 #kimem-winner-overlay .play-cell{height:clamp(36px,10vw,54px);font-size:17px}
 #kimem-winner-timer{font-size:58px;font-weight:900;color:#f5cb67}
-</style><style id="kimem-card-mount-fix">
-/* Keep machine and number board in their existing order; mount cards directly beneath board. */
-#live-main{display:block!important;overflow-y:auto!important;overflow-x:hidden!important;height:100%!important;min-height:0!important;padding-bottom:28px!important}
-#live-main>.stats-panel,#live-main>.bonus-row,#live-main>.live-layout{display:block;position:relative!important;height:auto!important;min-height:0!important}
-#live-main>.bonus-row{display:grid!important}
-#live-main .live-layout{display:block!important;overflow:visible!important;flex:none!important}
-#live-main .live-layout>div:first-child{display:block!important;overflow:visible!important;height:auto!important;flex:none!important}
-#live-main .live-stage{display:block!important;overflow:visible!important;height:auto!important;min-height:0!important}
-#live-main .live-stage .draw-compact{height:clamp(110px,18dvh,175px)!important}
-#live-main .live-stage #number-board{display:grid!important;height:auto!important;overflow:visible!important}
-#live-main .live-stage .mobile-card-priority{display:block!important;position:relative!important;visibility:visible!important;overflow:visible!important;height:auto!important;min-height:0!important;max-height:none!important;margin-top:12px!important;padding-bottom:10px!important}
-#live-main .live-stage .mobile-card-priority section{display:block!important;overflow:visible!important;height:auto!important}
-#live-main .live-stage #my-cards{display:grid!important;visibility:visible!important;height:auto!important;min-height:0!important;overflow:visible!important}
-#live-main .live-stage .mobile-card-priority .play-card{display:block!important}
+</style><style id="kimem-safe-scroll-fix">
+/* Preserve the original grid and machine geometry. Only allow card panel to scroll into view. */
+#live-main{display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important;overscroll-behavior:contain!important}
+#live-main>.stats-panel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.live-layout{flex:0 0 auto!important;min-height:auto!important;overflow:visible!important}
+#live-main>.mobile-card-priority{display:block!important;flex:0 0 auto!important;min-height:0!important;height:auto!important;overflow:visible!important;padding-bottom:18px!important}
+#live-main>.mobile-card-priority section,#live-main #my-cards{overflow:visible!important;height:auto!important}
 </style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
@@ -514,7 +508,6 @@ function resetGame(){
  board();cards();sphereRender(performance.now());
 }
 (function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
-(function kimemFixCardMount(){const stage=document.querySelector('#live-main .live-stage'),cardsPanel=document.querySelector('#live-main .mobile-card-priority');if(stage&&cardsPanel){stage.appendChild(cardsPanel);cardsPanel.dataset.mounted='true';}})();
 readCards();initMachine();board();cards();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
 (function autoStartLiveDraw(){
