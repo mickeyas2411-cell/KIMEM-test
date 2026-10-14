@@ -826,7 +826,7 @@ function kimemVoiceNext(){
   kimemVoiceActive=false;
   kimemVoiceQueue.unshift(n);
   kimemVoiceUnlocked=false;
-  kimemShowVoiceUnlock();
+  
  });
 }
 kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceActive=false;kimemVoiceNext()});
@@ -836,27 +836,14 @@ function kimemCallBallAmharic(n){
  kimemVoiceQueue.push(n);
  kimemVoiceNext();
 }
-function kimemShowVoiceUnlock(){
- if(kimemVoiceUnlockPrompt)return;
- const b=document.createElement('button');
- b.type='button';b.textContent='🔊 ENABLE BALL VOICE';
- b.setAttribute('aria-label','Enable Amharic ball calling sound');
- b.style.cssText='position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:9999;background:#1454ad;color:white;border:1px solid #70caff;border-radius:22px;padding:12px 18px;font:800 13px Inter,sans-serif;box-shadow:0 5px 24px #000a;white-space:nowrap;cursor:pointer';
- b.addEventListener('click',kimemUnlockVoice);
- document.body.appendChild(b);kimemVoiceUnlockPrompt=b;
-}
 function kimemUnlockVoice(){
- // iOS/WebKit only permits the first playback after a real tap.
+ if(kimemVoiceUnlocked)return;
  kimemVoiceUnlocked=true;
- if(kimemVoiceUnlockPrompt){kimemVoiceUnlockPrompt.remove();kimemVoiceUnlockPrompt=null;}
- if(kimemVoiceQueue.length){kimemVoiceNext();return}
- // Unlock the same reusable media element while inside this click event.
+ // START GAME is the existing user gesture that permits playback.
+ kimemVoicePlayer.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=';
  const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(()=>{kimemVoiceUnlocked=false;kimemShowVoiceUnlock()});
+ if(p&&p.catch)p.catch(()=>{kimemVoiceUnlocked=false});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',kimemShowVoiceUnlock,{once:true});
-else kimemShowVoiceUnlock();
-
 function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
@@ -920,6 +907,7 @@ function digitalTick(now){
  digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
+ kimemUnlockVoice();
  if(drawn.length===75)return;
  if(running){running=false;$('draw-status').textContent='PAUSED';return}
  running=true;
