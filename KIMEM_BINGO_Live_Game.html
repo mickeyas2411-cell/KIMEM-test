@@ -808,96 +808,33 @@ const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 kimemVoicePlayer.preload='auto';
-let kimemVoiceContext=null,kimemVoiceBusy=false,kimemVoiceGesture=false;
-const kimemVoiceBuffers=new Map(),kimemVoicePending=new Map();
-function kimemVoiceContextGet(){
- const C=window.AudioContext||window.webkitAudioContext;
- if(!C)return null;
- if(!kimemVoiceContext)kimemVoiceContext=new C();
- return kimemVoiceContext;
-}
-function kimemVoiceLoad(n){
- if(kimemVoiceBuffers.has(n))return Promise.resolve(kimemVoiceBuffers.get(n));
- if(kimemVoicePending.has(n))return kimemVoicePending.get(n);
- const ctx=kimemVoiceContextGet();
- if(!ctx)return Promise.reject(Error('AudioContext unavailable'));
- const p=fetch(KIMEM_VOICE_ENDPOINT+n+'.mp3',{cache:'force-cache'})
-  .then(r=>{if(!r.ok)throw Error('Voice HTTP '+r.status);return r.arrayBuffer()})
-  .then(a=>ctx.decodeAudioData(a))
-  .then(buffer=>{kimemVoiceBuffers.set(n,buffer);return buffer})
-  .finally(()=>kimemVoicePending.delete(n));
- kimemVoicePending.set(n,p);return p;
-}
-function kimemVoiceDone(){
- kimemVoiceBusy=false;
- kimemVoiceNext();
-}
-function kimemVoiceHtmlFallback(n){
- kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
- kimemVoicePlayer.load();
- const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(e=>{console.warn('KIMEM HTML audio:',e);kimemVoiceDone()});
-}
+let kimemVoiceBusy=false;
 function kimemVoiceNext(){
  if(kimemVoiceBusy||!kimemVoiceQueue.length)return;
- const ctx=kimemVoiceContextGet();
- if(!ctx||ctx.state!=='running'){
-  if(!kimemVoiceGesture)return;
-  if(ctx)ctx.resume().catch(()=>{});
-  return;
- }
  const n=kimemVoiceQueue.shift();
  kimemVoiceBusy=true;
- kimemVoiceLoad(n).then(buffer=>{
-  if(ctx.state!=='running')return ctx.resume().then(()=>buffer);
-  return buffer;
- }).then(buffer=>{
-  const source=ctx.createBufferSource();
-  source.buffer=buffer;
-  source.connect(ctx.destination);
-  source.onended=kimemVoiceDone;
-  source.start(0);
- }).catch(err=>{
-  console.warn('KIMEM WebAudio:',err);
-  kimemVoiceHtmlFallback(n);
- });
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
+ const p=kimemVoicePlayer.play();
+ if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.unshift(n)});
 }
-kimemVoicePlayer.addEventListener('ended',kimemVoiceDone);
-kimemVoicePlayer.addEventListener('error',kimemVoiceDone);
+kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
+kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
 function kimemCallBallAmharic(n){
  if(!Number.isInteger(n)||n<1||n>75)return;
  kimemVoiceQueue.push(n);
- kimemVoiceLoad(n).catch(()=>{});
  kimemVoiceNext();
 }
 function kimemUnlockVoice(){
- kimemVoiceGesture=true;
- try{
-  const ctx=kimemVoiceContextGet();
-  if(ctx){
-   const silent=ctx.createBufferSource();
-   silent.buffer=ctx.createBuffer(1,1,22050);
-   silent.connect(ctx.destination);
-   silent.start(0);
-   ctx.resume().then(kimemVoiceNext).catch(e=>console.warn('KIMEM audio resume:',e));
-  }else kimemVoiceNext();
- }catch(e){console.warn('KIMEM audio unlock:',e)}
+ if(kimemVoiceBusy)return;
+ if(kimemVoiceQueue.length){kimemVoiceNext();return}
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
+ kimemVoicePlayer.muted=true;
+ const p=kimemVoicePlayer.play();
+ if(p&&p.then)p.then(()=>{kimemVoicePlayer.pause();kimemVoicePlayer.muted=false}).catch(()=>{kimemVoicePlayer.muted=false});
 }
 document.addEventListener('touchstart',kimemUnlockVoice,{capture:true,passive:true});
 document.addEventListener('pointerdown',kimemUnlockVoice,{capture:true,passive:true});
 document.addEventListener('click',kimemUnlockVoice,true);
-// Fetch all prerecorded voices early; decoded buffers stay ready for instant calls.
-(function kimemVoicePreload(){
- const numbers=Array.from({length:75},(_,i)=>i+1);
- let index=0;
- async function worker(){
-  while(index<numbers.length){
-   const n=numbers[index++];
-   try{await kimemVoiceLoad(n)}catch(e){console.warn('KIMEM preload '+n,e)}
-  }
- }
- for(let i=0;i<4;i++)worker();
-})();
 
 function updateDraw(n){
  drawn.push(n);
