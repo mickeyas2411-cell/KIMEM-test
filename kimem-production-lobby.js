@@ -21,5 +21,6 @@ window.KimemProductionLobby={
  },
  current(){return this.request("current")},
  wallet(){return this.request("wallet")},
+ walletHistory(){return this.request("wallet-history")},
  join(cards){return this.request("join",cards)}
 };
