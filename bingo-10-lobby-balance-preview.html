@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>KIMEM BINGO - 10 ETB Lobby Balance Preview</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box}body{font-family:Inter,sans-serif;background:#02050e;color:#fff;margin:0;-webkit-user-select:none;user-select:none}.cosmic-bg{background:radial-gradient(circle at 50% 0%,rgba(0,102,255,.35),transparent 60%),radial-gradient(circle at 50% 100%,rgba(0,60,180,.25),transparent 50%),linear-gradient(180deg,#020716,#030a21 50%,#010410)}.neon-panel{background:rgba(6,18,46,.75);backdrop-filter:blur(12px);border:1px solid rgba(0,140,255,.4);box-shadow:0 0 15px rgba(0,100,255,.15),inset 0 0 12px rgba(0,120,255,.1)}.hero-banner{background:linear-gradient(135deg,rgba(3,20,65,.9),rgba(10,40,110,.95) 50%,rgba(2,15,50,.9));border:1.5px solid #0099ff;box-shadow:0 0 25px rgba(0,140,255,.4),inset 0 0 15px rgba(0,150,255,.2)}.glow-text-white{text-shadow:0 0 10px #ffffff80,0 0 20px #00b4ff99}.glow-text-gold{background:linear-gradient(180deg,#fff7ad,#ffa800 50%,#d17a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px #ffb40099)}
+.card-scroll-area{height:288px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#0077ff #020a1e}.card-scroll-area::-webkit-scrollbar{width:3px}.card-scroll-area::-webkit-scrollbar-thumb{background:#0077ff;border-radius:5px}.card-grid-item{min-width:0;height:34px;position:relative;border-radius:7px;background:linear-gradient(180deg,#102850,#030f2b);border:1px solid rgba(66,153,255,.48);box-shadow:inset 0 1px 0 #ffffff25,0 2px 3px #0005;color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}.card-grid-item.soft-match:not(.selected){border-color:#5de3ff;box-shadow:0 0 0 1px #63ddff99,0 0 10px #26c8ff50;background:linear-gradient(180deg,#1a4770,#0b2247)}.card-grid-item.selected{background:linear-gradient(180deg,#ffe985,#d9961d)!important;border:1px solid #fff0a1!important;color:#4b3200!important;box-shadow:0 0 9px #ffbf42a6,inset 0 1px 0 #fff9!important}.card-grid-item .lock{font-size:8px;margin-left:2px;color:#7b560c}.card-grid-item:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.locked-row{display:flex;gap:6px;overflow-x:auto;min-height:31px;align-items:center}.locked-chip{flex-shrink:0;border:1px solid #4465a5;border-radius:8px;padding:5px 8px;background:#07142f;color:#d9e5ff;font-size:11px;font-weight:800}.locked-chip.active{border-color:#ffc24e;background:linear-gradient(180deg,#6b511e,#27203a);color:#ffe49a}.locked-chip span{margin-left:8px;opacity:.7}
+.bingo-tile{height:24px;min-width:0;border-radius:7px;background:linear-gradient(180deg,#f0f0ed,#a7a7a6 52%,#777777);border:1px solid #34373f;color:#292a2f;box-shadow:inset 0 2px 1px #fff9,0 2px 2px #0009;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}.bingo-hdr{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;background:linear-gradient(180deg,#243456,#0a1228);border:1px solid currentColor;box-shadow:inset 0 2px 1px #ffffff36,0 2px 4px #0009}.tile-free{background:linear-gradient(180deg,#ffe47e,#b8872b);color:#51380d;border-color:#f7d269}.btn-action-glow{background:linear-gradient(90deg,#1264ed,#8030e5);border:1px solid #66c2ff;box-shadow:0 0 16px #0088ff77}.btn-action-glow:active{transform:scale(.98)}.live-pulse{background:linear-gradient(180deg,#e52c47,#971329);border:1px solid #ff8b9c;box-shadow:0 0 8px #ed334766;animation:liveGlow 1.2s ease-in-out infinite alternate}@keyframes liveGlow{from{box-shadow:0 0 3px #e3294477;opacity:.8}to{box-shadow:0 0 14px #ff3959;opacity:1}}.stats-panel{padding:9px 4px!important;min-height:65px}.stat-icon{display:block;margin:0 auto 4px;font-size:14px}.stat-label{font-size:8px;font-weight:800;color:#74b6ff}.stat-value{font-size:11px;font-weight:900;margin-top:3px}.bonus-row button{padding:4px!important;gap:4px}.bonus-row button>div:first-child{width:19px;height:19px;flex-shrink:0}.bonus-row button>div:last-child>div:last-child{font-size:9px}.footer-actions{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px}.footer-actions button{min-height:31px;padding:6px 8px;font-size:10px;border-radius:8px}
+@media(max-width:350px){.card-grid-item{font-size:10px;height:30px}.bingo-tile{height:27px;font-size:12px}.bingo-hdr{height:29px}}@media(min-height:780px){.card-scroll-area{height:clamp(235px,36dvh,410px)}}
+/* Full-screen, balanced mobile and desktop proportions */
+html,body{width:100%;height:100%;overflow:hidden}
+body>div{height:100dvh;max-height:100dvh;width:100%;max-width:none}
+.card-scroll-area{height:clamp(180px,30dvh,360px)}
+main{scrollbar-width:thin;scrollbar-color:#1767be #06102a}
+@media(min-width:700px){main{width:min(100%,960px);margin-inline:auto}.card-scroll-area{height:clamp(200px,32dvh,390px)}.card-grid-item{height:38px}.bingo-tile{height:29px}.bingo-hdr{height:31px}}
+@media(max-height:700px){.card-scroll-area{height:clamp(140px,25dvh,210px)}.hero-banner{padding:8px}.stats-panel{min-height:57px}.bingo-tile{height:22px}.bingo-hdr{height:24px}}
+
+
+/* Card matrix priority: ten columns x at least nine visible rows (90 cards). */
+.card-scroll-area{height:310px!important;min-height:310px!important;flex-shrink:0;gap:3px!important;grid-auto-rows:28px;align-content:start}
+.card-grid-item{height:28px!important;font-size:11px!important;border-radius:5px}
+/* Miniature preview frees space for the card selection matrix. */
+#bingo-board,#bingo-header{gap:2px!important}
+.bingo-tile{height:15px!important;font-size:9px!important;border-radius:3px}
+.bingo-hdr{height:17px!important;font-size:11px!important;border-radius:3px}
+#bingo-board{max-width:220px;margin-inline:auto}
+#bingo-header{max-width:220px;margin-inline:auto}
+@media(min-width:700px){.card-scroll-area{height:340px!important;min-height:340px!important;grid-auto-rows:30px}.card-grid-item{height:30px!important}}
+
+/* Approved update: inline locked-card chips and readable preview; card matrix untouched. */
+.locked-inline{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:nowrap}
+.locked-inline .locked-label{flex-shrink:0;margin:0;font-size:10px;letter-spacing:.08em;color:#93c5fd;font-weight:900}
+.locked-inline .locked-row{min-width:0;flex:1;white-space:nowrap;min-height:31px}
+.locked-inline .locked-chip{padding:5px 7px;font-size:10px}
+#bingo-board,#bingo-header{max-width:370px!important;width:100%;gap:3px!important;margin-inline:auto}
+.bingo-tile{height:clamp(26px,4.3dvh,39px)!important;font-size:clamp(13px,3.5vw,18px)!important;border-radius:6px!important}
+.bingo-hdr{height:clamp(27px,4dvh,37px)!important;font-size:clamp(16px,4vw,22px)!important;border-radius:6px!important}
+/* Full viewport cinematic five-second countdown. */
+#countdown-scene{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;background:radial-gradient(ellipse at center,#14377b 0%,#07142e 45%,#01040e 100%);overflow:hidden;isolation:isolate}
+#countdown-scene.visible{display:flex;animation:sceneEnter .45s ease-out both}
+#countdown-scene::before{content:'';position:absolute;width:130vmax;height:130vmax;border-radius:50%;background:repeating-conic-gradient(from 10deg,#20adff11 0deg 10deg,transparent 10deg 25deg);animation:slowSpin 18s linear infinite;pointer-events:none}
+#countdown-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,transparent 25%,#01030b88 90%);pointer-events:none}
+.scene-heading{position:relative;z-index:2;font-size:clamp(20px,5.7vw,42px);letter-spacing:.15em;text-align:center;font-weight:900;color:#fff;text-shadow:0 0 14px #43baff,0 0 35px #007bff;margin-bottom:clamp(30px,8vh,75px)}
+.countdown-balls{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(5px,1.6vw,20px);width:100%;max-width:740px;perspective:900px}
+.countdown-ball{--tone:#ee424c;position:relative;flex:0 1 125px;aspect-ratio:1;min-width:0;max-width:125px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 31% 22%,#ffffffed 0%,#ffffff66 8%,transparent 29%),radial-gradient(circle at 32% 26%,color-mix(in srgb,var(--tone),white 35%),var(--tone) 50%,color-mix(in srgb,var(--tone),black 62%) 100%);border:2px solid #ffffff80;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff7,0 13px 17px #000b,0 0 19px var(--tone);transform-style:preserve-3d}
+.countdown-ball::after{content:'';position:absolute;top:9%;left:16%;width:49%;height:24%;border-radius:50%;background:linear-gradient(#fff9,#fff0);transform:rotate(-25deg);filter:blur(2px)}
+.ball-face{font-size:clamp(22px,7vw,65px);font-weight:1000;color:#fff;text-shadow:0 3px 5px #0008,0 0 9px #fff9;backface-visibility:hidden;line-height:1;position:relative;z-index:1}
+.countdown-ball.is-active{animation:ballBounce .9s cubic-bezier(.2,.6,.3,1) both;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff9,0 24px 27px #0009,0 0 28px 10px var(--tone),0 0 70px var(--tone)}
+.countdown-ball.is-active .ball-face{animation:faceFlip .7s ease-in-out both}
+.countdown-ball.is-done{filter:brightness(1.1)}
+.scene-footer{z-index:2;position:relative;color:#b7d5ff;font-size:clamp(11px,2.7vw,16px);font-weight:800;letter-spacing:.2em;margin-top:clamp(30px,7vh,65px)}
+@keyframes sceneEnter{from{opacity:0;transform:scale(.87)}to{opacity:1;transform:scale(1)}}
+@keyframes ballBounce{0%{transform:translateY(0) rotateY(0) scale(1)}30%{transform:translateY(-35px) rotateY(90deg) scale(1.16)}55%{transform:translateY(-47px) rotateY(180deg) scale(1.22)}75%{transform:translateY(6px) rotateY(300deg) scale(1.08)}100%{transform:translateY(0) rotateY(360deg) scale(1.05)}}
+@keyframes faceFlip{0%,42%{opacity:1}48%,60%{opacity:.05}75%,100%{opacity:1}}
+@keyframes slowSpin{to{transform:rotate(360deg)}}
+@media(max-width:370px){.locked-inline{gap:5px}.locked-inline .locked-label{font-size:9px}.locked-inline .locked-chip{font-size:9px;padding:4px 5px}.countdown-balls{gap:5px}.countdown-ball{border-width:1px}}
+@media(prefers-reduced-motion:reduce){#countdown-scene.visible,.countdown-ball.is-active,.countdown-ball.is-active .ball-face{animation:none}}
+/* Full viewport on phones and inside Telegram; keep the approved layout unchanged. */
+html,body{width:100%;height:100%;height:100dvh;margin:0;padding:0;overflow:hidden}
+body{min-height:100dvh!important;max-height:100dvh!important}
+body>div{height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;border-radius:0!important}
+
+/* Compact Telegram lobby: preserve bonus, jackpot, locked cards & actual 5x5 preview */
+:root{--kimem-vh:100dvh;--kimem-top:0px;--kimem-bottom:0px}
+html,body{width:100%;height:100%;margin:0;overflow:hidden!important;overscroll-behavior:none}
+body{height:var(--kimem-vh)!important;min-height:0!important;padding:0!important;display:block!important}
+body>div:first-child{display:flex!important;flex-direction:column!important;height:var(--kimem-vh)!important;max-height:var(--kimem-vh)!important;min-height:0!important;overflow:hidden!important;border-radius:0!important}
+body>div:first-child>div:first-child{flex-shrink:0!important;min-height:42px;padding:6px 12px!important}
+#lobby-main{display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important;gap:4px!important;padding:4px 9px 2px!important}
+#lobby-main>*{margin:0!important;flex-shrink:0!important;min-width:0}
+#lobby-main .hero-banner{padding:6px 9px!important;min-height:72px!important;padding-bottom:18px!important;border-radius:12px!important}
+#lobby-main .hero-banner h1{font-size:clamp(15px,4.8vw,21px)!important}
+#lobby-main .stats-panel{padding:4px 1px!important;min-height:49px!important}
+#lobby-main .stat-icon{font-size:12px!important}
+#lobby-main .stat-label{font-size:8px!important}
+#lobby-main .stat-value{font-size:clamp(10px,3vw,15px)!important}
+#lobby-main .bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;min-height:35px!important}
+#lobby-main .bonus-row button{display:flex!important;min-width:0!important;padding:4px!important;gap:4px!important}
+#lobby-main .bonus-row button>div:first-child{width:21px!important;height:21px!important;flex-shrink:0}
+#lobby-main .bonus-row button>div:last-child{min-width:0}
+#lobby-main section:has(#card-matrix){display:flex!important;flex-direction:column!important;flex:1 1 0!important;min-height:60px!important;overflow:hidden!important;gap:4px!important;padding:6px!important}
+#lobby-main section:has(#card-matrix)>*{flex-shrink:0!important;margin:0!important}
+#card-matrix{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr))!important;align-content:start!important;flex:1 1 0!important;height:0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.card-grid-item{height:clamp(24px,3.8dvh,34px)!important}
+#lobby-main .locked-inline{display:flex!important;align-items:center!important;gap:7px!important;padding:2px 4px!important;min-height:27px!important}
+#lobby-main .locked-inline .locked-row{min-height:27px!important}
+#lobby-main section:has(#bingo-board){display:block!important;min-height:0!important;overflow:hidden!important;padding:5px!important}
+#lobby-main section:has(#bingo-board)>div:first-child{margin:0 0 3px!important}
+#lobby-main section:has(#bingo-board)>div:last-child{padding:3px!important}
+#bingo-board,#bingo-header{max-width:100%!important;gap:2px!important}
+#bingo-header .bingo-hdr{height:clamp(16px,2.35dvh,23px)!important;font-size:clamp(11px,3vw,15px)!important}
+#bingo-board .bingo-tile{height:clamp(16px,2.35dvh,23px)!important;font-size:clamp(10px,2.75vw,14px)!important}
+body>div:first-child>div:has(.footer-actions){position:relative!important;inset:auto!important;flex-shrink:0!important;padding:4px 9px max(6px,var(--kimem-bottom))!important}
+@media(max-height:730px){#lobby-main{gap:3px!important;padding-top:3px!important}#lobby-main .hero-banner{min-height:62px!important;padding:3px 8px 17px!important}#lobby-main .stats-panel{min-height:38px!important}#lobby-main .bonus-row{min-height:30px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:16px!important}#lobby-main section:has(#bingo-board){padding:3px!important}}
+@media(max-height:560px){#lobby-main .hero-banner{min-height:53px!important}#lobby-main .hero-banner p{display:none!important}#lobby-main .bonus-row button>div:first-child{display:none!important}#lobby-main .bonus-row{min-height:25px!important}#lobby-main .locked-inline{min-height:22px!important}#bingo-header .bingo-hdr,#bingo-board .bingo-tile{height:14px!important}}
+
+/* Compact in-lobby countdown card: retain existing five-ball animation */
+#countdown-scene{inset:auto!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(92vw,430px)!important;height:auto!important;min-height:195px!important;max-height:45dvh!important;padding:17px 12px!important;border:1px solid #d6ac49!important;border-radius:20px!important;background:linear-gradient(145deg,#102c59,#08172e)!important;box-shadow:0 14px 45px #000c,0 0 0 100vmax #01050b80!important}
+#countdown-scene.visible{animation:none!important}
+#countdown-scene::before{width:100%!important;height:100%!important;opacity:.18!important}
+#countdown-scene::after{border-radius:20px!important}
+#countdown-scene .scene-heading{font-size:clamp(15px,4vw,20px)!important;letter-spacing:.09em!important}
+#countdown-scene .countdown-balls{gap:clamp(4px,1.3vw,10px)!important;margin:8px 0!important}
+#countdown-scene .countdown-ball{max-width:62px!important;flex:0 1 62px!important}
+#countdown-scene .scene-footer{font-size:11px!important;margin-top:6px!important}
+</style><link rel="prefetch" href="./KIMEM_BINGO_Live_Game.html" as="document"></head>
+<body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
+<div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 z-30 shrink-0"><button onclick="leaveToLobby()" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i> Leave</button><div class="text-center"><div class="font-black text-xs tracking-wider">KIMEM GAMES</div><div class="text-[8px] font-bold tracking-widest text-blue-400">MINI APP</div></div><button onclick="triggerToast('Menu opened')" class="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-600/50 text-blue-300"><i class="fa-solid fa-ellipsis"></i></button></div>
+<main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="lobby-main">
+<div class="hero-banner rounded-xl p-3 relative overflow-hidden flex items-center justify-between"><div style="position:absolute;left:0;right:0;bottom:3px;text-align:center;font:700 10px Inter,sans-serif;color:#f2c66e;z-index:12;pointer-events:none">Balance: <span id="lobby-balance">100.00</span> ETB</div><div class="z-10 max-w-[65%]"><div class="text-amber-400 text-[9px] font-black tracking-widest mb-0.5">PREMIUM LIVE ARENA</div><h1 class="text-xl font-black italic tracking-wide leading-none my-0.5"><span class="glow-text-white">KIMEM </span><span class="glow-text-gold">BINGO</span></h1><p class="text-[8px] font-bold text-blue-200/90 tracking-wider">THE ULTIMATE BINGO EXPERIENCE</p></div><div class="relative z-10 flex -space-x-2 items-center"><div class="w-7 h-7 rounded-full bg-gradient-to-b from-red-400 to-red-700 border border-red-200 flex items-center justify-center font-black text-[11px]">B</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-blue-400 to-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">I</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-amber-300 to-amber-600 border border-amber-100 flex items-center justify-center font-black text-[11px]">N</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-[11px]">G</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-purple-400 to-purple-700 border border-purple-200 flex items-center justify-center font-black text-[11px]">O</div></div></div>
+<div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value">00123</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-clock stat-icon text-yellow-300"></i><div class="stat-label">STARTS IN</div><div id="countdown" class="stat-value text-yellow-300">35s</div></div></div>
+<div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
+<section class="neon-panel rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><h2 class="text-xs font-black tracking-wide">Choose cards (1 – 1000)</h2><div id="selected-badge" class="px-2 py-0.5 rounded-full bg-blue-600/30 border border-blue-400/60 text-blue-200 text-[9px] font-extrabold">0 / 3 SELECTED</div></div><div class="relative flex items-center"><i class="fa-solid fa-magnifying-glass absolute left-2.5 text-blue-400 text-[10px] pointer-events-none"></i><input type="text" inputmode="numeric" id="card-search-input" placeholder="Search card number (1-1000)..." oninput="handleSearch()" class="w-full bg-[#030d29] border border-blue-800/80 rounded-lg pl-7 pr-7 py-1.5 text-[11px] text-white placeholder-blue-400/60 focus:outline-none focus:border-cyan-400"><button onclick="clearSearch()" class="absolute right-2.5 text-blue-400" aria-label="Clear search"><i class="fa-solid fa-xmark text-xs"></i></button></div><div id="card-matrix" class="card-scroll-area grid grid-cols-10 gap-1 content-start p-1 bg-[#01081f]/80 rounded-lg border border-blue-900/60" aria-label="Choose cards 1 to 1000"></div><div class="text-center text-[8px] font-bold text-cyan-400 tracking-tight">SCROLL TO VIEW ALL CARDS (1–1000) • TAP GOLD CARD TO UNMARK</div></section>
+<section aria-label="Locked cards" class="locked-inline"><div class="locked-label">LOCKED CARDS</div><div id="locked-cards" class="locked-row"><span class="text-[10px] text-slate-500">No cards selected</span></div></section>
+<section class="neon-panel rounded-xl p-2 space-y-1.5"><div class="flex items-center justify-between px-0.5"><h2 class="text-xs font-black tracking-wide">CARD PREVIEW</h2><div id="preview-title" class="text-[9px] font-black text-blue-400 tracking-wider uppercase">NO CARD SELECTED</div></div><div class="bg-[#020a22] border border-blue-900/80 rounded-lg p-1.5 space-y-1"><div id="bingo-header" class="grid grid-cols-5 gap-1 text-center"></div><div id="bingo-board" class="grid grid-cols-5 gap-1 text-center"></div></div></section>
+</main><div id="toast-msg" role="status" class="absolute top-12 left-1/2 -translate-x-1/2 bg-blue-900/95 border border-cyan-400 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50 whitespace-nowrap max-w-[95%] overflow-hidden text-ellipsis">Notification</div></div>
+<div id="countdown-scene" role="dialog" aria-label="Game starts in countdown" aria-modal="true" aria-hidden="true"><div class="scene-heading">GAME STARTS IN</div><div class="countdown-balls" id="countdown-balls"><div class="countdown-ball" style="--tone:#f0444f"><span class="ball-face">B</span></div><div class="countdown-ball" style="--tone:#318bff"><span class="ball-face">I</span></div><div class="countdown-ball" style="--tone:#f5ac2c"><span class="ball-face">N</span></div><div class="countdown-ball" style="--tone:#19b97b"><span class="ball-face">G</span></div><div class="countdown-ball" style="--tone:#a45df6"><span class="ball-face">O</span></div></div><div class="scene-footer">KIMEM BINGO</div></div>
+<script>
+'use strict';
+const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
+const $=id=>document.getElementById(id);
+function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
+function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+function toggleCard(id){const index=selectedCards.indexOf(id);if(index!==-1){selectedCards.splice(index,1);if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;triggerToast('Unmarked Card #'+id)}else{if(selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}selectedCards.push(id);activeCard=id;triggerToast('Selected Card #'+id)}updateUI()}
+function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
+function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
+function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
+function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=1000){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
+function clearSearch(){$('card-search-input').value='';searchQuery='';renderCardGrid()}
+function leaveToLobby(){window.location.href='./index.html'}
+function enterLiveGame(){
+ if(!selectedCards.length){triggerToast('Select at least 1 card to play!');return}
+ const ids=selectedCards.slice(0,3);
+ try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids));localStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
+ window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','));
+}
+function handleActionSubmit(){enterLiveGame()}
+function triggerToast(text){const el=$('toast-msg');el.textContent=text;el.style.opacity='1';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity='0',2200)}
+const KIMEM_COUNTDOWN_SOUND='https://good-bingo-telegram.floot.app/_cdn/static/23b33aa8-da40-4604-b45f-8a2cf1b2a7c4-qimem-countdown-final.wav';
+const kimemCountdownAudio=new Audio(KIMEM_COUNTDOWN_SOUND);
+kimemCountdownAudio.preload='auto';kimemCountdownAudio.volume=.78;
+function kimemPlayCountdown(){try{kimemCountdownAudio.pause();kimemCountdownAudio.currentTime=0;kimemCountdownAudio.play().catch(()=>{});}catch(e){}}
+document.addEventListener('pointerdown',function primeKimemAudio(){try{kimemCountdownAudio.load()}catch(e){}},{once:true});
+let timerHandle=null,secondsRemaining=35;
+function resetCountdownScene(){const scene=$('countdown-scene');scene.classList.remove('visible');scene.setAttribute('aria-hidden','true');const balls=[...scene.querySelectorAll('.countdown-ball')];balls.forEach((ball,i)=>{ball.classList.remove('is-active','is-done');ball.querySelector('.ball-face').textContent='BINGO'[i]})}
+function showCountdownSecond(n){const scene=$('countdown-scene');if(!scene.classList.contains('visible')){scene.classList.add('visible');scene.setAttribute('aria-hidden','false')};const balls=[...scene.querySelectorAll('.countdown-ball')];const idx=5-n;balls.forEach((ball,i)=>{ball.classList.remove('is-active');if(i<idx)ball.classList.add('is-done')});const ball=balls[idx];if(ball){ball.classList.remove('is-done');void ball.offsetWidth;ball.classList.add('is-active');setTimeout(()=>{if(ball.classList.contains('is-active'))ball.querySelector('.ball-face').textContent=String(n)},350)}}
+function startTimer(){if(timerHandle)clearInterval(timerHandle);secondsRemaining=35;$('countdown').textContent='35s';resetCountdownScene();timerHandle=setInterval(()=>{secondsRemaining--;$('countdown').textContent=Math.max(0,secondsRemaining)+'s';if(secondsRemaining===5){kimemPlayCountdown();const link=document.createElement('link');link.rel='prefetch';link.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(selectedCards.slice(0,3).join(','));document.head.append(link)}if(secondsRemaining>=1&&secondsRemaining<=5)showCountdownSecond(secondsRemaining);if(secondsRemaining===0){resetCountdownScene();clearInterval(timerHandle);timerHandle=null;if(selectedCards.length){enterLiveGame()}else{triggerToast('Time is up — select a card for the next game');startTimer()}}},1000)}
+function syncTelegramViewport(){
+ const tg=window.Telegram?.WebApp;
+ const height=(tg&&tg.viewportStableHeight&&tg.viewportStableHeight>250)?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);
+ document.documentElement.style.setProperty('--kimem-vh',Math.round(height)+'px');
+ const fullscreen=!!tg?.isFullscreen;
+ const safeTop=fullscreen?(tg?.safeAreaInset?.top||0)+(tg?.contentSafeAreaInset?.top||0):0;
+ const safeBottom=fullscreen?(tg?.safeAreaInset?.bottom||0)+(tg?.contentSafeAreaInset?.bottom||0):0;
+ document.documentElement.style.setProperty('--kimem-top',Math.max(0,safeTop)+'px');
+ document.documentElement.style.setProperty('--kimem-bottom',Math.max(6,safeBottom)+'px');
+}
+
+function refreshLobbyBalance(){try{const w=JSON.parse(localStorage.getItem('qimem-wallet-preview-v1')||'null');const v=w&&Number.isInteger(w.balance)?w.balance:10000;document.getElementById('lobby-balance').textContent=(v/100).toFixed(2)}catch(e){document.getElementById('lobby-balance').textContent='100.00'}}
+window.addEventListener('storage',refreshLobbyBalance);
+function init(){
+ const tg=window.Telegram?.WebApp;
+ try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
+ syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
+ refreshLobbyBalance();updateUI();startTimer();
+}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+</script></body></html>
+
