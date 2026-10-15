@@ -1061,7 +1061,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 let enabled=false,checked=false;
 const api='https://sjsyulzhsgvthothtxku.supabase.co/rest/v1/bingo_game_control?game_type=eq.bingo10&select=enabled';
 const key='sb_publishable_VoD_zOSSu3Rbfguas7aDAw_v5S-ED7O';
-const note=document.createElement('div');note.id='qimem-live-status';note.style.cssText='position:fixed;top:8px;left:8px;z-index:9999;background:#07142c;color:#fff;border:1px solid #378bff;border-radius:8px;padding:5px 9px;font:12px sans-serif;pointer-events:none';note.textContent='Checking live game authorization...';note.style.setProperty('display','none','important');document.body.appendChild(note);
+const note=document.createElement('div');note.id='qimem-live-status';note.style.cssText='position:fixed;top:8px;left:8px;z-index:9999;background:#07142c;color:#fff;border:1px solid #378bff;border-radius:8px;padding:5px 9px;font:12px sans-serif;pointer-events:none';note.textContent='Checking live game authorization...';document.body.appendChild(note);
 async function check(){try{const res=await fetch(api,{headers:{apikey:key},cache:'no-store'});if(!res.ok)throw Error('unavailable');const rows=await res.json();enabled=rows[0]?.enabled===true;checked=true;note.textContent=enabled?'Bingo 10 · Master Admin enabled':'Bingo 10 · Paused by Master Admin';if(!enabled&&typeof running!=='undefined')running=false;}catch(e){enabled=false;checked=false;note.textContent='Game control offline · Paused';if(typeof running!=='undefined')running=false;}}
 const origStart=window.startGame;if(typeof origStart==='function')window.startGame=function(){if(!checked||!enabled){note.textContent='Game is not enabled by Master Admin';return;}return origStart.apply(this,arguments)};
 const origAuto=window.autoStartLiveDraw;if(typeof origAuto==='function')window.autoStartLiveDraw=function(){if(!checked||!enabled)return;return origAuto.apply(this,arguments)};
@@ -1075,7 +1075,7 @@ let activeId='',lastStatus='',busy=false,endedRound='';
 const banner=document.createElement('div');
 banner.id='kimem-server-round-indicator';
 banner.style.cssText='position:fixed;z-index:9998;left:50%;transform:translateX(-50%);bottom:8px;max-width:90vw;padding:6px 12px;border-radius:12px;background:#07172eea;border:1px solid #235c9d;color:#dbeafe;font:700 12px Arial;text-align:center;pointer-events:none';
-banner.style.setProperty('display','none','important');document.body.append(banner);
+document.body.append(banner);
 async function sync(){
  if(busy)return;busy=true;
  try{
