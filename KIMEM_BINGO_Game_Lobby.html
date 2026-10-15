@@ -159,9 +159,10 @@ window.addEventListener('storage',refreshLobbyBalance);
 let kimemLobbySyncBusy=false,kimemLobbyCurrentRound='',kimemLobbyLastPhase='';
 function startServerLobbySync(){
  const notice=document.createElement('div');notice.id='kimem-lobby-server-status';notice.setAttribute('role','status');
- notice.style.cssText='margin:5px 8px;padding:8px 12px;border-radius:10px;border:1px solid #2578c6;background:#081c37;color:#bce2ff;text-align:center;font:700 12px Inter,Arial,sans-serif';
- const countdown=$('countdown');const panel=countdown?.closest('.neon-panel')||countdown?.parentElement;
- if(panel)panel.insertAdjacentElement('afterend',notice);else document.body.appendChild(notice);
+ notice.style.cssText='position:relative!important;display:block!important;flex:none!important;clear:both!important;width:auto!important;height:auto!important;min-height:0!important;max-height:48px!important;overflow:hidden!important;margin:4px 0!important;padding:5px 8px!important;border-radius:8px!important;border:1px solid #2578c6!important;background:#081c37!important;color:#bce2ff!important;text-align:center!important;font:700 10px/15px Inter,Arial,sans-serif!important;z-index:1!important;';
+ const countdown=$('countdown');const main=$('lobby-main');
+ // Status is a compact, non-overlay row inside the normal lobby flow.
+ if(main){const stats=main.querySelector('.stats-panel');if(stats)stats.insertAdjacentElement('afterend',notice);else main.prepend(notice);}else document.body.appendChild(notice);
  const sync=async()=>{
   if(kimemLobbySyncBusy)return;kimemLobbySyncBusy=true;
   try{
