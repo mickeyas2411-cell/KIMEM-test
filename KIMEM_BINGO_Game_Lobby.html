@@ -129,10 +129,8 @@ function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]
 function clearSearch(){$('card-search-input').value='';searchQuery='';renderCardGrid()}
 function leaveToLobby(){window.location.href='./index.html'}
 function enterLiveGame(){
- if(!selectedCards.length){triggerToast('Select at least 1 card to play!');return}
- const ids=selectedCards.slice(0,3);
- try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids));localStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
- window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','));
+ // Selected cards are previews only until secure payment and round registration are verified.
+ window.location.href='./KIMEM_BINGO_Live_Game.html';
 }
 function handleActionSubmit(){enterLiveGame()}
 function triggerToast(text){const el=$('toast-msg');el.textContent=text;el.style.opacity='1';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.opacity='0',2200)}
@@ -158,11 +156,42 @@ function syncTelegramViewport(){
 
 function refreshLobbyBalance(){try{const w=JSON.parse(localStorage.getItem('qimem-wallet-preview-v1')||'null');const v=w&&Number.isInteger(w.balance)?w.balance:10000;document.getElementById('lobby-balance').textContent=(v/100).toFixed(2)}catch(e){document.getElementById('lobby-balance').textContent='100.00'}}
 window.addEventListener('storage',refreshLobbyBalance);
+let kimemLobbySyncBusy=false,kimemLobbyCurrentRound='',kimemLobbyLastPhase='';
+function startServerLobbySync(){
+ const notice=document.createElement('div');notice.id='kimem-lobby-server-status';notice.setAttribute('role','status');
+ notice.style.cssText='margin:5px 8px;padding:8px 12px;border-radius:10px;border:1px solid #2578c6;background:#081c37;color:#bce2ff;text-align:center;font:700 12px Inter,Arial,sans-serif';
+ const countdown=$('countdown');const panel=countdown?.closest('.neon-panel')||countdown?.parentElement;
+ if(panel)panel.insertAdjacentElement('afterend',notice);else document.body.appendChild(notice);
+ const sync=async()=>{
+  if(kimemLobbySyncBusy)return;kimemLobbySyncBusy=true;
+  try{
+   const url='https://sjsyulzhsgvthothtxku.supabase.co/rest/v1/bingo_live_rounds?select=id,game_code,status,created_at,started_at,game_type&game_type=eq.bingo10&order=created_at.desc&limit=1';
+   const res=await fetch(url,{headers:{apikey:'sb_publishable_VoD_zOSSu3Rbfguas7aDAw_v5S-ED7O'},cache:'no-store'});
+   if(!res.ok)throw Error('server offline');
+   const rows=await res.json();const r=rows[0];
+   if(!r){notice.textContent='Waiting for next server round · You can watch the live game';countdown.textContent='--';return;}
+   const remaining=Math.max(0,Math.ceil((new Date(r.created_at).getTime()+20000-Date.now())/1000));
+   countdown.textContent=r.status==='waiting'?remaining+'s':r.status==='running'?'LIVE':'NEXT';
+   notice.textContent='GAME '+r.game_code+' · '+r.status.toUpperCase()+' · Card selection is preview only until registration is connected';
+   if(r.id!==kimemLobbyCurrentRound){kimemLobbyCurrentRound=r.id;kimemLobbyLastPhase='';resetCountdownScene();}
+   if(r.status==='waiting'&&remaining>=1&&remaining<=5){
+     if(kimemLobbyLastPhase!==String(remaining)){showCountdownSecond(remaining);if(remaining===5)kimemPlayCountdown();}
+   }else if(kimemLobbyLastPhase!=='clear')resetCountdownScene();
+   kimemLobbyLastPhase=r.status==='waiting'&&remaining<=5?String(remaining):'clear';
+   if(r.status==='running'&&sessionStorage.getItem('kimem-auto-watch-round')!==r.id){
+     sessionStorage.setItem('kimem-auto-watch-round',r.id);
+     location.href='./KIMEM_BINGO_Live_Game.html';
+   }
+  }catch(e){countdown.textContent='--';notice.textContent='Live server unavailable · Retry in a moment';}
+  finally{kimemLobbySyncBusy=false;}
+ };
+ sync();setInterval(sync,2000);
+}
 function init(){
  const tg=window.Telegram?.WebApp;
  try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
- refreshLobbyBalance();updateUI();startTimer();
+ refreshLobbyBalance();updateUI();startServerLobbySync();
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script></body></html>
 
