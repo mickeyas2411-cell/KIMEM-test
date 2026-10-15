@@ -1075,7 +1075,7 @@ let activeId='',lastStatus='',busy=false,endedRound='';
 const banner=document.createElement('div');
 banner.id='kimem-server-round-indicator';
 banner.style.cssText='position:fixed;z-index:9998;left:50%;transform:translateX(-50%);bottom:8px;max-width:90vw;padding:6px 12px;border-radius:12px;background:#07172eea;border:1px solid #235c9d;color:#dbeafe;font:700 12px Arial;text-align:center;pointer-events:none';
-document.body.append(banner);
+banner.style.setProperty('display','none','important');document.body.append(banner);
 async function sync(){
  if(busy)return;busy=true;
  try{
