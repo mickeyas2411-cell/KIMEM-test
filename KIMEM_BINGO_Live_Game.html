@@ -630,10 +630,10 @@ const letter=n=>'BINGO'[Math.floor((n-1)/15)];
 const tone=n=>Math.floor((n-1)/15);
 let selected=[],mode='auto',drawn=[],running=false,runId=0,manualMarks={};
 function cardFor(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const cols=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}cols.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?0:cols[c][r]));}
-function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}if(!selected.length)selected=[42];}
+function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}/* No fake default card: cards require server-confirmed ownership. */ selected=[];}
 
 function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5;c++){const col=document.createElement('div');col.className='board-column';const h=document.createElement('div');h.className='board-letter';h.style.background=colors[c];h.textContent='BINGO'[c];col.append(h);for(let j=1;j<=15;j++){const n=c*15+j;const d=document.createElement('div');d.className='board-number'+(drawn.includes(n)?' called':'');d.textContent=n;d.id='board-'+n;d.style.setProperty('--cell-tone',colors[c]);col.append(d)}el.append(col)}}
-function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.style.setProperty('--kimem-card-count',String(Math.max(1,Math.min(3,selected.length))));area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">No cards selected. Return to Lobby and choose 1–3 cards.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
+function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.style.setProperty('--kimem-card-count',String(Math.max(1,Math.min(3,selected.length))));area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div class="text-xs text-slate-400 p-4 text-center">ጨዋታው እስኪያልቅ ይጠብቁ · Wait until this round finishes.</div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
 function setMode(next){mode=next;$('manual-btn').classList.toggle('active',mode==='manual');$('auto-btn').classList.toggle('active',mode==='auto');cards()}
 function toast(msg){const el=$('live-toast');el.textContent=msg;el.style.opacity=1;clearTimeout(window.toastHandle);window.toastHandle=setTimeout(()=>el.style.opacity=0,2300)}
 function kimemWinningCards(useManual=false){
@@ -658,7 +658,7 @@ const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href
 const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
 function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
-function claimBingo(){
+function claimBingo(){kimemSmallNotice('Bingo is checked automatically by the server.');return;
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
  const wins=kimemWinningCards();
  if(wins.length)kimemFinishAfterBall(wins);
@@ -935,7 +935,7 @@ function digitalTick(now){
  if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=30){sphereRender(now);digitalTick.lastFrame=now}
  digitalTimer=requestAnimationFrame(digitalTick);
 }
-function startGame(){
+function startGame(){kimemSmallNotice('Draw is controlled by the live server.');return;
  kimemUnlockVoice();
  if(drawn.length===75)return;
  if(running){running=false;$('draw-status').textContent='PAUSED';return}
@@ -961,7 +961,8 @@ function resetGame(){
 
 readCards();cards();board();initMachine();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
-(function autoStartLiveDraw(){
+(function autoStartLiveDraw(){return; // Server-controlled mode: never draw locally.
+
  const status=$('shuffle-status');
  spherePhase='shuffle';$('machine').classList.add('kimem-shuffling');sphereStart=performance.now();sphereLastSwap=0;
  sphereSamples=Array.from({length:75},(_,i)=>i+1);
@@ -1062,5 +1063,48 @@ async function check(){try{const res=await fetch(api,{headers:{apikey:key},cache
 const origStart=window.startGame;if(typeof origStart==='function')window.startGame=function(){if(!checked||!enabled){note.textContent='Game is not enabled by Master Admin';return;}return origStart.apply(this,arguments)};
 const origAuto=window.autoStartLiveDraw;if(typeof origAuto==='function')window.autoStartLiveDraw=function(){if(!checked||!enabled)return;return origAuto.apply(this,arguments)};
 check();setInterval(check,10000);
+})();
+</script><script id="kimem-supabase-authoritative-viewer">
+(()=>{
+const base='https://sjsyulzhsgvthothtxku.supabase.co/rest/v1/bingo_live_rounds';
+const key='sb_publishable_VoD_zOSSu3Rbfguas7aDAw_v5S-ED7O';
+let activeId='',lastStatus='',busy=false,endedRound='';
+const banner=document.createElement('div');
+banner.id='kimem-server-round-indicator';
+banner.style.cssText='position:fixed;z-index:9998;left:50%;transform:translateX(-50%);bottom:8px;max-width:90vw;padding:6px 12px;border-radius:12px;background:#07172eea;border:1px solid #235c9d;color:#dbeafe;font:700 12px Arial;text-align:center;pointer-events:none';
+document.body.append(banner);
+async function sync(){
+ if(busy)return;busy=true;
+ try{
+  const url=base+'?select=id,game_code,status,drawn_numbers,game_type&game_type=eq.bingo10&order=created_at.desc&limit=1';
+  const resp=await fetch(url,{headers:{apikey:key},cache:'no-store'});
+  if(!resp.ok)throw Error('Game data unavailable');
+  const rows=await resp.json(),r=rows[0];
+  running=false;spherePhase='idle';
+  if(!r){banner.textContent='Waiting for Master Admin to create the next round';$('draw-status').textContent='WAITING FOR NEXT ROUND';return;}
+  if(r.id!==activeId){activeId=r.id;lastStatus='';endedRound='';resetGame();}
+  const code=document.querySelector('.stats-panel .stat-value');
+  if(code)code.textContent=r.game_code;
+  const nums=Array.isArray(r.drawn_numbers)?r.drawn_numbers:[];
+  for(const n of nums){
+    if(!Number.isInteger(n)||n<1||n>75||drawn.includes(n))continue;
+    updateDraw(n);
+    $('digital-letter').textContent=letter(n);
+    $('digital-number').textContent=String(n).padStart(2,'0');
+    $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
+  }
+  banner.textContent=r.game_code+' · '+r.status.toUpperCase()+' · '+nums.length+'/75';
+  $('draw-status').textContent=r.status==='running'?'LIVE SERVER DRAW':r.status==='waiting'?'WAITING FOR NEXT ROUND':'ROUND '+r.status.toUpperCase();
+  if(r.status==='finished' && endedRound!==r.id){
+    endedRound=r.id;
+    banner.textContent=r.game_code+' · ROUND FINISHED · Returning to Lobby';
+    setTimeout(()=>{if(activeId===r.id)location.href='./KIMEM_BINGO_Game_Lobby.html'},7000);
+  }
+  lastStatus=r.status;
+ }catch(e){
+  running=false;spherePhase='idle';banner.textContent='Server connection unavailable · Draw paused';$('draw-status').textContent='SERVER OFFLINE';
+ }finally{busy=false;}
+}
+sync();setInterval(sync,2000);
 })();
 </script></body></html>
