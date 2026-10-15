@@ -1052,4 +1052,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(24px,6.5vw,34px)!important;font-size:12px!important}
 #kimem-winner-overlay .kimem-result-return{font-size:11px!important;color:#e8eafa!important;text-align:center!important}
 #kimem-winner-overlay #kimem-winner-timer{font-size:34px!important;font-weight:900!important;color:#ffce50!important}
-</style></body></html>
+</style><script id="qimem-live-admin-control">
+(function(){
+let enabled=false,checked=false;
+const api='https://sjsyulzhsgvthothtxku.supabase.co/rest/v1/bingo_game_control?game_type=eq.bingo10&select=enabled';
+const key='sb_publishable_VoD_zOSSu3Rbfguas7aDAw_v5S-ED7O';
+const note=document.createElement('div');note.id='qimem-live-status';note.style.cssText='position:fixed;top:8px;left:8px;z-index:9999;background:#07142c;color:#fff;border:1px solid #378bff;border-radius:8px;padding:5px 9px;font:12px sans-serif;pointer-events:none';note.textContent='Checking live game authorization...';document.body.appendChild(note);
+async function check(){try{const res=await fetch(api,{headers:{apikey:key},cache:'no-store'});if(!res.ok)throw Error('unavailable');const rows=await res.json();enabled=rows[0]?.enabled===true;checked=true;note.textContent=enabled?'Bingo 10 · Master Admin enabled':'Bingo 10 · Paused by Master Admin';if(!enabled&&typeof running!=='undefined')running=false;}catch(e){enabled=false;checked=false;note.textContent='Game control offline · Paused';if(typeof running!=='undefined')running=false;}}
+const origStart=window.startGame;if(typeof origStart==='function')window.startGame=function(){if(!checked||!enabled){note.textContent='Game is not enabled by Master Admin';return;}return origStart.apply(this,arguments)};
+const origAuto=window.autoStartLiveDraw;if(typeof origAuto==='function')window.autoStartLiveDraw=function(){if(!checked||!enabled)return;return origAuto.apply(this,arguments)};
+check();setInterval(check,10000);
+})();
+</script></body></html>
