@@ -903,7 +903,7 @@ function updateDraw(n){
   const history=$('last-five');history.replaceChildren();
   drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
  }
- if(!window.kimemServerDrawBatch)cards();
+ if(!window.kimemServerDrawBatch&&!window.kimemDeferServerBallVisual)cards();
 }
 function pickDrawNumber(){
  const available=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
@@ -942,13 +942,14 @@ function kimemFlushServerBallVisual(){
  const cell=$('board-'+n);if(cell)cell.classList.add('called');
  const history=$('last-five');history.replaceChildren();
  drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+ cards();
 }
 function digitalTick(now){
  if(spherePhase==='server-reveal'){
   const t=clamp3((now-sphereStart)/1050,0,1),e=t<.85?t:.85+.15*(1-Math.pow(1-(t-.85)/.15,2));
   sphereAngle=sphereFromAngle+(Math.PI*4.5)*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.15*(1-t);
-  if(t>=.90)kimemFlushServerBallVisual();
+  if(t>=1)kimemFlushServerBallVisual();
   if(t>=1){sphereCurrent=spherePending;spherePending=0;sphereReveal=null;spherePhase='idle';sphereAngle=0;spherePitch=0;digitalTick.serverStaticRendered=false;}
  }else if(spherePhase==='shuffle'){
   const t=now-sphereStart;
