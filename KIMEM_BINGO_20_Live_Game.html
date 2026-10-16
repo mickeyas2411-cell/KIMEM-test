@@ -839,6 +839,7 @@ const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 kimemVoicePlayer.preload='auto';
+kimemVoicePlayer.playbackRate=1.1;
 /* Warm the browser's HTTP media cache without changing the working HTML Audio player. */
 (function kimemWarmVoiceCache(){
  const total=75;
@@ -864,7 +865,7 @@ function kimemVoiceNext(){
  kimemVoiceBusy=true;
  kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
  const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.unshift(n)});
+ if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.length=0});
 }
 kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
 kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
@@ -873,8 +874,10 @@ function kimemCallBallAmharic(n){
  kimemVoiceQueue.push(n);
  kimemVoiceNext();
 }
+let kimemVoiceUnlocked=false;
 function kimemUnlockVoice(){
- if(kimemVoiceBusy)return;
+ if(kimemVoiceUnlocked||kimemVoiceBusy)return;
+ kimemVoiceUnlocked=true;
  if(kimemVoiceQueue.length){kimemVoiceNext();return}
  kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
  kimemVoicePlayer.muted=true;
