@@ -958,7 +958,8 @@ function digitalTick(now){
   }
   digitalTick.lastFrame=now;
  }
- digitalTimer=requestAnimationFrame(digitalTick);
+ if(kimemServerMode){digitalTimer=setTimeout(()=>requestAnimationFrame(digitalTick),(spherePhase==='shuffle'||spherePhase==='reveal')?45:200)}
+ else{digitalTimer=requestAnimationFrame(digitalTick)}
 }
 function startGame(){
  if(new URLSearchParams(location.search).get('sync')==='1')return;
