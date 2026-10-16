@@ -850,7 +850,7 @@ function kimemVoiceNext(){
  kimemVoiceBusy=true;
  kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
  const p=kimemVoicePlayer.play();
- if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.unshift(n)});
+ if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.length=0});
 }
 kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
 kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
@@ -859,8 +859,10 @@ function kimemCallBallAmharic(n){
  kimemVoiceQueue.push(n);
  kimemVoiceNext();
 }
+let kimemVoiceUnlocked=false;
 function kimemUnlockVoice(){
- if(kimemVoiceBusy)return;
+ if(kimemVoiceUnlocked||kimemVoiceBusy)return;
+ kimemVoiceUnlocked=true;
  if(kimemVoiceQueue.length){kimemVoiceNext();return}
  kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
  kimemVoicePlayer.muted=true;
@@ -941,7 +943,8 @@ function digitalTick(now){
   }
   digitalTick.lastFrame=now;
  }
- digitalTimer=requestAnimationFrame(digitalTick);
+ if(kimemServerMode){digitalTimer=setTimeout(()=>requestAnimationFrame(digitalTick),200)}
+ else digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
  if(new URLSearchParams(location.search).get('sync')==='1')return;
@@ -1066,8 +1069,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
  if(new URLSearchParams(location.search).get('sync')==='0')return;
  const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
- let activeRound=null,redirecting=false,finished=false,syncBusy=false;
+ let activeRound=null,redirecting=false,finished=false,syncBusy=false,kimemFirstServerSync=true,kimemShuffleTimeout=null;
+ let kimemLastDisplayedId='';
  function showId(id){
+  if(kimemLastDisplayedId===id)return;
+  kimemLastDisplayedId=id;
   const labels=[...document.querySelectorAll('*')].filter(e=>e.children.length===0&&e.textContent?.trim()==='GAME ID');
   for(const label of labels){
    const parent=label.parentElement;
@@ -1099,6 +1105,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     const samePrefix=drawn.every((n,i)=>r.drawn[i]===n);
     if(!samePrefix){drawn=[];board();cards();}
     const pending=r.drawn.slice(drawn.length);
+    const isNewServerBall=!kimemFirstServerSync&&pending.length===1;
     const drawBatch=pending.length>1;
     window.kimemServerDrawBatch=drawBatch;
     for(const n of pending){
@@ -1109,6 +1116,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
      $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
     }
     if(pending.length)digitalTick.serverStaticRendered=false;
+    if(isNewServerBall){
+     const latest=pending[0];
+     kimemCallBallAmharic(latest);
+     const machine=$('machine');
+     machine.classList.add('kimem-shuffling');
+     clearTimeout(kimemShuffleTimeout);
+     kimemShuffleTimeout=setTimeout(()=>machine.classList.remove('kimem-shuffling'),650);
+    }
+    kimemFirstServerSync=false;
     window.kimemServerDrawBatch=false;
     if(drawBatch)cards();
    }
