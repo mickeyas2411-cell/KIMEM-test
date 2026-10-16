@@ -640,7 +640,7 @@ function kimemWinningCards(useManual=false){
  const marked=(id,n)=>n===0||drawn.includes(n);
  return selected.filter(id=>{
   const g=cardFor(id);
-  const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
+  const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i]),[g[0][0],g[0][4],g[4][0],g[4][4]]];
   return lines.some(line=>line.every(n=>marked(id,n)));
  });
 }
@@ -657,7 +657,7 @@ function kimemSmallNotice(message){
 const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href).href);
 const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
-function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
+function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;sound.muted=false;sound.volume=1;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
 function claimBingo(){
  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
  const wins=kimemWinningCards();
@@ -697,7 +697,7 @@ function kimemFinishGame(ids){
    'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
    const g=cardFor(id);
    const isHit=n=>n===0||drawn.includes(n);
-   const candidateLines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
+   const candidateLines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i]),[g[0][0],g[0][4],g[4][0],g[4][4]]];
    const winningNumbers=new Set(candidateLines.filter(line=>line.every(isHit)).flat());
    const grid=document.createElement('div');grid.className='play-numbers';
    cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';grid.append(cell)}));temp.append(grid);host.append(temp);
@@ -1159,6 +1159,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     kimemFirstServerSync=false;
     window.kimemServerDrawBatch=false;
     if(drawBatch)cards();
+    // Check selected cards after authoritative server draws (including four corners).
+    if(pending.length&&mode==='auto'&&!kimemFinished&&!finished&&r.phase!=='finished'){
+     const wins=kimemWinningCards();
+     if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins)}
+    }
    }
    running=false;
    if(r.phase==='finished'){
