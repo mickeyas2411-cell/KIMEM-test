@@ -745,7 +745,7 @@ function kimemFinishGame(ids){
  overlay.style.setProperty('inset','0','important');
  overlay.style.setProperty('z-index','10000','important');
  let left=7;document.getElementById('kimem-winner-timer').textContent=left;
- const returnToLobby=()=>location.replace('./KIMEM_BINGO_20_Lobby.html?sync=1');
+ const returnToLobby=()=>location.replace('./KIMEM_BINGO_20_Lobby.html?sync=1&returned=1');
  const deadline=Date.now()+7000;
  clearInterval(kimemReturnTimer);
  kimemReturnTimer=setInterval(()=>{
