@@ -160,7 +160,7 @@ function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
  if(kimemAwaitNextLobby){
-  if(r.phase!=='lobby'||(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound)){
+  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
    $('countdown').textContent='WAIT';resetCountdownScene();return;
   }
   kimemAwaitNextLobby=false;
