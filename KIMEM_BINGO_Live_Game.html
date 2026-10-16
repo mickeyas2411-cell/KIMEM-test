@@ -733,7 +733,7 @@ function kimemFinishGame(ids){
  let left=7;document.getElementById('kimem-winner-timer').textContent=left;
  const audio=()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=kimemFinishGame.audioCtx||(kimemFinishGame.audioCtx=new C());if(ctx.state==='suspended')ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=660;gain.gain.value=.055;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12)}catch(e){}};
  // Winner voice is played by kimemBingoWinSound above.
- kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.href='./KIMEM_BINGO_Game_Lobby.html';return}document.getElementById('kimem-winner-timer').textContent=left;if(winners.length)audio()},1000);
+ kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1');return}document.getElementById('kimem-winner-timer').textContent=left;if(winners.length)audio()},1000);
 }
 function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d.style.setProperty('--ball-color',colors[tone(n)]);d.style.setProperty('--ball-light',lights[tone(n)]);d.textContent=letter(n)+' '+n;return d}
 
