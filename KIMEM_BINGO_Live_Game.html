@@ -878,7 +878,7 @@ function updateDraw(n){
  const cell=$('board-'+n);if(cell)cell.classList.add('called');
  const history=$('last-five');history.replaceChildren();
  drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
- cards();
+ if(!window.kimemServerDrawBatch)cards();
 }
 function pickDrawNumber(){
  const available=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
@@ -1058,7 +1058,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
  if(new URLSearchParams(location.search).get('sync')==='0')return;
  const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
- let activeRound=null,redirecting=false,finished=false;
+ let activeRound=null,redirecting=false,finished=false,syncBusy=false;
  function showId(id){
   const labels=[...document.querySelectorAll('*')].filter(e=>e.children.length===0&&e.textContent?.trim()==='GAME ID');
   for(const label of labels){
@@ -1068,6 +1068,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }
  }
  async function sync(){
+  if(syncBusy||redirecting)return;
+  syncBusy=true;
   try{
    const response=await fetch(endpoint,{cache:'no-store'});
    if(!response.ok)throw Error('Server unavailable');
@@ -1088,13 +1090,18 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    if(Array.isArray(r.drawn)){
     const samePrefix=drawn.every((n,i)=>r.drawn[i]===n);
     if(!samePrefix){drawn=[];board();cards();}
-    for(const n of r.drawn.slice(drawn.length)){
+    const pending=r.drawn.slice(drawn.length);
+    const drawBatch=pending.length>1;
+    window.kimemServerDrawBatch=drawBatch;
+    for(const n of pending){
      if(!Number.isInteger(n)||n<1||n>75||drawn.includes(n))continue;
      updateDraw(n);
      $('digital-letter').textContent=letter(n);
      $('digital-number').textContent=String(n).padStart(2,'0');
      $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
     }
+    window.kimemServerDrawBatch=false;
+    if(drawBatch)cards();
    }
    running=false;
    if(r.phase==='finished'){
@@ -1102,6 +1109,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(!finished){finished=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
+  finally{syncBusy=false}
  }
  function begin(){running=false;sync();setInterval(sync,1500)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',begin);
