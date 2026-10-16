@@ -877,9 +877,11 @@ function updateDraw(n){
  drawn.push(n);
  $('countdown').textContent=drawn.length+'/75';
  $('called-total').textContent=drawn.length+' CALLED';
- const cell=$('board-'+n);if(cell)cell.classList.add('called');
- const history=$('last-five');history.replaceChildren();
- drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+ if(!window.kimemDeferServerBallVisual){
+  const cell=$('board-'+n);if(cell)cell.classList.add('called');
+  const history=$('last-five');history.replaceChildren();
+  drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+ }
  if(!window.kimemServerDrawBatch)cards();
 }
 function pickDrawNumber(){
@@ -912,11 +914,20 @@ function finishSphereReveal(now){
  if(drawn.length===75){running=false;spherePhase='idle';kimemFinishAfterBall(kimemWinningCards())}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
+function kimemFlushServerBallVisual(){
+ const n=window.kimemDeferServerBallVisual;
+ if(!n)return;
+ window.kimemDeferServerBallVisual=0;
+ const cell=$('board-'+n);if(cell)cell.classList.add('called');
+ const history=$('last-five');history.replaceChildren();
+ drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+}
 function digitalTick(now){
  if(spherePhase==='server-reveal'){
   const t=clamp3((now-sphereStart)/950,0,1),e=ease3(t);
   sphereAngle=sphereFromAngle+(Math.PI*4.5)*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.15*(1-t);
+  if(t>=.90)kimemFlushServerBallVisual();
   if(t>=1){sphereCurrent=spherePending;spherePending=0;sphereReveal=null;spherePhase='idle';sphereAngle=0;spherePitch=0;digitalTick.serverStaticRendered=false;}
  }else if(spherePhase==='shuffle'){
   const t=now-sphereStart;
@@ -1115,6 +1126,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }
     const isNewServerBall=!kimemFirstServerSync&&pending.length===1;
     const drawBatch=pending.length>1;
+    if(!isNewServerBall)kimemFlushServerBallVisual();
+    window.kimemDeferServerBallVisual=isNewServerBall?pending[0]:0;
     window.kimemServerDrawBatch=drawBatch;
     for(const n of pending){
      if(!Number.isInteger(n)||n<1||n>75||drawn.includes(n))continue;
