@@ -1087,7 +1087,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    if(!response.ok)throw Error('Server unavailable');
    const payload=await response.json();
    const r=payload.round;
-   if(!payload.ok||!r||r.stake!=='20'||!/^AA\\d{6}$/.test(r.gameId))throw Error('Invalid round');
+   if(!payload.ok||!r||r.stake!=='20'||!/^AA\d{6}$/.test(r.gameId))throw Error('Invalid round');
    if(activeRound!==null&&activeRound!==r.roundNumber){
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_20_Lobby.html?sync=1')}
     return;
