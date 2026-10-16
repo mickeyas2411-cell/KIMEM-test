@@ -751,7 +751,7 @@ let sphereSamples=[],sphereSampleIndex=0,sphereLastSwap=0,sphereReveal=null;
 let digitalTimer=null,nextDrawAt=0,drawRemaining=3000;
 function sphereRender(now){
  const rev=sphereReveal;
- const p=rev?clamp3((now-rev.start)/1100,0,1):0;
+ const p=rev?clamp3((now-rev.start)/(spherePhase==='server-reveal'?1050:1100),0,1):0;
  const blend=rev?smooth3(clamp3((p-.24)/.76,0,1)):0;
  const from=rev?rev.from:(sphereCurrent||1),to=rev?rev.to:from;
  const baseA=rgb3(colors[tone(from)]),baseB=rgb3(colors[tone(to)]);
@@ -825,6 +825,7 @@ const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
 const kimemVoiceQueue=[];
 const kimemVoicePlayer=new Audio();
 kimemVoicePlayer.preload='auto';
+kimemVoicePlayer.playbackRate=1.1;
 /* Warm the browser's HTTP media cache without changing the working HTML Audio player. */
 (function kimemWarmVoiceCache(){
  const total=75;
@@ -924,7 +925,7 @@ function kimemFlushServerBallVisual(){
 }
 function digitalTick(now){
  if(spherePhase==='server-reveal'){
-  const t=clamp3((now-sphereStart)/950,0,1),e=ease3(t);
+  const t=clamp3((now-sphereStart)/1050,0,1),e=ease3(t);
   sphereAngle=sphereFromAngle+(Math.PI*4.5)*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.15*(1-t);
   if(t>=.90)kimemFlushServerBallVisual();
