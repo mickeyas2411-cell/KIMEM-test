@@ -1,0 +1,1127 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>KIMEM BINGO — Live Game</title><script src="https://cdn.tailwindcss.com"></script><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><style>
+*{box-sizing:border-box}body{font-family:Inter,sans-serif;background:#02050e;color:#fff;margin:0;-webkit-user-select:none;user-select:none}.cosmic-bg{background:radial-gradient(circle at 50% 0%,rgba(0,102,255,.35),transparent 60%),radial-gradient(circle at 50% 100%,rgba(0,60,180,.25),transparent 50%),linear-gradient(180deg,#020716,#030a21 50%,#010410)}.neon-panel{background:rgba(6,18,46,.75);backdrop-filter:blur(12px);border:1px solid rgba(0,140,255,.4);box-shadow:0 0 15px rgba(0,100,255,.15),inset 0 0 12px rgba(0,120,255,.1)}.hero-banner{background:linear-gradient(135deg,rgba(3,20,65,.9),rgba(10,40,110,.95) 50%,rgba(2,15,50,.9));border:1.5px solid #0099ff;box-shadow:0 0 25px rgba(0,140,255,.4),inset 0 0 15px rgba(0,150,255,.2)}.glow-text-white{text-shadow:0 0 10px #ffffff80,0 0 20px #00b4ff99}.glow-text-gold{background:linear-gradient(180deg,#fff7ad,#ffa800 50%,#d17a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 8px #ffb40099)}
+.card-scroll-area{height:288px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#0077ff #020a1e}.card-scroll-area::-webkit-scrollbar{width:3px}.card-scroll-area::-webkit-scrollbar-thumb{background:#0077ff;border-radius:5px}.card-grid-item{min-width:0;height:34px;position:relative;border-radius:7px;background:linear-gradient(180deg,#102850,#030f2b);border:1px solid rgba(66,153,255,.48);box-shadow:inset 0 1px 0 #ffffff25,0 2px 3px #0005;color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;cursor:pointer}.card-grid-item.soft-match:not(.selected){border-color:#5de3ff;box-shadow:0 0 0 1px #63ddff99,0 0 10px #26c8ff50;background:linear-gradient(180deg,#1a4770,#0b2247)}.card-grid-item.selected{background:linear-gradient(180deg,#ffe985,#d9961d)!important;border:1px solid #fff0a1!important;color:#4b3200!important;box-shadow:0 0 9px #ffbf42a6,inset 0 1px 0 #fff9!important}.card-grid-item .lock{font-size:8px;margin-left:2px;color:#7b560c}.card-grid-item:focus-visible{outline:2px solid #fff;outline-offset:1px}
+.locked-row{display:flex;gap:6px;overflow-x:auto;min-height:31px;align-items:center}.locked-chip{flex-shrink:0;border:1px solid #4465a5;border-radius:8px;padding:5px 8px;background:#07142f;color:#d9e5ff;font-size:11px;font-weight:800}.locked-chip.active{border-color:#ffc24e;background:linear-gradient(180deg,#6b511e,#27203a);color:#ffe49a}.locked-chip span{margin-left:8px;opacity:.7}
+.bingo-tile{height:24px;min-width:0;border-radius:7px;background:linear-gradient(180deg,#f0f0ed,#a7a7a6 52%,#777777);border:1px solid #34373f;color:#292a2f;box-shadow:inset 0 2px 1px #fff9,0 2px 2px #0009;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}.bingo-hdr{height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;background:linear-gradient(180deg,#243456,#0a1228);border:1px solid currentColor;box-shadow:inset 0 2px 1px #ffffff36,0 2px 4px #0009}.tile-free{background:linear-gradient(180deg,#ffe47e,#b8872b);color:#51380d;border-color:#f7d269}.btn-action-glow{background:linear-gradient(90deg,#1264ed,#8030e5);border:1px solid #66c2ff;box-shadow:0 0 16px #0088ff77}.btn-action-glow:active{transform:scale(.98)}.live-pulse{background:linear-gradient(180deg,#e52c47,#971329);border:1px solid #ff8b9c;box-shadow:0 0 8px #ed334766;animation:liveGlow 1.2s ease-in-out infinite alternate}@keyframes liveGlow{from{box-shadow:0 0 3px #e3294477;opacity:.8}to{box-shadow:0 0 14px #ff3959;opacity:1}}.stats-panel{padding:9px 4px!important;min-height:65px}.stat-icon{display:block;margin:0 auto 4px;font-size:14px}.stat-label{font-size:8px;font-weight:800;color:#74b6ff}.stat-value{font-size:11px;font-weight:900;margin-top:3px}.bonus-row button{padding:4px!important;gap:4px}.bonus-row button>div:first-child{width:19px;height:19px;flex-shrink:0}.bonus-row button>div:last-child>div:last-child{font-size:9px}.footer-actions{display:grid;grid-template-columns:88px minmax(0,1fr);gap:8px}.footer-actions button{min-height:31px;padding:6px 8px;font-size:10px;border-radius:8px}
+@media(max-width:350px){.card-grid-item{font-size:10px;height:30px}.bingo-tile{height:27px;font-size:12px}.bingo-hdr{height:29px}}@media(min-height:780px){.card-scroll-area{height:clamp(235px,36dvh,410px)}}
+/* Full-screen, balanced mobile and desktop proportions */
+html,body{width:100%;height:100%;overflow:hidden}
+body>div{height:100dvh;max-height:100dvh;width:100%;max-width:none}
+.card-scroll-area{height:clamp(180px,30dvh,360px)}
+main{scrollbar-width:thin;scrollbar-color:#1767be #06102a}
+@media(min-width:700px){main{width:min(100%,960px);margin-inline:auto}.card-scroll-area{height:clamp(200px,32dvh,390px)}.card-grid-item{height:38px}.bingo-tile{height:29px}.bingo-hdr{height:31px}}
+@media(max-height:700px){.card-scroll-area{height:clamp(140px,25dvh,210px)}.hero-banner{padding:8px}.stats-panel{min-height:57px}.bingo-tile{height:22px}.bingo-hdr{height:24px}}
+
+
+/* Card matrix priority: ten columns x at least nine visible rows (90 cards). */
+.card-scroll-area{height:310px!important;min-height:310px!important;flex-shrink:0;gap:3px!important;grid-auto-rows:28px;align-content:start}
+.card-grid-item{height:28px!important;font-size:11px!important;border-radius:5px}
+/* Miniature preview frees space for the card selection matrix. */
+#bingo-board,#bingo-header{gap:2px!important}
+.bingo-tile{height:15px!important;font-size:9px!important;border-radius:3px}
+.bingo-hdr{height:17px!important;font-size:11px!important;border-radius:3px}
+#bingo-board{max-width:220px;margin-inline:auto}
+#bingo-header{max-width:220px;margin-inline:auto}
+@media(min-width:700px){.card-scroll-area{height:340px!important;min-height:340px!important;grid-auto-rows:30px}.card-grid-item{height:30px!important}}
+
+/* Approved update: inline locked-card chips and readable preview; card matrix untouched. */
+.locked-inline{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:nowrap}
+.locked-inline .locked-label{flex-shrink:0;margin:0;font-size:10px;letter-spacing:.08em;color:#93c5fd;font-weight:900}
+.locked-inline .locked-row{min-width:0;flex:1;white-space:nowrap;min-height:31px}
+.locked-inline .locked-chip{padding:5px 7px;font-size:10px}
+#bingo-board,#bingo-header{max-width:370px!important;width:100%;gap:3px!important;margin-inline:auto}
+.bingo-tile{height:clamp(26px,4.3dvh,39px)!important;font-size:clamp(13px,3.5vw,18px)!important;border-radius:6px!important}
+.bingo-hdr{height:clamp(27px,4dvh,37px)!important;font-size:clamp(16px,4vw,22px)!important;border-radius:6px!important}
+/* Full viewport cinematic five-second countdown. */
+#countdown-scene{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;flex-direction:column;padding:20px;background:radial-gradient(ellipse at center,#14377b 0%,#07142e 45%,#01040e 100%);overflow:hidden;isolation:isolate}
+#countdown-scene.visible{display:flex;animation:sceneEnter .45s ease-out both}
+#countdown-scene::before{content:'';position:absolute;width:130vmax;height:130vmax;border-radius:50%;background:repeating-conic-gradient(from 10deg,#20adff11 0deg 10deg,transparent 10deg 25deg);animation:slowSpin 18s linear infinite;pointer-events:none}
+#countdown-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,transparent 25%,#01030b88 90%);pointer-events:none}
+.scene-heading{position:relative;z-index:2;font-size:clamp(20px,5.7vw,42px);letter-spacing:.15em;text-align:center;font-weight:900;color:#fff;text-shadow:0 0 14px #43baff,0 0 35px #007bff;margin-bottom:clamp(30px,8vh,75px)}
+.countdown-balls{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:clamp(5px,1.6vw,20px);width:100%;max-width:740px;perspective:900px}
+.countdown-ball{--tone:#ee424c;position:relative;flex:0 1 125px;aspect-ratio:1;min-width:0;max-width:125px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 31% 22%,#ffffffed 0%,#ffffff66 8%,transparent 29%),radial-gradient(circle at 32% 26%,color-mix(in srgb,var(--tone),white 35%),var(--tone) 50%,color-mix(in srgb,var(--tone),black 62%) 100%);border:2px solid #ffffff80;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff7,0 13px 17px #000b,0 0 19px var(--tone);transform-style:preserve-3d}
+.countdown-ball::after{content:'';position:absolute;top:9%;left:16%;width:49%;height:24%;border-radius:50%;background:linear-gradient(#fff9,#fff0);transform:rotate(-25deg);filter:blur(2px)}
+.ball-face{font-size:clamp(22px,7vw,65px);font-weight:1000;color:#fff;text-shadow:0 3px 5px #0008,0 0 9px #fff9;backface-visibility:hidden;line-height:1;position:relative;z-index:1}
+.countdown-ball.is-active{animation:ballBounce .9s cubic-bezier(.2,.6,.3,1) both;box-shadow:inset -11px -16px 19px #0008,inset 5px 6px 12px #fff9,0 24px 27px #0009,0 0 28px 10px var(--tone),0 0 70px var(--tone)}
+.countdown-ball.is-active .ball-face{animation:faceFlip .7s ease-in-out both}
+.countdown-ball.is-done{filter:brightness(1.1)}
+.scene-footer{z-index:2;position:relative;color:#b7d5ff;font-size:clamp(11px,2.7vw,16px);font-weight:800;letter-spacing:.2em;margin-top:clamp(30px,7vh,65px)}
+@keyframes sceneEnter{from{opacity:0;transform:scale(.87)}to{opacity:1;transform:scale(1)}}
+@keyframes ballBounce{0%{transform:translateY(0) rotateY(0) scale(1)}30%{transform:translateY(-35px) rotateY(90deg) scale(1.16)}55%{transform:translateY(-47px) rotateY(180deg) scale(1.22)}75%{transform:translateY(6px) rotateY(300deg) scale(1.08)}100%{transform:translateY(0) rotateY(360deg) scale(1.05)}}
+@keyframes faceFlip{0%,42%{opacity:1}48%,60%{opacity:.05}75%,100%{opacity:1}}
+@keyframes slowSpin{to{transform:rotate(360deg)}}
+@media(max-width:370px){.locked-inline{gap:5px}.locked-inline .locked-label{font-size:9px}.locked-inline .locked-chip{font-size:9px;padding:4px 5px}.countdown-balls{gap:5px}.countdown-ball{border-width:1px}}
+@media(prefers-reduced-motion:reduce){#countdown-scene.visible,.countdown-ball.is-active,.countdown-ball.is-active .ball-face{animation:none}}
+
+/* Live game extension; the approved lobby header, stats and bonus markup is reused verbatim. */
+.live-stage{border:1px solid #24539a;background:radial-gradient(ellipse at 50% 36%,#123e79,#07142c 60%,#030a1d);border-radius:16px;overflow:hidden;padding:10px;position:relative}
+.stage-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.stage-title{font-size:12px;font-weight:900;letter-spacing:.09em;color:#f7d27b}.live-status{font-size:10px;color:#90b5f0;font-weight:800}
+.machine{height:clamp(185px,30dvh,295px);position:relative;overflow:hidden;border-radius:13px;border:1px solid #2b5c99;background:radial-gradient(circle at 30% 30%,#2d72ad55,transparent 50%),linear-gradient(135deg,#08152c,#0d2550 50%,#040b1e)}
+.machine:before{content:'';position:absolute;inset:8px 20% 15px 5%;border-radius:50%;border:2px solid #6bb7ff66;background:radial-gradient(ellipse at 28% 22%,#ffffff25,transparent 55%);box-shadow:inset 0 0 24px #7cbbff29,0 0 20px #0d70ff35;pointer-events:none;z-index:2}
+.machine:after{content:'';position:absolute;top:12px;left:13%;width:20%;height:35%;border-radius:50%;transform:rotate(-25deg);background:linear-gradient(110deg,#ffffff25,transparent);pointer-events:none;z-index:4}
+.shuffle-ball,.result-ball,.history-ball{display:grid;place-items:center;border-radius:50%;font-weight:1000;color:#fff;text-shadow:0 2px 3px #0009;box-shadow:inset -8px -10px 13px #0008,inset 4px 5px 9px #fff8,0 5px 10px #0008;background:radial-gradient(circle at 28% 20%,#ffffffb5,transparent 25%),radial-gradient(circle at 40% 35%,var(--ball-light),var(--ball-color) 63%,#080e24 100%)}
+.shuffle-ball{position:absolute;width:clamp(24px,7vw,43px);aspect-ratio:1;font-size:11px;left:var(--x);top:var(--y);animation:mix var(--speed) ease-in-out infinite alternate;animation-delay:var(--delay);z-index:1}
+@keyframes mix{0%{transform:translate(-10px,10px) rotate(-40deg)}50%{transform:translate(20px,-22px) rotate(100deg)}100%{transform:translate(-17px,20px) rotate(240deg)}}
+.machine:not(.shuffling) .shuffle-ball{animation-play-state:paused;opacity:.72}
+.exit-tube{position:absolute;right:14%;top:5%;height:70%;width:13%;border:3px solid #8dd5ff88;border-radius:40px 40px 18px 18px;background:linear-gradient(90deg,#b4e8ff22,#b9f2ff08,#b9f2ff3d);box-shadow:inset 0 0 10px #a7dfff55;z-index:3;pointer-events:none}
+.result-ball{position:absolute;z-index:6;width:clamp(65px,19vw,112px);aspect-ratio:1;right:1%;bottom:6%;font-size:clamp(21px,5vw,37px);border:2px solid #ffffff7d;opacity:0;transform:translate(-95px,-140px) scale(.4)}
+.result-ball.out{animation:ballTravel 1.35s cubic-bezier(.2,.7,.3,1.05) forwards}
+@keyframes ballTravel{0%{opacity:1;transform:translate(-90px,-140px) scale(.35) rotate(-220deg)}40%{opacity:1;transform:translate(-25px,-85px) scale(.7) rotate(110deg)}75%{opacity:1;transform:translate(4px,8px) scale(1.13) rotate(320deg)}100%{opacity:1;transform:translate(0,0) scale(1) rotate(360deg)}}
+.last-five{display:flex;align-items:center;gap:6px;min-height:42px;flex-wrap:wrap}.history-ball{width:32px;height:32px;font-size:11px;border:1px solid #fff6}.history-ball small{font-size:7px}.last-label{font-size:10px;font-weight:900;color:#9db7e4;margin-right:4px}
+.number-board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}.board-column{display:flex;flex-direction:column;gap:3px;min-width:0}.board-letter{height:30px;display:grid;place-items:center;border-radius:6px;font-size:18px;font-weight:1000;color:white}.board-number{height:clamp(23px,3.7dvh,34px);display:grid;place-items:center;border:1px solid #30446c;background:#142541;border-radius:5px;color:#cbd9f1;font-weight:800;font-size:clamp(11px,3vw,15px)}.board-number.called{background:linear-gradient(145deg,#ffe79b,#e9ad25 55%,#8e5509);color:#322000;border-color:#fff1a9;box-shadow:0 0 10px #ffcc44aa,inset 0 1px 2px #fff9}
+.cards-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}.mode-group{display:flex;gap:4px;background:#08172f;border:1px solid #24416d;padding:3px;border-radius:9px}.mode-btn{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:900;color:#95afd9}.mode-btn.active{background:#246be6;color:white}.my-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:8px}.play-card{background:#09172e;border:1px solid #315285;border-radius:10px;padding:8px;min-width:0}.play-card-title{font-size:11px;font-weight:900;color:#f8d16c;margin-bottom:6px}.play-letters,.play-numbers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}.play-letters span{text-align:center;font-size:17px;font-weight:1000}.play-numbers{margin-top:4px}.play-cell{height:clamp(29px,7vw,43px);display:grid;place-items:center;border-radius:5px;background:linear-gradient(#f1f1eb,#999a9a);color:#172031;font-weight:900;font-size:clamp(12px,3vw,16px);border:1px solid #ffffff77}.play-cell.marked{background:linear-gradient(#ffeaa5,#d99d20);color:#352409;box-shadow:0 0 9px #eec34e88}.play-cell.free{background:linear-gradient(#72e7bd,#168568);color:white;font-size:10px}.play-cell.manual-touch{cursor:pointer}.bingo-action{background:linear-gradient(120deg,#e9b52e,#f7d775);color:#1b1830;border-radius:8px;padding:7px 18px;font-weight:1000;font-size:12px}.control-row{display:flex;align-items:center;gap:8px;justify-content:space-between;flex-wrap:wrap}.demo-control{background:#154eaa;border:1px solid #4a8ff9;border-radius:8px;padding:8px 12px;font-weight:800;font-size:11px}.demo-control:disabled{opacity:.4}.live-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#142a51;border:1px solid #5b9efc;padding:10px 16px;border-radius:9px;z-index:90;font-size:12px;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+@media(min-width:700px){.live-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.85fr);gap:12px}.live-layout>div{min-width:0}.machine{height:320px}}
+
+/* KIMEM signature transparent drum and visibly connected draw channel */
+.machine{height:clamp(250px,37dvh,380px);background:radial-gradient(ellipse at 34% 36%,#19457c 0%,#091a37 52%,#030916 100%);border:1px solid #3466a6;box-shadow:inset 0 0 30px #010819,0 0 16px #0a61c12b}
+.machine-globe{position:absolute;left:5%;top:6%;width:65%;height:82%;border-radius:50%;border:3px solid #86caffaa;background:radial-gradient(ellipse at 35% 28%,#a8dfff22,transparent 56%),radial-gradient(ellipse at 55% 65%,#21559a36,#05112b55 76%);box-shadow:inset 9px 10px 25px #a4d9ff18,inset -12px -15px 28px #0009,0 0 24px #1591ff36;z-index:2;pointer-events:none}
+.machine-globe:after{content:'';position:absolute;inset:5%;border:1px solid #b9edff20;border-radius:50%}
+.globe-glint{position:absolute;left:12%;top:10%;width:23%;height:43%;border-radius:50%;transform:rotate(26deg);background:linear-gradient(90deg,#ffffff25,transparent);filter:blur(3px)}
+.globe-floor{position:absolute;left:23%;right:23%;bottom:7%;height:6px;border-radius:50%;background:#9ad6ff66;filter:blur(4px)}
+.machine:before,.machine:after{display:none}
+.machine-chute{position:absolute;z-index:4;left:65%;top:40%;width:18%;height:15%;border-top:3px solid #9edfffaa;border-bottom:3px solid #9edfffaa;background:linear-gradient(#9cddff1c,#e6faff09,#73bfff2a);box-shadow:0 0 12px #3a9bff44;pointer-events:none}
+.chute-highlight{position:absolute;left:0;right:0;top:2px;height:2px;background:#ffffff5c}
+.draw-pocket{position:absolute;z-index:3;right:3%;top:34%;width:20%;height:31%;border:2px solid #f5c76c88;border-radius:30px;background:radial-gradient(ellipse at center,#183963,#061328);box-shadow:inset 0 0 15px #f4b84618,0 0 17px #e8ae4a26}
+.pocket-caption{position:absolute;bottom:-22px;left:-15%;width:130%;text-align:center;color:#d8b979;font-size:8px;font-weight:900;letter-spacing:.08em}
+.machine-foot{position:absolute;bottom:5px;left:0;right:0;text-align:center;color:#75a5d4;font-size:8px;letter-spacing:.17em;font-weight:900}
+.shuffle-ball{z-index:1;width:clamp(25px,6.6vw,42px);font-size:clamp(8px,2vw,11px)}
+.result-ball{width:clamp(55px,14vw,88px);right:6%;top:39%;bottom:auto;font-size:clamp(18px,4vw,28px);z-index:8;opacity:0;transform:translate(-160%,5%) scale(.55)}
+.result-ball.out{animation:kimemBallExit 1.8s cubic-bezier(.24,.75,.3,1) forwards}
+@keyframes kimemBallExit{0%{opacity:1;transform:translate(-210%,10%) scale(.62) rotate(-160deg)}30%{opacity:1;transform:translate(-120%,0%) scale(.73) rotate(-60deg)}60%{opacity:1;transform:translate(-52%,0%) scale(.83) rotate(120deg)}83%{opacity:1;transform:translate(6%,0%) scale(1.07) rotate(310deg)}100%{opacity:1;transform:translate(0,0) scale(1) rotate(360deg)}}
+@media(max-width:420px){.machine{height:265px}.machine-globe{width:65%;height:73%;top:12%}.machine-chute{top:43%}.draw-pocket{top:36%;height:29%}.result-ball{top:40%;width:58px;height:58px}.shuffle-ball{width:26px;height:26px;font-size:8px}}
+
+/* Minimal digital draw: scoped to live draw only. */
+.machine.digital-machine{height:clamp(225px,33dvh,320px);border:1px solid #2c4265;background:linear-gradient(150deg,#0c1930,#060f20 75%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:none}
+.machine.digital-machine:before,.machine.digital-machine:after{display:none}
+.digital-letter{color:#f4c75e;font-weight:900;letter-spacing:.25em;font-size:13px;min-height:18px}
+.digital-number{font-size:clamp(95px,21vw,155px);line-height:1.08;letter-spacing:-.075em;padding-right:.075em;font-weight:900;font-variant-numeric:tabular-nums;color:#fff}
+.digital-number.reveal{animation:digitalReveal .4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes digitalReveal{from{opacity:.25;filter:blur(8px);transform:translateY(12px) scale(.95)}to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
+.digital-progress{height:4px;background:#1b2d47;border-radius:12px;overflow:hidden;width:78%;margin:8px auto 0}
+.digital-progress-fill{height:100%;width:0;background:#f4c75e}
+.digital-side{display:grid;grid-template-columns:minmax(0,1fr) 108px;gap:9px;margin-top:10px;align-items:stretch}
+.digital-side-card{border:1px solid #263f64;border-radius:10px;background:#08162b;padding:9px;min-width:0}
+.digital-side-title{font-size:10px;color:#9db7e4;font-weight:900;letter-spacing:.06em;margin-bottom:8px}
+.digital-side .last-five{gap:5px;min-height:32px}
+.digital-current{font-size:32px;line-height:1;font-weight:900;color:#f4c75e;text-align:center;font-variant-numeric:tabular-nums}
+.digital-current-letter{font-size:10px;color:#adc7e7;text-align:center;margin-top:4px}
+@media(prefers-reduced-motion:reduce){.digital-number.reveal{animation:none}}
+
+/* Compact ball draw: ONLY the live draw component is restyled. */
+.draw-compact{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(116px,.85fr);gap:9px;align-items:stretch}
+.machine.digital-machine{height:192px!important;min-height:0;display:flex;justify-content:center;align-items:center;gap:5px;position:relative;padding:9px 8px 15px;border-radius:13px;border:1px solid #24508a;background:radial-gradient(ellipse at 48% 40%,#1c4074 0%,#0a1d3d 48%,#050d21 100%);box-shadow:inset 0 0 28px #010917,0 5px 16px #0004}
+.ball-shell{width:132px;height:132px;max-width:100%;aspect-ratio:1;flex-shrink:0;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;isolation:isolate;border:2px solid #e8d28a;background:radial-gradient(circle at 29% 20%,#fffef1 0%,#ffedb6 15%,#e5b75b 38%,#a46a1f 74%,#503010 100%);box-shadow:inset 5px 6px 12px #fff8,inset -12px -14px 20px #48260c9c,0 8px 16px #0009,0 0 17px #dba94a22;overflow:hidden}
+.ball-shell:before{content:'';position:absolute;top:9%;left:15%;width:53%;height:24%;border-radius:50%;background:#fff9;filter:blur(8px);transform:rotate(-25deg);pointer-events:none}
+.ball-shell:after{content:'';position:absolute;inset:15%;border-radius:50%;border:1px solid #fff6;pointer-events:none}
+.digital-letter{z-index:1;min-height:0;font-size:10px;letter-spacing:.16em;color:#51340e;text-shadow:0 1px #fff6}
+.digital-number{z-index:1;font-size:clamp(43px,11vw,67px)!important;letter-spacing:-.055em;padding-right:.055em;line-height:1;color:#241b15;text-shadow:0 1px 1px #fff9}
+.digital-number.reveal{animation:cleanBallReveal .45s cubic-bezier(.22,.8,.3,1) both}
+@keyframes cleanBallReveal{from{opacity:.3;transform:scale(.83);filter:blur(3px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+.digital-progress{position:absolute;bottom:8px;width:76%;height:3px;margin:0;background:#193357}
+.digital-side{display:flex;flex-direction:column;gap:8px;margin:0;min-width:0}
+.digital-side-card{flex:1;padding:9px 8px;border-color:#264772;background:linear-gradient(145deg,#0c2142,#07142a);border-radius:10px;min-height:0}
+.digital-side-title{font-size:9px;margin-bottom:7px}
+.digital-side .last-five{gap:4px;min-height:24px}
+.digital-side .history-ball{width:26px;height:26px;font-size:9px}
+.digital-current{font-size:24px}
+.digital-current-letter{font-size:9px;margin-top:2px}
+@media(max-width:380px){.draw-compact{grid-template-columns:minmax(0,1.2fr) minmax(108px,.8fr);gap:6px}.machine.digital-machine{height:170px!important}.ball-shell{width:112px;height:112px}.digital-number{font-size:49px!important}.digital-side-card{padding:7px 6px}.digital-side .history-ball{width:23px;height:23px;font-size:8px}}
+@media(min-width:700px){.machine.digital-machine{height:215px!important}.ball-shell{width:156px;height:156px}.digital-number{font-size:70px!important}}
+@media(prefers-reduced-motion:reduce){.digital-number.reveal{animation:none}}
+
+/* KIMEM LED STUDIO — compact visual upgrade */
+.machine.digital-machine{--studio-tone:#2d83e8;height:166px!important;background:radial-gradient(ellipse at 50% 49%,color-mix(in srgb,var(--studio-tone),transparent 78%) 0%,transparent 61%),repeating-linear-gradient(0deg,transparent 0px,transparent 3px,#a7d6ff07 4px),repeating-linear-gradient(90deg,#9bcfff07 0px,#9bcfff07 1px,transparent 2px,transparent 5px),linear-gradient(145deg,#0a1b3c,#020a1c 80%);border:1px solid #3b6899;box-shadow:inset 0 1px 0 #a2d8ff2e,inset 0 0 28px #000b,0 0 12px color-mix(in srgb,var(--studio-tone),transparent 84%);transition:background .45s,border-color .45s}
+.machine.digital-machine::before{display:block!important;content:'KIMEM BINGO';position:absolute;inset:auto;top:48%;left:50%;transform:translate(-50%,-50%);width:100%;height:auto;border:0;border-radius:0;background:none;box-shadow:none;color:#d3e8ff;opacity:.075;font-size:clamp(17px,4vw,32px);font-weight:1000;letter-spacing:.11em;white-space:nowrap;text-align:center;z-index:0}
+.machine.digital-machine::after{display:block!important;content:'';position:absolute;inset:7px;border:1px solid #7abaff21;border-radius:8px;background:linear-gradient(110deg,#b6deff0a,transparent 35%,#ffffff06 65%,transparent);pointer-events:none;z-index:0}
+.ball-shell{--ball-tone:#e6ad36;z-index:1;width:112px;height:112px;border:2px solid color-mix(in srgb,var(--ball-tone),white 45%);background:radial-gradient(circle at 30% 19%,#ffffffeb 0%,color-mix(in srgb,var(--ball-tone),white 43%) 17%,var(--ball-tone) 52%,color-mix(in srgb,var(--ball-tone),black 68%) 100%);box-shadow:inset 5px 5px 11px #fff7,inset -10px -12px 18px #0009,0 7px 14px #0009,0 0 22px color-mix(in srgb,var(--ball-tone),transparent 55%);transition:background .35s,border-color .35s,box-shadow .35s}
+.digital-letter{font-size:clamp(20px,5.5vw,28px)!important;letter-spacing:.03em!important;line-height:1;font-weight:1000;color:#fff!important;text-shadow:0 2px 5px #000b,0 0 9px #fff8}
+.digital-number{font-size:clamp(37px,10vw,54px)!important;color:#fff!important;text-shadow:0 2px 5px #000c,0 0 8px #fff6}
+.digital-progress-fill{background:var(--studio-tone,#f4c75e);box-shadow:0 0 7px var(--studio-tone,#f4c75e)}
+.board-letter{font-size:22px;text-shadow:0 2px 3px #0008}
+.board-number.called{background:linear-gradient(145deg,color-mix(in srgb,var(--cell-tone),white 30%),var(--cell-tone) 58%,color-mix(in srgb,var(--cell-tone),black 42%));border-color:color-mix(in srgb,var(--cell-tone),white 50%);color:#fff;text-shadow:0 1px 3px #0009;box-shadow:0 0 8px color-mix(in srgb,var(--cell-tone),transparent 55%)}
+.play-letters span{font-size:22px;text-shadow:0 0 8px currentColor}
+.play-cell.marked{background:linear-gradient(155deg,color-mix(in srgb,var(--cell-tone),white 32%),var(--cell-tone) 60%,color-mix(in srgb,var(--cell-tone),black 34%));color:#fff;text-shadow:0 1px 3px #0009;border-color:color-mix(in srgb,var(--cell-tone),white 45%);box-shadow:0 0 7px color-mix(in srgb,var(--cell-tone),transparent 58%)}
+.digital-current{color:var(--current-tone,#f4c75e)}
+@media(max-width:380px){.machine.digital-machine{height:154px!important}.ball-shell{width:104px;height:104px}.digital-letter{font-size:21px!important}.digital-number{font-size:42px!important}}
+@media(min-width:700px){.machine.digital-machine{height:190px!important}.ball-shell{width:130px;height:130px}.digital-letter{font-size:29px!important}.digital-number{font-size:60px!important}}
+
+/* Full viewport and strictly dynamic 1/2/3 card columns */
+html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body>div:first-child{height:100dvh!important;min-height:100dvh!important;width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important}
+.my-cards{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:6px!important;align-items:start}
+.my-cards[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+.my-cards[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.my-cards .play-card{min-width:0;padding:clamp(2px,.7vw,8px)}
+.my-cards .play-letters,.my-cards .play-numbers{gap:clamp(1px,.3vw,3px)}
+.my-cards .play-cell{min-width:0;width:100%;height:auto;aspect-ratio:1;font-size:clamp(8px,2.8vw,16px);padding:0;border-radius:3px}
+.my-cards[data-count="2"] .play-cell{font-size:clamp(8px,2.4vw,15px)}
+.my-cards[data-count="3"] .play-cell{font-size:clamp(7px,2vw,13px)}
+.my-cards[data-count="3"] .play-letters span{font-size:clamp(10px,3vw,17px)}
+.my-cards[data-count="3"] .play-card-title{font-size:clamp(8px,2vw,11px)}
+#machine.shuffling .ball-shell{animation:kimem-shuffle .22s ease-in-out infinite alternate}
+@keyframes kimem-shuffle{from{transform:rotate(-12deg) scale(.96)}to{transform:rotate(12deg) scale(1.04)}}
+@media(min-width:700px){.my-cards[data-count="2"] .play-cell,.my-cards[data-count="3"] .play-cell{font-size:clamp(11px,1.4vw,17px)}}
+
+/* Cards stay visible before draw/number board on phone */
+.mobile-card-priority{width:100%;min-width:0;margin:4px 0 7px}
+.mobile-card-priority .my-cards{width:100%}
+.mobile-card-priority .play-card{overflow:hidden}
+.mobile-card-priority .play-card-title{margin-bottom:2px}
+.mobile-card-priority .play-letters span{font-size:clamp(10px,3vw,16px)}
+.mobile-card-priority .play-cell{aspect-ratio:1;height:auto!important;min-height:0!important}
+.mobile-card-priority .cards-head{margin-bottom:4px}
+#live-main{scrollbar-width:thin;overscroll-behavior:contain}
+@media(max-width:699px){.stats-panel{padding:3px!important}.bonus-row{display:none!important}.mobile-card-priority .neon-panel{padding:6px!important}.live-layout{display:block}.digital-machine{height:150px!important}.mobile-card-priority .play-card{padding:3px!important}}
+@media(min-width:700px){.mobile-card-priority{max-width:100%;margin:6px auto}.mobile-card-priority .my-cards{max-width:100%}}
+
+/* Stable mobile live game: compact draw, full 1–75 board, cards at bottom */
+:root{--live-height:100dvh}
+html,body{height:100%;width:100%;overflow:hidden!important;overscroll-behavior:none}
+body>div:first-child{height:var(--live-height)!important;max-height:var(--live-height)!important;min-height:0!important;overflow:hidden!important}
+#live-main{display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:auto minmax(0,1fr) auto!important;gap:4px!important;overflow:hidden!important;min-height:0!important;padding:4px 7px max(4px,env(safe-area-inset-bottom))!important}
+#live-main>*{min-width:0!important;margin:0!important;min-height:0}
+#live-main .stats-panel{padding:3px!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;min-height:31px!important}#live-main>.bonus-row button{padding:2px 4px!important;min-width:0!important}
+#live-main .live-layout{display:flex!important;flex-direction:column!important;min-height:0!important;gap:4px!important;overflow:hidden!important}
+#live-main .live-layout>div:first-child{display:flex!important;flex-direction:column!important;min-height:0!important;flex:1 1 auto!important;gap:4px!important}
+#live-main .live-layout>div:last-child{display:none!important}
+#live-main .live-stage{flex:0 0 auto!important;padding:4px 6px!important;min-height:0!important}
+#live-main .stage-top{margin-bottom:3px!important}
+#live-main .draw-compact{height:clamp(80px,14dvh,120px)!important;min-height:0!important;display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:5px!important}
+#live-main .digital-machine{height:100%!important;min-height:0!important}
+#live-main .digital-side{min-height:0!important;overflow:hidden!important}
+#live-main .digital-side-card{padding:3px 5px!important}
+#live-main .digital-number{font-size:clamp(25px,7vw,44px)!important}
+#live-main .live-layout section:has(#number-board){display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;padding:4px 6px!important}
+#live-main .live-layout section:has(#number-board)>div:first-child{flex:0 0 auto!important;margin-bottom:3px!important}
+#live-main #number-board{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow:hidden!important;gap:3px!important}
+#live-main .board-column{display:grid!important;grid-template-rows:repeat(16,minmax(0,1fr))!important;gap:2px!important;min-height:0!important;overflow:hidden!important}
+#live-main .board-letter,#live-main .board-number{height:100%!important;min-height:0!important;min-width:0!important;line-height:1!important;border-radius:3px!important;font-size:clamp(9px,2.6vw,13px)!important;padding:0!important}
+#live-main .board-letter{font-size:clamp(11px,3vw,15px)!important}
+#live-main .mobile-card-priority{display:block!important;flex:0 0 auto!important;min-height:0!important;overflow:hidden!important;margin:0!important}
+#live-main .mobile-card-priority section{padding:4px 6px!important}
+#live-main .mobile-card-priority .cards-head{margin-bottom:3px!important}
+#live-main .mobile-card-priority .play-card{padding:2px!important;min-width:0!important}
+#live-main .mobile-card-priority .play-card-title{font-size:clamp(8px,2vw,10px)!important;margin-bottom:2px!important}
+#live-main .mobile-card-priority .play-letters{gap:1px!important}
+#live-main .mobile-card-priority .play-letters span{font-size:clamp(9px,2.7vw,14px)!important;line-height:1!important}
+#live-main .mobile-card-priority .play-numbers{gap:1px!important;margin-top:2px!important}
+#live-main .mobile-card-priority .play-cell{height:clamp(15px,3dvh,23px)!important;aspect-ratio:auto!important;font-size:clamp(8px,2.4vw,13px)!important;border-radius:2px!important}
+#live-main .mobile-card-priority .play-cell.free{font-size:clamp(6px,1.7vw,10px)!important}
+#live-main .mobile-card-priority .mt-2{margin-top:3px!important}
+#live-main .mobile-card-priority .bingo-action{padding:3px 13px!important}
+#my-cards{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:4px!important;max-width:none!important}
+#my-cards[data-count="1"]{max-width:320px!important;margin:0 auto!important}
+#my-cards[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#my-cards[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+@media(max-height:660px){#live-main{gap:2px!important}#live-main .draw-compact{height:72px!important}#live-main .mobile-card-priority .play-cell{height:14px!important}#live-main .mobile-card-priority .cards-head{margin-bottom:1px!important}#live-main .board-column{gap:1px!important}}
+@media(min-width:800px){#live-main .draw-compact{height:120px!important}#my-cards[data-count="2"],#my-cards[data-count="3"]{max-width:750px!important;margin:0 auto!important}}
+
+/* Integrated ball and 1–75 number panel */
+#live-main{grid-template-rows:auto auto minmax(0,1fr) auto!important}
+#live-main .live-stage{display:flex!important;flex-direction:column!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important;gap:3px!important}
+#live-main .live-stage .stage-top{flex:0 0 auto!important}
+#live-main .live-stage .draw-compact{flex:0 0 auto!important;height:clamp(74px,12dvh,112px)!important}
+#live-main .live-stage #number-board{flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow:hidden!important;border-top:1px solid #234b7e;padding-top:4px!important}
+#live-main .digital-machine{display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important}
+#live-main .ball-shell{transform:scale(.73)!important;transform-origin:center!important;max-height:100%!important}
+#live-main .mobile-card-priority .cards-head{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(100px,1.2fr) auto!important;align-items:center!important;gap:5px!important}
+#live-main .mobile-card-priority .bingo-head-action{width:100%!important;min-width:0!important;padding:7px 8px!important;font-size:clamp(12px,3vw,16px)!important;white-space:nowrap}
+@media(max-height:660px){#live-main .live-stage .draw-compact{height:70px!important}#live-main>.bonus-row button>div:first-child{display:none!important}}
+
+/* Round responsive draw ball, unclipped side history and compact cards heading */
+#live-main .digital-machine .ball-shell{width:min(88px,10.5dvh)!important;height:min(88px,10.5dvh)!important;min-width:0!important;min-height:0!important;aspect-ratio:1/1!important;flex:0 0 auto!important;transform:none!important;border-radius:50%!important}
+#live-main .digital-machine .digital-progress{position:absolute!important;bottom:5px!important;left:14%!important;width:72%!important}
+#live-main .digital-machine{position:relative!important;min-width:0!important}
+#live-main .digital-side{display:flex!important;flex-direction:column!important;justify-content:center!important;gap:3px!important;overflow:hidden!important}
+#live-main .digital-side-card{display:flex!important;flex-direction:column!important;justify-content:center!important;min-height:0!important;padding:3px 5px!important;overflow:hidden!important}
+#live-main .digital-side-title{font-size:clamp(8px,2vw,11px)!important;line-height:1!important;margin:0 0 3px!important}
+#live-main .digital-side .last-five{display:flex!important;flex-wrap:nowrap!important;gap:2px!important;min-height:0!important;align-items:center!important;overflow:hidden!important}
+#live-main .digital-side .last-five>*{flex:0 1 auto!important;min-width:0!important}
+#live-main .digital-current{font-size:clamp(16px,4.8vw,25px)!important;line-height:1!important;margin:0!important}
+#live-main .digital-current-letter{font-size:8px!important;line-height:1!important;margin:1px 0 0!important}
+#live-main .mobile-card-priority .cards-head{margin-bottom:2px!important;min-height:0!important;gap:4px!important}
+#live-main .mobile-card-priority .bingo-head-action{padding:4px 6px!important;line-height:1.1!important}
+#live-main .mobile-card-priority .mode-btn{padding:4px 8px!important}
+#live-main .mobile-card-priority .mode-group{padding:2px!important}
+#live-main .mobile-card-priority .play-cell{height:clamp(17px,3.25dvh,25px)!important}
+@media(max-height:720px){#live-main .mobile-card-priority .play-cell{height:clamp(15px,2.8dvh,21px)!important}}
+
+/* 3D draw only: preserve surrounding live game layout */
+#live-main .digital-machine .ball-shell{border:0!important;background:none!important;box-shadow:none!important;overflow:visible!important;transition:none!important}
+#live-main .digital-machine .ball-shell::before,#live-main .digital-machine .ball-shell::after{display:none!important}
+#kimem-sphere{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 7px #0009)}
+#machine.shuffling .ball-shell{animation:none!important}
+
+/* Keep card area accessible without enlarging the draw box */
+#live-main{display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important;scrollbar-width:none}
+#live-main::-webkit-scrollbar{display:none}
+#live-main .live-stage{flex:0 0 auto!important;overflow:visible!important;min-height:0!important}
+#live-main .live-stage .draw-compact{height:clamp(74px,12dvh,112px)!important;flex:none!important}
+#live-main .live-stage #number-board{flex:none!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main .live-layout section:has(#number-board){flex:none!important;overflow:visible!important}
+#live-main #number-board{flex:none!important;height:auto!important;overflow:visible!important}
+#live-main .board-column{grid-template-rows:repeat(16,minmax(18px,1fr))!important;overflow:visible!important}
+#live-main .board-letter,#live-main .board-number{min-height:18px!important}
+#live-main .mobile-card-priority{display:block!important;flex:0 0 auto!important;overflow:visible!important;padding-bottom:8px!important}
+#live-main .mobile-card-priority section{overflow:visible!important}
+#live-main .digital-side-card{flex:1!important}
+</style><style id="kimem-card-winner-fix">
+#live-main{overflow-y:auto!important;overscroll-behavior:contain!important;padding-bottom:22px!important}
+#live-main .mobile-card-priority{display:block!important;visibility:visible!important;min-height:185px!important;flex-shrink:0!important}
+#my-cards{display:grid!important;visibility:visible!important;min-height:125px!important}
+#kimem-winner-overlay{position:fixed;inset:0;z-index:3000;background:radial-gradient(circle at 50% 20%,#173e7b,#020713 75%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:16px;overflow-y:auto;color:white;text-align:center}
+#kimem-winner-overlay.visible{display:flex}
+#kimem-winner-overlay .play-card{width:min(94vw,360px);margin:10px auto;text-align:left}
+#kimem-winner-overlay .play-cell{height:clamp(36px,10vw,54px);font-size:17px}
+#kimem-winner-timer{font-size:58px;font-weight:900;color:#f5cb67}
+</style><style id="kimem-safe-scroll-fix">
+/* Preserve the original grid and machine geometry. Only allow card panel to scroll into view. */
+#live-main{display:flex!important;flex-direction:column!important;overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important;overscroll-behavior:contain!important}
+#live-main>.stats-panel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.live-layout{flex:0 0 auto!important;min-height:auto!important;overflow:visible!important}
+#live-main>.mobile-card-priority{display:block!important;flex:0 0 auto!important;min-height:0!important;height:auto!important;overflow:visible!important;padding-bottom:18px!important}
+#live-main>.mobile-card-priority section,#live-main #my-cards{overflow:visible!important;height:auto!important}
+</style><style id="kimem-unified-screen-2026">
+/* One unified live display: 3D sphere and last balls on top, full-size 75-board below. */
+#live-main>.live-layout .live-stage{border:1px solid #326ba4!important;border-radius:12px!important;padding:6px!important;background:linear-gradient(160deg,#07152c,#0b2243)!important;overflow:visible!important}
+#live-main>.live-layout .stage-top{margin:0 0 3px!important;padding:0 4px!important;min-height:15px!important}
+#live-main>.live-layout .stage-title{font-size:10px!important}
+#live-main>.live-layout .draw-compact{display:grid!important;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;gap:6px!important;height:clamp(112px,20dvh,170px)!important;min-height:112px!important;overflow:hidden!important;margin-bottom:4px!important}
+#live-main>.live-layout .machine{height:100%!important;min-height:0!important;position:relative!important;overflow:hidden!important}
+#live-main>.live-layout .digital-side{height:100%!important;min-width:0!important;overflow:hidden!important}
+#live-main>.live-layout .digital-side-card{height:100%!important;min-height:0!important;overflow:hidden!important}
+#live-main>.live-layout #number-board{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;min-height:0!important;height:auto!important;overflow:visible!important;padding:3px!important;margin:0!important}
+#live-main>.live-layout .board-column{min-width:0!important;overflow:visible!important}
+#live-main>.live-layout .board-number{font-size:clamp(10px,2.7vw,15px)!important;font-weight:800!important;line-height:1.1!important;min-height:19px!important}
+#live-main>.live-layout .board-letter{font-weight:900!important}
+#live-main .kimem-shuffle-label{position:absolute!important;bottom:4px!important;left:0!important;right:0!important;text-align:center!important;z-index:8!important;color:#f5c86a!important;font-size:10px!important;font-weight:900!important;letter-spacing:.07em!important;text-shadow:0 1px 5px #000!important;pointer-events:none!important}
+#live-main>.live-layout .machine:not(.kimem-shuffling) .kimem-shuffle-label{display:none!important}
+</style><style id="kimem-cards-visible-repair">
+/* Keep the approved draw intact; make the full draw+cards column scrollable. */
+#live-main{display:flex!important;flex-direction:column!important;overflow:hidden!important;min-height:0!important}
+#live-main>.stats-panel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;flex:0 0 auto!important}
+#live-main>.live-layout{display:block!important;flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;padding-bottom:24px!important}
+#live-main>.live-layout>div:first-child{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main>.live-layout .live-stage{height:auto!important;min-height:0!important;overflow:visible!important}
+#live-main>.live-layout .mobile-card-priority{display:block!important;position:relative!important;visibility:visible!important;height:auto!important;min-height:180px!important;max-height:none!important;overflow:visible!important;margin-top:10px!important}
+#live-main>.live-layout .mobile-card-priority section{display:block!important;visibility:visible!important;height:auto!important;overflow:visible!important}
+#live-main>.live-layout #my-cards{display:grid!important;visibility:visible!important;height:auto!important;min-height:130px!important;overflow:visible!important}
+#live-main>.live-layout .play-card{display:block!important}
+</style><style id="kimem-scroll-root-correction">
+/* One scroll root: prior nested scroll area clipped the playing cards. */
+html,body{overflow:hidden!important}
+#live-main{display:block!important;overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;min-height:0!important;overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;padding-bottom:35px!important}
+#live-main>.stats-panel{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;height:auto!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;height:auto!important}
+#live-main>.live-layout{display:block!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;flex:none!important}
+#live-main>.live-layout>div:first-child{display:block!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+#live-main>.live-layout .live-stage{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main #kimem-cards-mount{display:block!important;height:auto!important;min-height:0!important;overflow:visible!important;padding:8px 0 28px!important}
+#live-main #kimem-cards-mount>.mobile-card-priority{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;height:auto!important;max-height:none!important;min-height:190px!important;overflow:visible!important}
+#live-main #kimem-cards-mount section{display:block!important;height:auto!important;overflow:visible!important}
+#live-main #kimem-cards-mount #my-cards{display:grid!important;height:auto!important;min-height:150px!important;overflow:visible!important}
+#live-main #kimem-cards-mount .play-card{display:block!important}
+</style><style id="kimem-reference-playing-cards">
+/* Playing card styling adapted from the supplied working sample only. */
+#kimem-cards-mount .mobile-card-priority{display:block!important;visibility:visible!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#kimem-cards-mount .my-cards{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;gap:8px!important;height:auto!important;min-height:0!important;overflow:visible!important}
+#kimem-cards-mount .play-card{display:block!important;background:#180c2f!important;border:1px solid #7c3aed!important;border-radius:10px!important;padding:8px!important;min-width:0!important;height:auto!important;overflow:visible!important}
+#kimem-cards-mount .play-card-title{font-size:11px!important;font-weight:900!important;color:#f8d16c!important;margin-bottom:6px!important}
+#kimem-cards-mount .play-letters,#kimem-cards-mount .play-numbers{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;height:auto!important}
+#kimem-cards-mount .play-letters span{text-align:center!important;font-size:17px!important;font-weight:900!important}
+#kimem-cards-mount .play-numbers{margin-top:4px!important}
+#kimem-cards-mount .play-cell{display:grid!important;place-items:center!important;height:clamp(29px,7vw,43px)!important;min-height:29px!important;aspect-ratio:auto!important;border-radius:5px!important;background:linear-gradient(#f1f1eb,#999a9a)!important;color:#172031!important;font-weight:900!important;font-size:clamp(12px,3vw,16px)!important;border:1px solid #ffffff77!important}
+#kimem-cards-mount .play-cell.marked{background:linear-gradient(#ffeaa5,#d99d20)!important;color:#352409!important}
+#kimem-cards-mount .play-cell.free{background:linear-gradient(#72e7bd,#168568)!important;color:#fff!important;font-size:10px!important}
+</style><style id="kimem-card-container-direct-fix">
+/* Actual card markup is now in DOM directly after the board, no JS reparenting. */
+#live-main{overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important}
+#live-main .live-layout{height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main #kimem-cards-mount{display:block!important;position:relative!important;height:auto!important;min-height:0!important;overflow:visible!important;clear:both!important}
+#live-main #kimem-cards-mount .mobile-card-priority{display:block!important;position:relative!important;visibility:visible!important;opacity:1!important;transform:none!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main #kimem-cards-mount .neon-panel{display:block!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main #kimem-cards-mount .my-cards{display:grid!important;visibility:visible!important;opacity:1!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+</style><style id="kimem-card-after-board-safe">
+#live-main{display:block!important;overflow-y:auto!important;overflow-x:hidden!important;min-height:0!important}
+#live-main>#kimem-cards-mount{display:block!important;position:relative!important;visibility:visible!important;opacity:1!important;overflow:visible!important;margin:8px 0 18px!important}
+#live-main>#kimem-cards-mount .mobile-card-priority{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main>#kimem-cards-mount .my-cards{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;overflow:visible!important}
+#live-main>#kimem-cards-mount .play-card{display:block!important}
+</style><style id="kimem-stage-card-visibility-final">
+#live-main{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain!important;max-height:100%!important}
+#live-main .live-layout,#live-main .live-layout>div,#live-main .live-stage{height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main .live-stage>#kimem-cards-mount{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;margin:12px 0 22px!important;z-index:3!important}
+#live-main .live-stage>#kimem-cards-mount .mobile-card-priority{display:block!important;position:static!important;visibility:visible!important;opacity:1!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main .live-stage>#kimem-cards-mount #my-cards{display:grid!important;visibility:visible!important;opacity:1!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr))!important;height:auto!important;max-height:none!important;overflow:visible!important}
+#live-main .live-stage>#kimem-cards-mount .play-card{display:block!important;visibility:visible!important;opacity:1!important}
+</style><style id="kimem-cards-side-by-side">
+/* Selected 1–3 bingo cards share one row, without a carousel. */
+#live-main .live-stage #my-cards{display:grid!important;grid-template-columns:repeat(var(--kimem-card-count,1),minmax(0,1fr))!important;gap:5px!important;align-items:start!important;width:100%!important;overflow:visible!important}
+#live-main .live-stage #my-cards .play-card{width:100%!important;min-width:0!important;max-width:none!important;margin:0!important;padding:clamp(2px,.7vw,8px)!important;box-sizing:border-box!important}
+#live-main .live-stage #my-cards .play-letters{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}
+#live-main .live-stage #my-cards .play-numbers{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:1px!important}
+#live-main .live-stage #my-cards .play-cell{min-width:0!important;width:100%!important;height:auto!important;aspect-ratio:1!important;padding:0!important;font-size:clamp(7px,2.2vw,17px)!important}
+#live-main .live-stage #my-cards .play-card-title{font-size:clamp(8px,2vw,13px)!important;white-space:nowrap!important}
+#live-main .live-stage #my-cards .play-letters span{font-size:clamp(9px,2.5vw,17px)!important}
+</style><style id="kimem-approved-merged-stage">
+/* Approved compact single frame; existing draw canvas, animation and number logic unchanged. */
+#live-main .live-stage{border:1px solid #1964bb!important;border-radius:17px!important;background:linear-gradient(145deg,#061735,#030b20)!important;padding:9px!important;overflow:visible!important;box-shadow:inset 0 0 18px #0c4da026!important}
+#live-main .live-stage>.stage-top{display:none!important}
+#live-main .live-stage>.draw-compact{display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)!important;gap:7px!important;margin:0 0 7px!important}
+#live-main .live-stage .machine.digital-machine{height:130px!important;min-height:130px!important;padding:3px!important}
+#live-main .live-stage .ball-shell{width:105px!important;height:105px!important}
+#live-main .live-stage .digital-side{min-width:0!important}
+#live-main .live-stage .digital-side-card{height:130px!important;min-height:130px!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding:7px!important}
+#live-main .live-stage .digital-side-title{font-size:10px!important}
+#live-main .live-stage .last-five{display:flex!important;flex-wrap:wrap!important;gap:3px!important}
+#live-main .live-stage .number-board{margin:0!important;padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important}
+#live-main .live-stage>#kimem-cards-mount{margin:10px -9px 0!important;width:calc(100% + 18px)!important;padding-top:10px!important;background:#020716!important;border-top:1px solid #1964bb!important}
+#live-main .live-stage>#kimem-cards-mount .mobile-card-priority>section{border-radius:14px!important}
+@media(min-width:600px){#live-main .live-stage .machine.digital-machine,#live-main .live-stage .digital-side-card{height:165px!important;min-height:165px!important}#live-main .live-stage .ball-shell{width:125px!important;height:125px!important}}
+</style><style id="kimem-real-layout-restructure">
+/* Draw+board are a single standalone panel. MY CARDS is a separate sibling beneath it. */
+#live-main .live-layout{display:block!important;width:100%!important}
+#live-main .live-layout>div{display:flex!important;flex-direction:column!important;gap:10px!important;width:100%!important}
+#live-main .live-stage{display:flex!important;flex-direction:column!important;gap:7px!important;width:100%!important;padding:9px!important;border:1px solid #2460ae!important;border-radius:16px!important;background:linear-gradient(150deg,#091a39,#040b1d)!important}
+#live-main .live-stage .stage-top{display:none!important}
+#live-main .live-stage .draw-compact{display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)!important;gap:7px!important}
+#live-main .live-stage .machine.digital-machine{height:124px!important;min-height:124px!important;padding:2px!important}
+#live-main .live-stage .ball-shell{width:99px!important;height:99px!important}
+#live-main .live-stage .digital-side-card{height:124px!important;min-height:124px!important;padding:5px!important}
+#live-main .live-stage .number-board{width:100%!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+#live-main .live-layout #kimem-cards-mount{display:block!important;position:relative!important;width:100%!important;height:auto!important;max-height:none!important;min-height:0!important;margin:0 0 20px!important;overflow:visible!important;visibility:visible!important;opacity:1!important}
+#live-main .live-layout #kimem-cards-mount .mobile-card-priority{display:block!important;width:100%!important;height:auto!important;overflow:visible!important}
+#live-main .live-layout #kimem-cards-mount #my-cards{display:grid!important;grid-template-columns:repeat(var(--kimem-card-count,1),minmax(0,1fr))!important;gap:5px!important;width:100%!important}
+#live-main .live-layout #kimem-cards-mount .play-card{min-width:0!important;width:100%!important;margin:0!important;padding:4px 3px!important}
+#live-main .live-layout #kimem-cards-mount .play-numbers,#live-main .live-layout #kimem-cards-mount .play-letters{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important}
+#live-main .live-layout #kimem-cards-mount .play-cell{width:100%!important;min-width:0!important;min-height:0!important;height:auto!important;aspect-ratio:1!important;font-size:clamp(7px,2.2vw,16px)!important;padding:0!important}
+#live-main .live-layout #kimem-cards-mount .play-card-title{font-size:clamp(8px,2vw,12px)!important}
+#live-main .live-layout #kimem-cards-mount .play-letters span{font-size:clamp(9px,2.5vw,17px)!important}
+</style><style id="kimem-equal-draw-last-five">
+/* Keep original 3D draw logic; align draw and LAST 5 boxes in one compact row above the 1–75 board. */
+#live-main .live-stage>.draw-compact{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;align-items:stretch!important;width:100%!important;margin:0!important}
+#live-main .live-stage>.draw-compact>.machine.digital-machine,
+#live-main .live-stage>.draw-compact>.digital-side{width:100%!important;min-width:0!important;height:112px!important;min-height:112px!important;max-height:112px!important;box-sizing:border-box!important;margin:0!important}
+#live-main .live-stage>.draw-compact>.machine.digital-machine{padding:3px!important}
+#live-main .live-stage>.draw-compact>.machine.digital-machine .ball-shell{width:88px!important;height:88px!important;min-width:0!important;flex-shrink:0!important}
+#live-main .live-stage>.draw-compact>.digital-side{display:flex!important}
+#live-main .live-stage>.draw-compact>.digital-side>.digital-side-card{width:100%!important;height:112px!important;min-height:112px!important;max-height:112px!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;justify-content:center!important;padding:5px!important}
+#live-main .live-stage>.number-board{margin-top:0!important}
+@media(min-width:600px){#live-main .live-stage>.draw-compact>.machine.digital-machine,#live-main .live-stage>.draw-compact>.digital-side,#live-main .live-stage>.draw-compact>.digital-side>.digital-side-card{height:130px!important;min-height:130px!important;max-height:130px!important}#live-main .live-stage>.draw-compact>.machine.digital-machine .ball-shell{width:102px!important;height:102px!important}}
+</style><style id="kimem-zero-overlap-compact-flow">
+/* Correct old fixed heights: draw, board and cards stay in natural document flow. */
+#live-main{overflow-y:auto!important;overflow-x:hidden!important;height:auto!important;min-height:0!important}
+#live-main>.live-layout,#live-main>.live-layout>div{display:block!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+#live-main>.live-layout>div>.live-stage{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:3px!important;position:relative!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;padding:6px!important;margin:0!important;box-sizing:border-box!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important;position:static!important;flex:0 0 auto!important;height:106px!important;min-height:106px!important;max-height:106px!important;margin:0!important;padding:0!important;overflow:visible!important;align-items:stretch!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine,#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side,#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side>.digital-side-card{height:106px!important;min-height:106px!important;max-height:106px!important;box-sizing:border-box!important;margin:0!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine .ball-shell{width:84px!important;height:84px!important}
+#live-main>.live-layout>div>.live-stage>.number-board{display:grid!important;position:static!important;flex:0 0 auto!important;align-self:stretch!important;clear:both!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:0!important;padding:0!important;overflow:visible!important;transform:none!important}
+#live-main>.live-layout>div>.live-stage>.number-board .board-column{height:auto!important;min-height:0!important;max-height:none!important}
+#live-main>.live-layout>div>#kimem-cards-mount{display:block!important;position:static!important;float:none!important;clear:both!important;transform:none!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:8px 0 18px!important;padding:0!important;overflow:visible!important;box-sizing:border-box!important}
+#live-main>.live-layout>div>#kimem-cards-mount .mobile-card-priority,#live-main>.live-layout>div>#kimem-cards-mount .mobile-card-priority>section{position:static!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+@media(min-width:600px){#live-main>.live-layout>div>.live-stage>.draw-compact,#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine,#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side,#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side>.digital-side-card{height:124px!important;min-height:124px!important;max-height:124px!important}}
+</style><style id="kimem-true-single-screen-bonus">
+#live-main{display:flex!important;flex-direction:column!important;gap:6px!important;overflow-y:auto!important;overflow-x:hidden!important}
+#live-main>.stats-panel,#live-main>.bonus-row,#live-main>.live-layout{position:relative!important;inset:auto!important;transform:none!important;flex:0 0 auto!important;clear:both!important;width:100%!important;margin:0!important;box-sizing:border-box!important}
+#live-main>.bonus-row{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;align-items:stretch!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important}
+#live-main>.bonus-row>button{display:flex!important;align-items:center!important;gap:4px!important;position:relative!important;min-width:0!important;width:100%!important;height:auto!important;min-height:37px!important;max-height:none!important;margin:0!important;padding:4px!important;overflow:hidden!important;box-sizing:border-box!important}
+#live-main>.bonus-row>button>div{min-width:0!important}
+#live-main>.bonus-row>button>div:last-child{flex:1 1 auto!important;overflow:hidden!important}
+#live-main>.bonus-row>button>div:last-child>div{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#live-main>.live-layout>div>.live-stage{display:flex!important;flex-direction:column!important;gap:5px!important;border:2px solid #267bd2!important;border-radius:14px!important;background:linear-gradient(145deg,#0b2448,#040c1f)!important;box-shadow:inset 0 0 20px #267bd226,0 0 10px #267bd21c!important;padding:7px!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;isolation:isolate!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact{width:100%!important;min-width:0!important;flex:none!important}
+#live-main>.live-layout>div>.live-stage>#number-board{display:grid!important;position:relative!important;inset:auto!important;transform:none!important;flex:none!important;align-self:stretch!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;margin:0!important;padding:4px 0 0!important;border:0!important;border-top:1px solid #22548d!important;background:transparent!important;box-shadow:none!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin:8px 0 12px!important;position:relative!important;inset:auto!important;transform:none!important}
+</style><style id="kimem-premium-led-screen-watermark">
+/* Visual-only treatment: keep approved HTML flow, sizes, draw and card logic intact. */
+#live-main .live-stage{isolation:isolate!important;position:relative!important;border:2px solid #49627e!important;border-radius:15px!important;background:radial-gradient(ellipse at 52% 2%,rgba(34,95,161,.24),transparent 58%),linear-gradient(160deg,#061329 0%,#020916 100%)!important;box-shadow:inset 0 0 0 1px rgba(130,180,226,.18),inset 0 8px 20px rgba(111,168,229,.09),0 4px 15px rgba(0,0,0,.24)!important}
+#live-main .live-stage:before{content:"KIMEM  •  BINGO";position:absolute;left:50%;top:52%;transform:translate(-50%,-50%) rotate(-17deg);font-family:Arial,sans-serif;font-size:clamp(25px,9vw,58px);font-weight:900;letter-spacing:.11em;white-space:nowrap;color:rgba(116,177,237,.052);text-shadow:0 0 18px rgba(40,126,225,.055);pointer-events:none;z-index:0}
+#live-main .live-stage:after{content:"";position:absolute;inset:3px;border-radius:11px;background:linear-gradient(115deg,rgba(182,220,255,.07),transparent 30%,transparent 76%,rgba(68,142,235,.045));box-shadow:inset 0 0 22px rgba(33,102,194,.12);pointer-events:none;z-index:3}
+#live-main .live-stage>.draw-compact,#live-main .live-stage>#number-board{position:relative!important;z-index:1!important}
+#live-main .live-stage>.draw-compact>.machine.digital-machine,#live-main .live-stage>.draw-compact>.digital-side>.digital-side-card{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+#live-main .live-stage>.draw-compact{border-bottom:1px solid rgba(66,126,193,.27)!important;padding-bottom:3px!important}
+#live-main .live-stage>#number-board{border-top:0!important;background:transparent!important}
+#live-main .live-stage .board-letter{text-shadow:0 0 9px rgba(81,172,255,.32)}
+#live-main .live-stage .board-cell.called,#live-main .live-stage .board-number.called{box-shadow:0 0 8px rgba(52,191,255,.3)!important}
+@media(prefers-reduced-motion:reduce){#live-main .live-stage:before,#live-main .live-stage:after{animation:none!important}}
+</style><style id="kimem-realistic-led-matte-watermark-v2">
+/* Matte premium display: styling only, no changes to draw, gameplay or markup. */
+#live-main .live-stage{position:relative!important;isolation:isolate!important;border:3px solid #2b3443!important;border-radius:14px!important;background:linear-gradient(164deg,#0c1929 0%,#060e1b 53%,#030914 100%)!important;box-shadow:inset 0 0 0 1px #62768c,inset 0 2px 5px rgba(230,243,255,.13),inset 0 -4px 12px rgba(0,0,0,.35),0 2px 5px rgba(0,0,0,.25)!important;overflow:hidden!important}
+#live-main .live-stage:before{content:"KIMEM BINGO";display:block!important;visibility:visible!important;opacity:1!important;position:absolute!important;top:55%!important;left:50%!important;transform:translate(-50%,-50%) rotate(-15deg)!important;font:900 clamp(26px,8vw,58px)/1.2 Arial,sans-serif!important;letter-spacing:.09em!important;color:rgba(147,185,220,.17)!important;text-shadow:none!important;white-space:nowrap!important;z-index:0!important;pointer-events:none!important}
+#live-main .live-stage:after{content:"";position:absolute!important;inset:3px!important;z-index:3!important;pointer-events:none!important;border-radius:9px!important;background:linear-gradient(115deg,rgba(231,245,255,.095),transparent 26%,transparent 76%,rgba(201,228,250,.035))!important;box-shadow:inset 0 1px 1px rgba(255,255,255,.09)!important}
+#live-main .live-stage>.draw-compact,#live-main .live-stage>#number-board{position:relative!important;z-index:1!important}
+#live-main .live-stage .machine.digital-machine,#live-main .live-stage .digital-side-card{border:0!important;box-shadow:none!important;background:transparent!important}
+#live-main .live-stage .board-number{background:#17263a!important;border:1px solid #344860!important;color:#dce6f2!important;box-shadow:none!important;text-shadow:none!important}
+#live-main .live-stage .board-number.called{background:#e8b744!important;color:#211b0b!important;border-color:#e8cb75!important;box-shadow:none!important;text-shadow:none!important}
+#live-main .live-stage .board-letter{text-shadow:none!important;box-shadow:none!important}
+#live-main .live-stage>.draw-compact{border-bottom:1px solid rgba(117,144,173,.3)!important}
+#live-main .live-stage>#number-board{border-top:0!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin-top:3px!important;margin-bottom:8px!important}
+#live-main #kimem-cards-mount .mobile-card-priority>section{padding:5px!important}
+#live-main #kimem-cards-mount .cards-head{margin-bottom:4px!important}
+#live-main #kimem-cards-mount .my-cards{gap:4px!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr))!important}
+#live-main #kimem-cards-mount .play-card{padding:4px!important}
+#live-main #kimem-cards-mount .play-card-title{margin-bottom:3px!important}
+#live-main #kimem-cards-mount .play-letters,#live-main #kimem-cards-mount .play-numbers{gap:2px!important}
+</style><style id="kimem-matte-screen-compact-v3">
+#live-main .live-stage{isolation:isolate!important;position:relative!important;border:3px solid #3c4d60!important;border-radius:14px!important;background:linear-gradient(150deg,#101f30,#050b16)!important;box-shadow:inset 0 0 0 1px #788a9b,inset 0 2px 5px #c4e2ff20,0 3px 8px #0006!important}
+#live-main .live-stage:before{content:"KIMEM BINGO"!important;position:absolute!important;top:53%!important;left:50%!important;transform:translate(-50%,-50%) rotate(-13deg)!important;font:900 clamp(26px,8vw,55px) Arial,sans-serif!important;letter-spacing:3px!important;color:#b0cce036!important;text-shadow:none!important;white-space:nowrap!important;pointer-events:none!important;z-index:0!important}
+#live-main .live-stage:after{content:"";position:absolute;inset:3px;pointer-events:none;z-index:3;background:linear-gradient(115deg,#e4f2ff16,transparent 32%,transparent 85%,#e4f2ff08)!important;border-radius:10px}
+#live-main .live-stage>.draw-compact,#live-main .live-stage>#number-board{position:relative!important;z-index:1!important}
+#live-main .live-stage .board-number{box-shadow:none!important;text-shadow:none!important}
+#live-main .live-stage .board-number.called{box-shadow:none!important;text-shadow:none!important}
+#live-main .live-stage .board-letter{text-shadow:none!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin-top:3px!important;margin-bottom:8px!important}
+#live-main #kimem-cards-mount .mobile-card-priority>section{padding:5px!important}
+#live-main #kimem-cards-mount .cards-head{margin-bottom:4px!important}
+#live-main #kimem-cards-mount .my-cards{gap:4px!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,105px),1fr))!important}
+#live-main #kimem-cards-mount .play-card{padding:4px!important}
+</style><style id="kimem-card-size-repair-v4">
+/* Restore compact mobile play cards without touching draw, board, or gameplay. */
+#live-main .live-layout #kimem-cards-mount #my-cards{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(min(100%,155px),1fr))!important;gap:4px!important;align-items:start!important;width:100%!important}
+#live-main .live-layout #kimem-cards-mount #my-cards[data-count="1"]{grid-template-columns:minmax(0,205px)!important;max-width:205px!important;margin-left:auto!important;margin-right:auto!important}
+#live-main .live-layout #kimem-cards-mount #my-cards[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:370px!important;margin-left:auto!important;margin-right:auto!important}
+#live-main .live-layout #kimem-cards-mount #my-cards[data-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))!important;max-width:100%!important}
+#live-main .live-layout #kimem-cards-mount .play-card{padding:4px!important;min-width:0!important}
+#live-main .live-layout #kimem-cards-mount .play-cell{aspect-ratio:1!important;height:auto!important;min-height:0!important;width:100%!important;padding:0!important;font-size:clamp(9px,2.7vw,14px)!important}
+#live-main .live-layout #kimem-cards-mount .play-letters span{font-size:clamp(10px,3vw,14px)!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin-top:2px!important}
+</style><style id="kimem-telegram-card-compact-v5">
+/* Telegram mini-app: show three selected play cards side-by-side, not one giant card. */
+@media(max-width:699px){
+#live-main .live-layout #kimem-cards-mount #my-cards[data-count="3"]{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;width:100%!important;max-width:100%!important}
+#live-main .live-layout #kimem-cards-mount #my-cards[data-count="2"]{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important;width:100%!important}
+#live-main .live-layout #kimem-cards-mount #my-cards .play-card{min-width:0!important;padding:3px!important;border-radius:7px!important}
+#live-main .live-layout #kimem-cards-mount #my-cards .play-cell{height:clamp(18px,4.7vw,24px)!important;aspect-ratio:auto!important;min-height:0!important;font-size:clamp(8px,2.2vw,11px)!important;border-radius:2px!important}
+#live-main .live-layout #kimem-cards-mount #my-cards .play-letters span{font-size:clamp(9px,2.7vw,12px)!important}
+#live-main .live-layout #kimem-cards-mount #my-cards .play-numbers{gap:1px!important;margin-top:2px!important}
+#live-main .live-layout #kimem-cards-mount #my-cards .play-card-title{font-size:9px!important;margin-bottom:2px!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin-top:1px!important}
+}
+</style><style id="kimem-cards-header-alignment-only-v6">
+/* Only tighten the MY CARDS toolbar and its gap to the board. */
+@media(max-width:699px){
+#live-main .live-layout>div{gap:3px!important}
+#live-main>.live-layout>div>#kimem-cards-mount{margin-top:0!important;padding-top:0!important}
+#live-main #kimem-cards-mount .mobile-card-priority>section{padding:4px 5px!important}
+#live-main #kimem-cards-mount .cards-head{margin-bottom:1px!important;min-height:0!important;gap:4px!important}
+#live-main #kimem-cards-mount .cards-head h2{font-size:10px!important;line-height:1.1!important;white-space:nowrap}
+#live-main #kimem-cards-mount .bingo-head-action{font-size:12px!important;padding:3px 5px!important;line-height:1!important;min-height:26px!important}
+#live-main #kimem-cards-mount .mode-group{padding:1px!important;gap:2px!important}
+#live-main #kimem-cards-mount .mode-btn{padding:4px 6px!important;font-size:10px!important;line-height:1.1!important}
+}
+</style><style id="kimem-draw-height-only-v7">
+/* Mobile: recover 26px from the ball/LAST 5 panel, preserving board and cards. */
+@media(max-width:699px){
+#live-main>.live-layout>div>.live-stage>.draw-compact{height:80px!important;min-height:80px!important;max-height:80px!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine,
+#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side,
+#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side>.digital-side-card{height:80px!important;min-height:80px!important;max-height:80px!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine .ball-shell{width:72px!important;height:72px!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.machine.digital-machine .digital-status{bottom:0!important}
+#live-main #kimem-cards-mount .cards-head{margin-bottom:0!important}
+}
+</style><style id="kimem-final-mobile-alignment-v8">
+/* Final alignment only: no changes to gameplay, card values, or 1–75 board. */
+@media(max-width:699px){
+/* Position SHUFFLING in the free space below LAST 5 BALLS. */
+#live-main>.live-layout>div>.live-stage>.draw-compact{position:relative!important}
+#live-main>.live-layout>div>.live-stage>.draw-compact #shuffle-status{
+position:absolute!important;left:auto!important;right:2px!important;bottom:5px!important;
+width:47%!important;text-align:left!important;padding-left:6px!important;
+font-size:9px!important;line-height:12px!important;letter-spacing:.025em!important;
+white-space:nowrap!important;z-index:9!important;pointer-events:none!important
+}
+#live-main>.live-layout>div>.live-stage>.draw-compact>.digital-side>.digital-side-card{
+justify-content:flex-start!important;padding-top:12px!important;padding-bottom:18px!important
+}
+/* Shorter toolbar, same three-column card widths. */
+#live-main #kimem-cards-mount .cards-head{min-height:0!important;margin:0 0 2px!important;gap:4px!important;align-items:center!important}
+#live-main #kimem-cards-mount .cards-head h2{font-size:9px!important;line-height:12px!important}
+#live-main #kimem-cards-mount .bingo-head-action{
+min-height:0!important;height:23px!important;padding:2px 5px!important;
+font-size:11px!important;line-height:19px!important
+}
+#live-main #kimem-cards-mount .mode-group{padding:1px!important}
+#live-main #kimem-cards-mount .mode-btn{padding:3px 5px!important;font-size:9px!important;line-height:15px!important}
+/* Give recovered vertical room to cards without changing their width or count. */
+#live-main .live-layout #kimem-cards-mount #my-cards .play-cell{
+height:clamp(19px,4.95vw,25px)!important
+}
+#live-main #kimem-cards-mount .mobile-card-priority>section{padding:4px 5px 6px!important}
+}
+</style><style id="kimem-bingo-button-balanced-v9">
+/* Only center and size the BINGO button; preserve all other controls and game UI. */
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{position:relative!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{
+width:90px!important;min-width:90px!important;max-width:90px!important;
+height:24px!important;min-height:24px!important;max-height:24px!important;
+padding:0 5px!important;margin:0!important;
+justify-self:center!important;align-self:center!important;
+font-size:11px!important;line-height:24px!important;text-align:center!important;
+}
+}
+</style><style id="kimem-bingo-width-130-only-v11">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{
+grid-template-columns:minmax(0,1fr) 130px minmax(0,1fr)!important
+}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{
+width:130px!important;min-width:130px!important;max-width:130px!important
+}
+}
+</style><style id="kimem-bingo-width-170-only-v12">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{
+grid-template-columns:minmax(0,1fr) min(170px,42vw) minmax(0,1fr)!important
+}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{
+width:min(170px,42vw)!important;min-width:0!important;max-width:min(170px,42vw)!important;
+height:24px!important;min-height:24px!important;max-height:24px!important;
+justify-self:center!important
+}
+}
+</style><style id="kimem-bingo-results-v13">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{grid-template-columns:minmax(0,1fr) min(190px,44vw) minmax(0,1fr)!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{width:min(190px,44vw)!important;max-width:min(190px,44vw)!important;min-width:0!important}
+}
+#kimem-small-bingo-notice{position:fixed;z-index:4000;top:43%;left:50%;transform:translate(-50%,-50%) scale(.95);width:max-content;max-width:85vw;background:linear-gradient(145deg,#132a4d,#071329);border:1px solid #d5a848;border-radius:12px;padding:12px 17px;box-shadow:0 12px 38px #000b;color:#f4d381;font-size:13px;font-weight:800;text-align:center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s,transform .18s,visibility .18s}
+#kimem-small-bingo-notice.visible{opacity:1;visibility:visible;transform:translate(-50%,-50%) scale(1)}
+#kimem-winner-overlay{background:rgba(1,7,20,.94)!important}
+#kimem-winner-overlay:not(.kimem-no-winner)>div:first-child{font-size:19px!important;letter-spacing:.06em;text-shadow:0 0 20px #e6af5680}
+#kimem-winner-card{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:center;gap:9px;width:100%;max-width:690px;margin:9px auto}
+#kimem-winner-overlay #kimem-winner-card .play-card{width:min(42vw,175px)!important;min-width:0!important;margin:0!important;padding:6px!important;border:1px solid #c89b43!important;border-radius:10px!important;box-shadow:0 0 18px #e5a92c33!important;background:linear-gradient(155deg,#281638,#0a1c38)!important}
+#kimem-winner-overlay #kimem-winner-card .play-card-title{font-size:10px!important;color:#f7cf68!important}
+#kimem-winner-overlay #kimem-winner-card .play-letters span{font-size:12px!important}
+#kimem-winner-overlay #kimem-winner-card .play-numbers{gap:2px!important}
+#kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(21px,5vw,29px)!important;min-height:0!important;font-size:11px!important}
+#kimem-winner-overlay #kimem-winner-timer{font-size:32px!important}
+#kimem-winner-overlay.kimem-no-winner{background:rgba(1,7,20,.75)!important}
+#kimem-winner-overlay.kimem-no-winner .kimem-no-win-message{border:1px solid #41648b;background:linear-gradient(150deg,#142d4b,#09182d);border-radius:12px;padding:16px 24px;color:#d6e4fb;font-weight:800;font-size:15px;box-shadow:0 12px 36px #0008}
+</style><style id="kimem-targeted-bingo-button-and-no-win-v15">
+/* Exact live toolbar button: scoped to real rendered markup, no other UI changes. */
+@media(max-width:699px){
+#live-main .cards-head{display:grid!important;grid-template-columns:minmax(0,1fr) min(190px,46vw) minmax(0,1fr)!important;align-items:center!important;gap:3px!important}
+#live-main .cards-head>h2{grid-column:1!important;justify-self:start!important;min-width:0!important}
+#live-main .cards-head>button.bingo-action.bingo-head-action{grid-column:2!important;justify-self:center!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:min(190px,46vw)!important;min-width:0!important;max-width:min(190px,46vw)!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 5px!important;margin:0!important;transform:none!important;white-space:nowrap!important}
+#live-main .cards-head>.mode-group{grid-column:3!important;justify-self:end!important;min-width:0!important}
+}
+#kimem-small-bingo-notice{position:fixed!important;z-index:99999!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;max-width:82vw!important;width:max-content!important;min-width:0!important;min-height:0!important;height:auto!important;padding:11px 18px!important;font-size:12px!important;line-height:18px!important;background:#112540!important;border:1px solid #e3ba61!important;border-radius:11px!important;box-shadow:0 10px 30px #0009!important;color:#ffe1a0!important;pointer-events:none!important}
+#kimem-small-bingo-notice.visible{opacity:1!important;visibility:visible!important;transform:translate(-50%,-50%)!important}
+</style></head><body class="cosmic-bg"><div class="w-full h-[100dvh] bg-[#020716] flex flex-col overflow-hidden"><div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 shrink-0"><button onclick="location.href='./KIMEM_BINGO_Game_Lobby.html'" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i>LOBBY</button><span class="text-xs font-black tracking-widest text-amber-400">KIMEM • LIVE GAME</span><span class="text-[10px] text-emerald-400 font-bold">● LIVE DRAW</span></div><main class="flex-1 min-h-0 overflow-hidden px-2 py-1 space-y-1 pb-1" id="live-main">
+<div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value" style="font-size:11px;white-space:nowrap;letter-spacing:-0.35px"><span style="color:#fbbf24">AA</span>000000</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400">15K ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value">2,500</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-circle-dot stat-icon text-yellow-300"></i><div class="stat-label">BALLS DRAWN</div><div id="countdown" class="stat-value text-yellow-300">0/75</div></div></div>
+<div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">+50 ETB</div></div></button><button onclick="triggerToast('Weekly Reward Active')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">+250 ETB</div></div></button><button onclick="triggerToast('Jackpot Pool: 100K ETB')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">100K ETB</div></div></button></div>
+
+<div class="live-layout"><div class="space-y-1.5"><section class="live-stage"><div class="stage-top"><div class="stage-title">KIMEM • LIVE DRAW</div><div id="draw-status" class="live-status">READY TO START</div></div><div class="draw-compact"><div class="machine digital-machine" id="machine"><span id="shuffle-status" class="kimem-shuffle-label">SHUFFLING • 4s</span><div class="ball-shell"><canvas id="kimem-sphere" width="160" height="160" aria-label="Live 3D bingo draw ball"></canvas><span id="digital-letter" hidden>READY</span><span id="digital-number" hidden>--</span></div></div><div class="digital-side"><div class="digital-side-card"><div class="digital-side-title">LAST 5 BALLS</div><div id="last-five" class="last-five"><span class="text-xs text-slate-500">Waiting for first number…</span></div></div></div></div><div class="number-board" id="number-board"></div><span id="called-total" hidden>0 CALLED</span></section><div id="kimem-cards-mount"><div class="mobile-card-priority"><section class="neon-panel rounded-xl p-2.5"><div class="cards-head mb-2"><h2 class="text-xs font-black">MY CARDS <span id="card-count" class="text-amber-400"></span></h2><button class="bingo-action bingo-head-action" onclick="claimBingo()">BINGO!</button><div class="mode-group"><button id="manual-btn" class="mode-btn" onclick="setMode('manual')">MANUAL</button><button id="auto-btn" class="mode-btn active" onclick="setMode('auto')">AUTO</button></div></div><div id="my-cards" class="my-cards"></div></section></div></div></div>
+</div>
+</main></div><div id="live-toast" class="live-toast"></div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const colors=['#1687f8','#e64655','#18ad78','#9a57e8','#e6a529'];
+const lights=['#9ed4ff','#ffaaa2','#a0f9d4','#e0b7ff','#ffe49d'];
+const letter=n=>'BINGO'[Math.floor((n-1)/15)];
+const tone=n=>Math.floor((n-1)/15);
+let selected=[],mode='auto',drawn=[],running=false,runId=0,manualMarks={};
+function cardFor(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const cols=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}cols.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?0:cols[c][r]));}
+function readCards(){try{const q=new URLSearchParams(location.search);const raw=q.get('cards')||sessionStorage.getItem('kimemSelectedCards')||localStorage.getItem('kimemSelectedCards')||'[]';let parsed;try{parsed=JSON.parse(raw)}catch(_){parsed=raw.split(',')}if(!Array.isArray(parsed))parsed=String(parsed).split(',');selected=[...new Set(parsed.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3)}catch(e){selected=[]}}
+
+function board(){const el=$('number-board');el.replaceChildren();for(let c=0;c<5;c++){const col=document.createElement('div');col.className='board-column';const h=document.createElement('div');h.className='board-letter';h.style.background=colors[c];h.textContent='BINGO'[c];col.append(h);for(let j=1;j<=15;j++){const n=c*15+j;const d=document.createElement('div');d.className='board-number'+(drawn.includes(n)?' called':'');d.textContent=n;d.id='board-'+n;d.style.setProperty('--cell-tone',colors[c]);col.append(d)}el.append(col)}}
+function cards(){const area=$('my-cards');area.dataset.count=String(selected.length);area.style.setProperty('--kimem-card-count',String(Math.max(1,Math.min(3,selected.length))));area.replaceChildren();$('card-count').textContent=`(${selected.length})`;if(!selected.length){area.innerHTML='<div style="width:100%;min-height:145px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:25px 18px;text-align:center;border:1px solid rgba(245,208,112,.42);border-radius:16px;background:linear-gradient(145deg,rgba(20,34,70,.95),rgba(49,35,79,.90));box-shadow:0 10px 30px rgba(0,0,0,.20)"><div style="font-size:28px">⏳</div><div style="color:#f7d98b;font-size:15px;font-weight:800;line-height:1.7">የሚቀጥለው ጨዋታ እስኪጀምር ይጠብቁ</div><div style="color:#c6cbe0;font-size:12px;line-height:1.5">Please wait for the next game to start.</div></div>';return}for(const id of selected){const wrap=document.createElement('div');wrap.className='play-card';const title=document.createElement('div');title.className='play-card-title';title.textContent='CARD #'+String(id).padStart(4,'0');wrap.append(title);const h=document.createElement('div');h.className='play-letters';'BINGO'.split('').forEach((l,i)=>{const s=document.createElement('span');s.textContent=l;s.style.color=colors[i];h.append(s)});wrap.append(h);const grid=document.createElement('div');grid.className='play-numbers';cardFor(id).forEach(row=>row.forEach(n=>{const d=document.createElement('button');d.type='button';d.className='play-cell'+(n===0?' free':'')+((n!==0&&(mode==='auto'?drawn.includes(n):!!manualMarks[id+':'+n]))?' marked':'');d.textContent=n||'FREE';if(n)d.style.setProperty('--cell-tone',colors[tone(n)]);d.disabled=n===0||mode==='auto';if(mode==='manual'&&n)d.classList.add('manual-touch');d.onclick=()=>{if(mode!=='manual'||!drawn.includes(n)){toast('Only called numbers can be marked');return}const k=id+':'+n;manualMarks[k]=!manualMarks[k];cards()};grid.append(d)}));wrap.append(grid);area.append(wrap)}}
+function setMode(next){mode=next;$('manual-btn').classList.toggle('active',mode==='manual');$('auto-btn').classList.toggle('active',mode==='auto');cards()}
+function toast(msg){const el=$('live-toast');el.textContent=msg;el.style.opacity=1;clearTimeout(window.toastHandle);window.toastHandle=setTimeout(()=>el.style.opacity=0,2300)}
+function kimemWinningCards(useManual=false){
+ const marked=(id,n)=>n===0||drawn.includes(n);
+ return selected.filter(id=>{
+  const g=cardFor(id);
+  const lines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
+  return lines.some(line=>line.every(n=>marked(id,n)));
+ });
+}
+function kimemSmallNotice(message){
+ let box=document.getElementById('kimem-small-bingo-notice');
+ if(!box){box=document.createElement('div');box.id='kimem-small-bingo-notice';box.setAttribute('role','status')}
+ if(box.parentElement!==document.body)document.body.appendChild(box);
+ box.textContent=message;
+ // Reuse one toast and cancel the previous dismissal on every tap.
+ box.style.cssText='all:initial!important;display:block!important;position:fixed!important;z-index:2147483647!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;width:max-content!important;max-width:78vw!important;height:auto!important;min-width:0!important;min-height:0!important;box-sizing:border-box!important;transform:translate(-50%,-50%)!important;padding:14px 19px!important;background:linear-gradient(150deg,#172e50,#071428)!important;border:1px solid #e8b94e!important;border-radius:15px!important;box-shadow:0 14px 35px #000a,0 0 16px #e4ad3533!important;color:#ffe4a3!important;font:800 13px/19px Arial,sans-serif!important;text-align:center!important;white-space:normal!important;pointer-events:none!important;opacity:1!important;visibility:visible!important;';
+ clearTimeout(window.kimemNoticeTimeout);
+ window.kimemNoticeTimeout=setTimeout(()=>{box.style.setProperty('display','none','important')},2000);
+}
+const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href).href);
+const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
+kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
+function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
+function claimBingo(){
+ if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
+ const wins=kimemWinningCards();
+ if(wins.length)kimemFinishAfterBall(wins);
+ else {kimemPlayBingoSound(kimemBingoWrongSound);kimemSmallNotice('NO BINGO YET')}
+}
+let kimemFinished=false,kimemReturnTimer=null;
+let kimemPendingFinish=null;
+function kimemFinishAfterBall(ids){
+ if(kimemFinished||kimemPendingFinish!==null)return;
+ running=false;spherePhase='idle';
+ kimemPendingFinish=ids;
+ const finish=()=>{if(kimemPendingFinish===null)return;const result=kimemPendingFinish;kimemPendingFinish=null;kimemFinishGame(result)};
+ if(!kimemVoiceBusy&&!kimemVoiceQueue.length){finish();return}
+ const previousEnded=()=>{if(!kimemVoiceBusy&&!kimemVoiceQueue.length){cleanup();finish()}};
+ const cleanup=()=>{kimemVoicePlayer.removeEventListener('ended',previousEnded);kimemVoicePlayer.removeEventListener('error',previousEnded);clearTimeout(timeout)};
+ kimemVoicePlayer.addEventListener('ended',previousEnded);kimemVoicePlayer.addEventListener('error',previousEnded);
+ const timeout=setTimeout(()=>{cleanup();finish()},9000);
+}
+function kimemWinningCard(){return kimemWinningCards()[0]??null}
+function kimemFinishGame(ids){
+ if(kimemFinished)return;
+ kimemFinished=true;running=false;spherePhase='idle';
+ if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
+ const winners=Array.isArray(ids)?ids:(ids===null||ids===undefined?[]:[ids]);
+ const overlay=document.getElementById('kimem-winner-overlay');
+ const host=document.getElementById('kimem-winner-card');
+ host.replaceChildren();
+ overlay.classList.toggle('kimem-no-winner',winners.length===0);
+ const heading=overlay.querySelector('.kimem-result-title')||overlay.querySelector('.kimem-result-panel > div:first-child')||overlay.firstElementChild;
+ if(heading)heading.textContent=winners.length?'BINGO WINNER'+(winners.length>1?'S':'')+'!':'ROUND COMPLETE';
+ if(winners.length){
+  for(const id of winners){
+   const temp=document.createElement('div');temp.className='play-card';
+   const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.append(title);
+   const headers=document.createElement('div');headers.className='play-letters';
+   'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
+   const g=cardFor(id);
+   const isHit=n=>n===0||drawn.includes(n);
+   const candidateLines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i])];
+   const winningNumbers=new Set(candidateLines.filter(line=>line.every(isHit)).flat());
+   const grid=document.createElement('div');grid.className='play-numbers';
+   cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';grid.append(cell)}));temp.append(grid);host.append(temp);
+  }
+ }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
+ const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
+ document.getElementById('kimem-winner-user').textContent=username?'@'+username:'Demo player';
+ overlay.classList.add('visible');
+ // Keep winner dialog in the actual viewport, not behind the Telegram bottom area.
+ overlay.style.setProperty('position','fixed','important');
+ overlay.style.setProperty('inset','0','important');
+ overlay.style.setProperty('z-index','10000','important');
+ let left=7;document.getElementById('kimem-winner-timer').textContent=left;
+ const audio=()=>{try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const ctx=kimemFinishGame.audioCtx||(kimemFinishGame.audioCtx=new C());if(ctx.state==='suspended')ctx.resume();const osc=ctx.createOscillator(),gain=ctx.createGain();osc.frequency.value=660;gain.gain.value=.055;osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.12)}catch(e){}};
+ // Winner voice is played by kimemBingoWinSound above.
+ kimemReturnTimer=setInterval(()=>{left--;if(left<=0){clearInterval(kimemReturnTimer);location.href='./KIMEM_BINGO_Game_Lobby.html';return}document.getElementById('kimem-winner-timer').textContent=left;if(winners.length)audio()},1000);
+}
+function makeBall(n,cls){const d=document.createElement('div');d.className=cls;d.style.setProperty('--ball-color',colors[tone(n)]);d.style.setProperty('--ball-light',lights[tone(n)]);d.textContent=letter(n)+' '+n;return d}
+
+/* KIMEM approved 3D ball renderer — isolated from cards/board logic */
+const sphereCanvas=$('kimem-sphere'),sphereCtx=sphereCanvas.getContext('2d');
+const SZ=160,CTR=80,RAD=72,TAU=Math.PI*2;
+const clamp3=(x,a,b)=>Math.max(a,Math.min(b,x));
+const smooth3=t=>t*t*(3-2*t);
+const ease3=t=>1-Math.pow(1-t,4);
+const lerp3=(a,b,t)=>a+(b-a)*t;
+const rgb3=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+const sphereImage=sphereCtx.createImageData(SZ,SZ),sphereData=sphereImage.data;
+const spherePoints=[];
+for(let y=0;y<SZ;y++)for(let x=0;x<SZ;x++){
+ const xx=(x-CTR)/RAD,yy=(CTR-y)/RAD,q=xx*xx+yy*yy;
+ if(q<=1)spherePoints.push({i:(y*SZ+x)*4,x:xx,y:yy,z:Math.sqrt(1-q)});
+}
+function sphereBadge(n){
+ const c=document.createElement('canvas');c.width=c.height=192;
+ const g=c.getContext('2d');
+ const gr=g.createRadialGradient(63,48,0,96,96,94);
+ gr.addColorStop(0,'#fff');gr.addColorStop(.65,'#f8fbff');gr.addColorStop(1,'#bacbdf');
+ g.fillStyle=gr;g.beginPath();g.arc(96,96,92,0,TAU);g.fill();
+ g.strokeStyle='#dce6f2';g.lineWidth=3;g.stroke();
+ g.fillStyle='#173355';g.textAlign='center';g.textBaseline='middle';
+ g.font='900 47px Arial';g.fillText(n?'BINGO'[tone(n)]:'B',96,68);
+ g.font='900 77px Arial';g.fillText(n?String(n).padStart(2,'0'):'--',96,125);
+ return g.getImageData(0,0,192,192).data;
+}
+const badgeCache=new Map();
+function getBadge(n){if(!badgeCache.has(n))badgeCache.set(n,sphereBadge(n));return badgeCache.get(n)}
+let spherePhase='idle',sphereStart=0,sphereAngle=0,spherePitch=0;
+let sphereFromAngle=0,sphereFromPitch=0,sphereCurrent=0,spherePending=0;
+let sphereSamples=[],sphereSampleIndex=0,sphereLastSwap=0,sphereReveal=null;
+let digitalTimer=null,nextDrawAt=0,drawRemaining=3000;
+function sphereRender(now){
+ const rev=sphereReveal;
+ const p=rev?clamp3((now-rev.start)/1100,0,1):0;
+ const blend=rev?smooth3(clamp3((p-.24)/.76,0,1)):0;
+ const from=rev?rev.from:(sphereCurrent||1),to=rev?rev.to:from;
+ const baseA=rgb3(colors[tone(from)]),baseB=rgb3(colors[tone(to)]);
+ const lightA=rgb3(lights[tone(from)]),lightB=rgb3(lights[tone(to)]);
+ const base=baseA.map((v,i)=>lerp3(v,baseB[i],blend));
+ const light=lightA.map((v,i)=>lerp3(v,lightB[i],blend));
+ let oldBadge=getBadge(sphereCurrent);
+ if(spherePhase==='shuffle'&&sphereSamples.length)oldBadge=getBadge(sphereSamples[sphereSampleIndex]);
+ if(rev)oldBadge=getBadge(rev.fromNumber);
+ const newBadge=rev?getBadge(rev.to):null;
+ const ca=Math.cos(sphereAngle),sa=Math.sin(sphereAngle);
+ const cp=Math.cos(spherePitch),sp=Math.sin(spherePitch);
+ sphereData.fill(0);
+ for(const pt of spherePoints){
+  const xx=pt.x*ca-pt.z*sa,zz=pt.x*sa+pt.z*ca;
+  const yy=pt.y*cp+zz*sp,z=-pt.y*sp+zz*cp;
+  let rr,gg,bb;
+  if(z>0&&xx*xx+yy*yy<.4356){
+   const u=clamp3(Math.floor((xx/.66*.5+.5)*191),0,191);
+   const v=clamp3(Math.floor((.5-yy/.66*.5)*191),0,191);
+   const bi=(v*192+u)*4;
+   rr=oldBadge[bi];gg=oldBadge[bi+1];bb=oldBadge[bi+2];
+   if(newBadge){rr=lerp3(rr,newBadge[bi],blend);gg=lerp3(gg,newBadge[bi+1],blend);bb=lerp3(bb,newBadge[bi+2],blend)}
+  }else{
+   const wave=.94+.035*Math.sin(xx*12+yy*6);
+   rr=base[0]*wave;gg=base[1]*wave;bb=base[2]*wave;
+  }
+  const diffuse=Math.max(0,pt.x*(-.44)+pt.y*.62+pt.z*.65);
+  const lighting=.35+diffuse*.69,rim=Math.pow(1-pt.z,2)*.32;
+  const shine=Math.pow(Math.max(0,pt.x*(-.42)+pt.y*.72+pt.z*.55),20)*.9;
+  const i=pt.i;
+  sphereData[i]=clamp3(rr*lighting+light[0]*shine-rim*48,0,255);
+  sphereData[i+1]=clamp3(gg*lighting+light[1]*shine-rim*48,0,255);
+  sphereData[i+2]=clamp3(bb*lighting+light[2]*shine-rim*48,0,255);
+  sphereData[i+3]=255;
+ }
+ sphereCtx.clearRect(0,0,SZ,SZ);
+ sphereCtx.putImageData(sphereImage,0,0);
+ sphereCtx.save();sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,RAD,0,TAU);sphereCtx.clip();
+ const gloss=sphereCtx.createRadialGradient(56,44,0,62,51,44);
+ gloss.addColorStop(0,'#ffffff5c');gloss.addColorStop(.35,'#ffffff1a');gloss.addColorStop(1,'#ffffff00');
+ sphereCtx.fillStyle=gloss;sphereCtx.fillRect(0,0,SZ,SZ);sphereCtx.restore();
+ sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,RAD-.5,0,TAU);
+ sphereCtx.strokeStyle='#ffffff60';sphereCtx.lineWidth=1.2;sphereCtx.stroke();
+ if(spherePhase==='waiting'||spherePhase==='idle'||(spherePhase==='reveal'&&sphereReveal&&now-sphereReveal.start>780)){
+  const n=spherePhase==='reveal'?spherePending:sphereCurrent,fr=RAD*.66;
+  const grad=sphereCtx.createRadialGradient(CTR-fr*.35,CTR-fr*.45,2,CTR,CTR,fr);
+  grad.addColorStop(0,'#fff');grad.addColorStop(.68,'#f8fbff');grad.addColorStop(1,'#bfcee0');
+  sphereCtx.beginPath();sphereCtx.arc(CTR,CTR,fr,0,TAU);
+  sphereCtx.globalAlpha=spherePhase==='reveal'?smooth3(clamp3((now-sphereReveal.start-780)/320,0,1)):1;
+  sphereCtx.fillStyle=grad;sphereCtx.fill();sphereCtx.strokeStyle='#dce6f2';sphereCtx.lineWidth=1.3;sphereCtx.stroke();
+  sphereCtx.fillStyle='#173355';sphereCtx.textAlign='center';sphereCtx.textBaseline='middle';
+  sphereCtx.font='900 '+Math.round(RAD*.35)+'px Arial';sphereCtx.fillText(n?letter(n):'B',CTR,CTR-fr*.32);
+  sphereCtx.font='900 '+Math.round(RAD*.56)+'px Arial';sphereCtx.fillText(n?String(n).padStart(2,'0'):'--',CTR,CTR+fr*.31);
+  sphereCtx.globalAlpha=1;
+ }
+
+}
+function initMachine(){sphereRender(performance.now())}
+/* Amharic number calling: uses only a genuine Amharic system voice. */
+const kimemAmharicOnes=['','አንድ','ሁለት','ሶስት','አራት','አምስት','ስድስት','ሰባት','ስምንት','ዘጠኝ'];
+const kimemAmharicTens=['','','ሃያ','ሰላሳ','አርባ','ሃምሳ','ስልሳ','ሰባ'];
+function kimemAmharicNumber(n){
+ if(n===10)return 'አስር';
+ if(n>10&&n<20)return n===11?'አስራ አንድ':'አስራ '+kimemAmharicOnes[n-10];
+ if(n<10)return kimemAmharicOnes[n]||String(n);
+ const t=Math.floor(n/10),o=n%10;
+ return (kimemAmharicTens[t]||String(n))+(o?' '+kimemAmharicOnes[o]:'');
+}
+const KIMEM_VOICE_ENDPOINT=new URL('./kimem-ball-',location.href).href;
+const kimemVoiceQueue=[];
+const kimemVoicePlayer=new Audio();
+kimemVoicePlayer.preload='auto';
+/* Warm the browser's HTTP media cache without changing the working HTML Audio player. */
+(function kimemWarmVoiceCache(){
+ const total=75;
+ let next=1;
+ async function worker(){
+  while(next<=total){
+   const n=next++;
+   try{
+    const response=await fetch(KIMEM_VOICE_ENDPOINT+n+'.mp3',{cache:'force-cache'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    await response.arrayBuffer();
+   }catch(e){console.warn('KIMEM voice cache '+n,e)}
+  }
+ }
+ for(let i=0;i<6;i++)worker();
+})();
+
+let kimemVoiceBusy=false;
+let kimemRevealVoiceStarted=false;
+function kimemVoiceNext(){
+ if(kimemVoiceBusy||!kimemVoiceQueue.length)return;
+ const n=kimemVoiceQueue.shift();
+ kimemVoiceBusy=true;
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+n+'.mp3';
+ const p=kimemVoicePlayer.play();
+ if(p&&p.catch)p.catch(e=>{console.warn('KIMEM voice:',e);kimemVoiceBusy=false;kimemVoiceQueue.unshift(n)});
+}
+kimemVoicePlayer.addEventListener('ended',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
+kimemVoicePlayer.addEventListener('error',()=>{kimemVoiceBusy=false;kimemVoiceNext()});
+function kimemCallBallAmharic(n){
+ if(!Number.isInteger(n)||n<1||n>75)return;
+ kimemVoiceQueue.push(n);
+ kimemVoiceNext();
+}
+function kimemUnlockVoice(){
+ if(kimemVoiceBusy)return;
+ if(kimemVoiceQueue.length){kimemVoiceNext();return}
+ kimemVoicePlayer.src=KIMEM_VOICE_ENDPOINT+'1.mp3';
+ kimemVoicePlayer.muted=true;
+ const p=kimemVoicePlayer.play();
+ if(p&&p.then)p.then(()=>{kimemVoicePlayer.pause();kimemVoicePlayer.muted=false}).catch(()=>{kimemVoicePlayer.muted=false});
+}
+document.addEventListener('touchstart',kimemUnlockVoice,{capture:true,passive:true});
+document.addEventListener('pointerdown',kimemUnlockVoice,{capture:true,passive:true});
+document.addEventListener('click',kimemUnlockVoice,true);
+
+function updateDraw(n){
+ drawn.push(n);
+ $('countdown').textContent=drawn.length+'/75';
+ $('called-total').textContent=drawn.length+' CALLED';
+ const cell=$('board-'+n);if(cell)cell.classList.add('called');
+ const history=$('last-five');history.replaceChildren();
+ drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+ if(!window.kimemServerDrawBatch)cards();
+}
+function pickDrawNumber(){
+ const available=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
+ if(!available.length)return null;
+ const a=new Uint32Array(1);
+ if(crypto?.getRandomValues){crypto.getRandomValues(a);return available[Math.floor(a[0]/4294967296*available.length)]}
+ return available[Math.floor(Math.random()*available.length)];
+}
+function beginSphereReveal(now){
+ const n=pickDrawNumber();if(n===null){running=false;spherePhase='idle';return}
+ spherePending=n;spherePhase='reveal';sphereStart=now;
+ kimemRevealVoiceStarted=false;
+ sphereFromAngle=sphereAngle;sphereFromPitch=spherePitch;
+ sphereReveal={from:sphereCurrent||1,fromNumber:sphereCurrent,to:n,start:now};
+}
+function finishSphereReveal(now){
+ const n=spherePending;
+ sphereCurrent=n;spherePending=0;sphereReveal=null;
+ sphereAngle=0;spherePitch=0;
+ $('digital-letter').textContent=letter(n);
+ $('digital-number').textContent=String(n).padStart(2,'0');
+ $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
+
+ updateDraw(n);
+ if(!kimemRevealVoiceStarted){kimemRevealVoiceStarted=true;kimemCallBallAmharic(n)}
+ // In AUTO, immediately finish when any selected card completes a real drawn line.
+ if(mode==='auto'&&!kimemFinished){const wins=kimemWinningCards();if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins);return}}
+ $('draw-status').textContent=drawn.length===75?'DRAW COMPLETE':'NEXT DRAW IN 3s';
+ if(drawn.length===75){running=false;spherePhase='idle';kimemFinishAfterBall(kimemWinningCards())}
+ else{spherePhase='waiting';nextDrawAt=now+1900}
+}
+function digitalTick(now){
+ if(spherePhase==='shuffle'){
+  const t=now-sphereStart;
+  if(t<4000){
+   sphereAngle=t*.047;
+   spherePitch=Math.sin(t*.019)*.65+Math.cos(t*.012)*.25;
+   if(t-sphereLastSwap>105&&sphereSamples.length){
+    sphereSampleIndex=(sphereSampleIndex+1)%sphereSamples.length;sphereLastSwap=t;
+   }
+  }else { $('machine').classList.remove('kimem-shuffling');beginSphereReveal(now); }
+ }else if(spherePhase==='reveal'){
+  if(!kimemRevealVoiceStarted&&spherePending&&now-sphereStart>=0){kimemRevealVoiceStarted=true;kimemCallBallAmharic(spherePending)}
+  const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
+  sphereAngle=sphereFromAngle+(Math.ceil(sphereFromAngle/TAU)+3)*TAU*e-sphereFromAngle*e;
+  spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.18*(1-t);
+  if(t>=1)finishSphereReveal(now);
+ }else if(spherePhase==='waiting'&&running){
+  sphereAngle=0;spherePitch=0;
+  if(now>=nextDrawAt)beginSphereReveal(now);
+  const left=Math.max(0,nextDrawAt-now);
+
+ }
+ const kimemServerMode=new URLSearchParams(location.search).get('sync')!=='0';
+ const renderInterval=kimemServerMode?250:30;
+ if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=renderInterval){
+  if(!kimemServerMode||spherePhase==='shuffle'||spherePhase==='reveal'||!digitalTick.serverStaticRendered){
+   sphereRender(now);
+   if(kimemServerMode&&spherePhase!=='shuffle'&&spherePhase!=='reveal')digitalTick.serverStaticRendered=true;
+  }
+  digitalTick.lastFrame=now;
+ }
+ digitalTimer=requestAnimationFrame(digitalTick);
+}
+function startGame(){
+ if(new URLSearchParams(location.search).get('sync')==='1')return;
+ kimemUnlockVoice();
+ if(drawn.length===75)return;
+ if(running){running=false;$('draw-status').textContent='PAUSED';return}
+ running=true;
+ if(spherePhase==='idle'){spherePhase='waiting';nextDrawAt=performance.now()+3000}
+ $('draw-status').textContent='NEXT DRAW IN 3s';
+}
+function resetGame(){
+ running=false;drawn=[];manualMarks={};kimemFinished=false;clearInterval(kimemReturnTimer);document.getElementById('kimem-winner-overlay')?.classList.remove('visible');
+ spherePhase='idle';sphereCurrent=0;spherePending=0;sphereReveal=null;
+ kimemPendingFinish=null;
+ sphereAngle=0;spherePitch=0;sphereSamples=[];
+ $('countdown').textContent='0/75';$('called-total').textContent='0 CALLED';
+ $('draw-status').textContent='READY TO START';
+ $('last-five').innerHTML='<span class="text-xs text-slate-500">Waiting for first number…</span>';
+ $('digital-number').textContent='--';$('digital-letter').textContent='READY';
+
+ $('machine').style.setProperty('--studio-tone','#2d83e8');
+
+ board();cards();sphereRender(performance.now());
+}
+(function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
+
+readCards();cards();board();initMachine();
+try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
+(function autoStartLiveDraw(){
+ const status=$('shuffle-status');
+ spherePhase='shuffle';$('machine').classList.add('kimem-shuffling');sphereStart=performance.now();sphereLastSwap=0;
+ sphereSamples=Array.from({length:75},(_,i)=>i+1);
+ for(let i=sphereSamples.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [sphereSamples[i],sphereSamples[j]]=[sphereSamples[j],sphereSamples[i]];
+ }
+ sphereSamples=sphereSamples.slice(0,14);
+ running=true;
+ $('draw-status').textContent='DRAW IN PROGRESS';
+ const countdown=setInterval(()=>{
+  if(spherePhase!=='shuffle'){clearInterval(countdown);status.textContent='';$('machine').classList.remove('kimem-shuffling');return}
+  const left=Math.max(1,Math.ceil((4000-(performance.now()-sphereStart))/1000));
+  status.textContent='SHUFFLING • '+left+'s';
+  $('draw-status').textContent='DRAW IN PROGRESS';
+ },200);
+ digitalTimer=requestAnimationFrame(digitalTick);
+})();
+</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div><style id="kimem-two-controls-precise-fix-v10">
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{
+display:grid!important;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr)!important;
+align-items:center!important;column-gap:4px!important
+}
+#live-main #kimem-cards-mount .cards-head>h2{grid-column:1!important;justify-self:start!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{
+grid-column:2!important;justify-self:center!important;
+width:90px!important;min-width:90px!important;max-width:90px!important;
+height:24px!important;min-height:24px!important;max-height:24px!important;
+padding:0 4px!important;margin:0!important;font-size:11px!important;line-height:24px!important
+}
+#live-main #kimem-cards-mount .cards-head>.mode-group{grid-column:3!important;justify-self:end!important}
+#live-main .live-stage .digital-side-card #shuffle-status{
+display:none!important;position:static!important;width:100%!important;
+height:auto!important;min-height:12px!important;margin-top:5px!important;
+padding:0!important;text-align:center!important;font-size:10px!important;
+line-height:12px!important;white-space:nowrap!important;letter-spacing:0!important
+}
+#live-main .live-stage .draw-compact:has(.machine.kimem-shuffling) .digital-side-card #shuffle-status{display:block!important}
+}
+</style><script id="kimem-shuffle-position-only-v10">
+(function(){
+function placeShuffle(){
+const label=document.getElementById('shuffle-status');
+const side=document.querySelector('#live-main .live-stage .draw-compact .digital-side-card');
+if(label&&side&&label.parentElement!==side)side.appendChild(label);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',placeShuffle,{once:true});
+else placeShuffle();
+})();
+</script><style id="kimem-result-dialog-compact-v14">
+/* Only the results dialog and BINGO button. No board, card selection, or draw changes. */
+@media(max-width:699px){
+#live-main #kimem-cards-mount .cards-head{grid-template-columns:minmax(0,1fr) min(190px,46vw) minmax(0,1fr)!important}
+#live-main #kimem-cards-mount .cards-head>.bingo-head-action{width:min(190px,46vw)!important;max-width:min(190px,46vw)!important;min-width:0!important}
+}
+#kimem-winner-overlay.visible{display:flex!important;align-items:center!important;justify-content:center!important;padding:14px!important;background:rgba(1,7,20,.65)!important}
+#kimem-winner-overlay .kimem-result-panel{box-sizing:border-box;width:min(94vw,540px);max-height:min(82dvh,690px);overflow-y:auto;overscroll-behavior:contain;padding:16px 12px 12px;border-radius:18px;border:1px solid #b38b42;background:linear-gradient(155deg,#192d51,#0a142a 85%);box-shadow:0 18px 65px #000b,0 0 22px #efba4930;display:flex;flex-direction:column;align-items:center;gap:5px}
+#kimem-winner-overlay .kimem-result-title{font-size:19px;font-weight:900;color:#f5cb67;line-height:1.3}
+#kimem-winner-overlay .kimem-result-meta,#kimem-winner-overlay .kimem-result-return{font-size:11px;color:#b9cee9}
+#kimem-winner-overlay #kimem-winner-card{width:100%;max-width:100%;margin:7px 0;display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+#kimem-winner-overlay #kimem-winner-card .play-card{width:min(39vw,165px)!important;flex:0 0 auto!important;max-width:165px!important;padding:5px!important}
+#kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(19px,4.6vw,25px)!important;font-size:10px!important}
+#kimem-winner-overlay #kimem-winner-timer{font-size:24px!important;line-height:1.1}
+#kimem-winner-overlay.kimem-no-winner .kimem-result-panel{width:min(82vw,310px);padding:15px 12px}
+#kimem-winner-overlay.kimem-no-winner .kimem-no-win-message{font-size:13px;padding:10px 14px;box-shadow:none}
+</style><script id="kimem-result-dialog-wrap-v14">
+(function(){
+function wrap(){
+const overlay=document.getElementById('kimem-winner-overlay');
+if(!overlay||overlay.querySelector('.kimem-result-panel'))return;
+const panel=document.createElement('div');panel.className='kimem-result-panel';
+const kids=Array.from(overlay.children);
+kids.forEach((el,i)=>{if(i===0)el.classList.add('kimem-result-title');if(i===1)el.classList.add('kimem-result-meta');if(i===3)el.classList.add('kimem-result-return');panel.appendChild(el)});
+overlay.appendChild(panel);
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',wrap,{once:true});else wrap();
+})();
+</script><style id="kimem-winner-visual-v16">
+/* Results only: leave live board, ball and card controls unchanged. */
+#kimem-winner-overlay.visible{position:fixed!important;inset:0!important;width:100%!important;height:100dvh!important;display:flex!important;align-items:center!important;justify-content:center!important;z-index:100000!important;background:rgba(1,7,22,.76)!important;padding:12px!important;overflow:hidden!important;box-sizing:border-box!important}
+#kimem-winner-overlay .kimem-result-panel{width:min(90vw,350px)!important;max-height:85dvh!important;overflow-y:auto!important;background:linear-gradient(160deg,#101c38,#070d20)!important;border:2px solid #efbd4c!important;border-radius:20px!important;padding:18px 12px!important;box-shadow:0 0 25px #dba63455,0 20px 55px #000b!important;gap:8px!important}
+#kimem-winner-overlay .kimem-result-title{font-size:26px!important;font-weight:900!important;letter-spacing:.5px!important;color:#ffcf54!important;text-shadow:0 0 14px #dba53a66!important}
+#kimem-winner-overlay .kimem-result-meta{font-size:12px!important;color:#e6e9f6!important;text-align:center!important}
+#kimem-winner-overlay #kimem-winner-card{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:flex-start!important;gap:7px!important;width:100%!important;max-height:52dvh!important;overflow-y:auto!important;margin:4px 0!important;padding:3px!important;box-sizing:border-box!important}
+#kimem-winner-overlay #kimem-winner-card>.play-card{width:min(70vw,210px)!important;max-width:210px!important;flex:0 0 auto!important;box-sizing:border-box!important}
+#kimem-winner-overlay #kimem-winner-card .play-numbers{width:100%!important}
+#kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(24px,6.5vw,34px)!important;font-size:12px!important}
+#kimem-winner-overlay .kimem-result-return{font-size:11px!important;color:#e8eafa!important;text-align:center!important}
+#kimem-winner-overlay #kimem-winner-timer{font-size:34px!important;font-weight:900!important;color:#ffce50!important}
+</style><script>
+/* Opt-in read-only live synchronization. Local game behavior remains default. */
+(function(){
+ if(new URLSearchParams(location.search).get('sync')==='0')return;
+ const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
+ let activeRound=null,redirecting=false,finished=false,syncBusy=false;
+ function showId(id){
+  const labels=[...document.querySelectorAll('*')].filter(e=>e.children.length===0&&e.textContent?.trim()==='GAME ID');
+  for(const label of labels){
+   const parent=label.parentElement;
+   const val=parent?.querySelector('.stat-value');
+   if(val)val.innerHTML='<span style="color:#fbbf24">AA</span>'+id.slice(2);
+  }
+ }
+ async function sync(){
+  if(syncBusy||redirecting)return;
+  syncBusy=true;
+  try{
+   const response=await fetch(endpoint,{cache:'no-store'});
+   if(!response.ok)throw Error('Server unavailable');
+   const payload=await response.json();
+   const r=payload.round;
+   if(!payload.ok||!r||r.stake!=='10'||!/^AA\d{6}$/.test(r.gameId))throw Error('Invalid round');
+   if(activeRound!==null&&activeRound!==r.roundNumber){
+    if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1')}
+    return;
+   }
+   activeRound=r.roundNumber;
+   showId(r.gameId);
+   if(r.phase==='lobby'){
+    if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1')}
+    return;
+   }
+   // Render only authoritative server draws; never generate local numbers.
+   if(Array.isArray(r.drawn)){
+    const samePrefix=drawn.every((n,i)=>r.drawn[i]===n);
+    if(!samePrefix){drawn=[];board();cards();}
+    const pending=r.drawn.slice(drawn.length);
+    const drawBatch=pending.length>1;
+    window.kimemServerDrawBatch=drawBatch;
+    for(const n of pending){
+     if(!Number.isInteger(n)||n<1||n>75||drawn.includes(n))continue;
+     updateDraw(n);
+     $('digital-letter').textContent=letter(n);
+     $('digital-number').textContent=String(n).padStart(2,'0');
+     $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
+    }
+    if(pending.length)digitalTick.serverStaticRendered=false;
+    window.kimemServerDrawBatch=false;
+    if(drawBatch)cards();
+   }
+   running=false;
+   if(r.phase==='finished'){
+    $('draw-status').textContent='ROUND FINISHED';
+    if(!finished){finished=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+   }else $('draw-status').textContent='LIVE · SERVER SYNC';
+  }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
+  finally{syncBusy=false}
+ }
+ function begin(){running=false;spherePhase='idle';sync();setInterval(sync,1500)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',begin);
+ else begin();
+})();
+</script></body></html>
