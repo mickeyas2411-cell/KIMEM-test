@@ -668,9 +668,11 @@ let kimemFinished=false,kimemReturnTimer=null;
 let kimemPendingFinish=null;
 function kimemFinishAfterBall(ids){
  if(kimemFinished||kimemPendingFinish!==null)return;
- running=false;spherePhase='idle';
+ running=false;
  kimemPendingFinish=ids;
- const finish=()=>{if(kimemPendingFinish===null)return;const result=kimemPendingFinish;kimemPendingFinish=null;kimemFinishGame(result)};
+ window.kimemBingoEnding=true;
+ kimemVoiceQueue.length=0;
+ const finish=()=>{if(kimemPendingFinish===null)return;const result=kimemPendingFinish;kimemPendingFinish=null;setTimeout(()=>kimemFinishGame(result),1000)};
  if(!kimemVoiceBusy&&!kimemVoiceQueue.length){finish();return}
  const previousEnded=()=>{if(!kimemVoiceBusy&&!kimemVoiceQueue.length){cleanup();finish()}};
  const cleanup=()=>{kimemVoicePlayer.removeEventListener('ended',previousEnded);kimemVoicePlayer.removeEventListener('error',previousEnded);clearTimeout(timeout)};
@@ -680,7 +682,7 @@ function kimemFinishAfterBall(ids){
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
  if(kimemFinished)return;
- kimemFinished=true;running=false;spherePhase='idle';
+ kimemFinished=true;window.kimemBingoEnding=true;running=false;spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
  if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
  const winners=Array.isArray(ids)?ids:(ids===null||ids===undefined?[]:[ids]);
  const overlay=document.getElementById('kimem-winner-overlay');
@@ -1099,7 +1101,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }
  }
  async function sync(){
-  if(syncBusy||redirecting)return;
+  if(syncBusy||redirecting||window.kimemBingoEnding)return;
   syncBusy=true;
   try{
    const response=await fetch(endpoint,{cache:'no-store'});
