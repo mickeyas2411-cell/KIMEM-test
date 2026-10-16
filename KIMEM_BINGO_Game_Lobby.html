@@ -203,6 +203,22 @@ function kimemStartSyncedLobby(){
  kimemSyncTimer=setInterval(kimemSyncPoll,2000);
  setInterval(kimemSyncRender,200);
 }
+// Read-only current Game ID for ordinary lobby visits and returns from Live.
+// Does not alter countdown, card selection, payment, or navigation.
+async function kimemRefreshGameIdOnly(){
+ try{
+  const response=await fetch(kimemRoundEndpoint,{cache:'no-store'});
+  if(!response.ok)return;
+  const payload=await response.json();
+  if(payload.ok&&payload.round&&/^AA\d{6}$/.test(payload.round.gameId)){
+   kimemSyncGameId(payload.round.gameId);
+  }
+ }catch(e){console.warn('KIMEM Game ID refresh:',e)}
+}
+function kimemStartGameIdOnlySync(){
+ kimemRefreshGameIdOnly();
+ setInterval(kimemRefreshGameIdOnly,3000);
+}
 function syncTelegramViewport(){
  const tg=window.Telegram?.WebApp;
  const height=(tg&&tg.viewportStableHeight&&tg.viewportStableHeight>250)?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);
@@ -220,7 +236,7 @@ function init(){
  const tg=window.Telegram?.WebApp;
  try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
- refreshLobbyBalance();updateUI();if(kimemSyncEnabled)kimemStartSyncedLobby();else startTimer();
+ refreshLobbyBalance();updateUI();if(kimemSyncEnabled)kimemStartSyncedLobby();else{startTimer();kimemStartGameIdOnlySync();}
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 </script></body></html>
 
