@@ -671,13 +671,31 @@ function kimemFinishAfterBall(ids){
  running=false;
  kimemPendingFinish=ids;
  window.kimemBingoEnding=true;
- // Keep the final drawn ball visible for one second, then show the winner.
- setTimeout(()=>{
+ // Wait for the winning number's spoken audio to finish, then give it a full second.
+ let audioDone=!kimemVoiceBusy&&!kimemVoiceQueue.length;
+ let visualDone=spherePhase!=='reveal'&&spherePhase!=='server-reveal';
+ let audioCheck=null,visualCheck=null;
+ const finish=()=>{
   if(kimemPendingFinish===null||kimemFinished)return;
   const result=kimemPendingFinish;kimemPendingFinish=null;
   kimemFlushServerBallVisual();
   kimemFinishGame(result);
- },1000);
+ };
+ const waitForAudio=()=>{
+  if(!kimemVoiceBusy&&!kimemVoiceQueue.length){audioDone=true;clearInterval(audioCheck)}
+ };
+ const waitForVisual=()=>{
+  if(spherePhase!=='reveal'&&spherePhase!=='server-reveal'){visualDone=true;clearInterval(visualCheck)}
+ };
+ if(!audioDone)audioCheck=setInterval(waitForAudio,50);
+ if(!visualDone)visualCheck=setInterval(waitForVisual,50);
+ const started=Date.now();
+ const readyCheck=setInterval(()=>{
+  if((audioDone&&visualDone)||Date.now()-started>=12000){
+   clearInterval(readyCheck);clearInterval(audioCheck);clearInterval(visualCheck);
+   setTimeout(finish,1000);
+  }
+ },50);
 }
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
