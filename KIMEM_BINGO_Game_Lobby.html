@@ -154,14 +154,18 @@ function kimemSyncGameId(gameId){
  if(node&&/^AA\d{6}$/.test(gameId))node.innerHTML='<span style="color:#fbbf24">AA</span>'+gameId.slice(2);
 }
 let kimemAwaitNextLobby=new URLSearchParams(location.search).get('returned')==='1';
+let kimemPreviousLiveRound=null;
+if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimemLastLiveRound10')}catch(e){}}
 function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
  if(kimemAwaitNextLobby){
-  if(r.phase!=='lobby'){$('countdown').textContent='WAIT';return;}
+  if(r.phase!=='lobby'||(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound)){
+   $('countdown').textContent='WAIT';resetCountdownScene();return;
+  }
   kimemAwaitNextLobby=false;
  }
- if(r.phase==='finished'){$('countdown').textContent='WAIT';return;}
+ if(r.phase==='finished'){$('countdown').textContent='WAIT';resetCountdownScene();return;}
  const now=Date.now()+kimemSyncClockOffset;
  if(r.phase==='lobby'&&now<r.liveStartsAt){
   const left=Math.max(0,Math.ceil((r.liveStartsAt-now)/1000));
