@@ -1195,11 +1195,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     kimemFirstServerSync=false;
     window.kimemServerDrawBatch=false;
     if(drawBatch)cards();
-    // Check selected cards after authoritative server draws (including four corners).
-    if(pending.length&&mode==='auto'&&!kimemFinished&&!finished&&r.phase!=='finished'){
-     const wins=kimemWinningCards();
-     if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins)}
-    }
+    // Only the authoritative backend can finish a synced round. Local card
+    // matches must not stop polling or return to the lobby prematurely.
+    // Otherwise the old round continues drawing while the lobby says WAIT.
    }
    running=false;
    if(r.phase==='finished'){
