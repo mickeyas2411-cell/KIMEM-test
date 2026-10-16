@@ -187,8 +187,12 @@ async function kimemSyncPoll(){
   kimemSyncGameId(r.gameId);
   kimemSyncRender();
  }catch(e){
-  // Never silently switch to a private timer in synchronized mode.
-  $('countdown').textContent='WAIT';
+  // Keep the last authoritative round visible during transient network errors.
+  console.warn('KIMEM round sync:',e);
+  if(!kimemSyncRound){
+   $('countdown').textContent='RETRY';
+   $('countdown').title='Server connection unavailable; retrying';
+  }
  }
 }
 function kimemStartSyncedLobby(){
