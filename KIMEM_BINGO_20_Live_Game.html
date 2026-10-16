@@ -929,6 +929,14 @@ function finishSphereReveal(now){
  if(drawn.length===75){running=false;spherePhase='idle';kimemFinishAfterBall(kimemWinningCards())}
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
+function kimemFlushServerBallVisual(){
+ const n=window.kimemDeferServerBallVisual;
+ if(!n)return;
+ window.kimemDeferServerBallVisual=0;
+ const cell=$('board-'+n);if(cell)cell.classList.add('called');
+ const history=$('last-five');history.replaceChildren();
+ drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
+}
 function digitalTick(now){
  if(spherePhase==='server-reveal'){
   const t=clamp3((now-sphereStart)/1050,0,1),e=t<.85?t:.85+.15*(1-Math.pow(1-(t-.85)/.15,2));
