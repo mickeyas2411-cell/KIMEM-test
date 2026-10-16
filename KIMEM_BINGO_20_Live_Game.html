@@ -1070,7 +1070,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 </style><script>
 /* Opt-in read-only live synchronization. Local game behavior remains default. */
 (function(){
- if(new URLSearchParams(location.search).get('sync')!=='1')return;
+ if(new URLSearchParams(location.search).get('sync')==='0')return;
  const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=20';
  let activeRound=null,redirecting=false,finished=false;
  function showId(id){
