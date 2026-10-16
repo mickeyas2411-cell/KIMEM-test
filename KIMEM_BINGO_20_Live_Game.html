@@ -740,12 +740,20 @@ function kimemFinishGame(ids){
  const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
  document.getElementById('kimem-winner-user').textContent=username?'@'+username:'Demo player';
  overlay.classList.add('visible');
+ // Independent return guard: keeps navigation working even if the result timer is interrupted.
+ if(!window.kimemWinnerReturnGuard){
+  window.kimemWinnerReturnGuard=setTimeout(()=>{
+   if(document.getElementById('kimem-winner-overlay')?.classList.contains('visible')){
+    window.location.assign(new URL('./KIMEM_BINGO_20_Lobby.html?sync=1&returned=1',document.baseURI).href);
+   }
+  },7500);
+ }
  // Keep winner dialog in the actual viewport, not behind the Telegram bottom area.
  overlay.style.setProperty('position','fixed','important');
  overlay.style.setProperty('inset','0','important');
  overlay.style.setProperty('z-index','10000','important');
  let left=7;document.getElementById('kimem-winner-timer').textContent=left;
- const returnToLobby=()=>location.replace('./KIMEM_BINGO_20_Lobby.html?sync=1&returned=1');
+ const returnToLobby=()=>{window.location.href=new URL('./KIMEM_BINGO_20_Lobby.html?sync=1&returned=1',document.baseURI).href;};
  const deadline=Date.now()+7000;
  clearInterval(kimemReturnTimer);
  kimemReturnTimer=setInterval(()=>{
