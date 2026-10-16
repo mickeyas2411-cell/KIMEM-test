@@ -1161,6 +1161,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     return;
    }
    activeRound=r.roundNumber;
+   try{sessionStorage.setItem('kimemLastLiveRound'+r.stake,String(r.roundNumber))}catch(e){}
    showId(r.gameId);
    if(r.phase==='lobby'){
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_20_Lobby.html?sync=1')}
