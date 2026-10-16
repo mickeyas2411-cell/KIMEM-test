@@ -671,13 +671,13 @@ function kimemFinishAfterBall(ids){
  running=false;
  kimemPendingFinish=ids;
  window.kimemBingoEnding=true;
- kimemVoiceQueue.length=0;
- const finish=()=>{if(kimemPendingFinish===null)return;const result=kimemPendingFinish;kimemPendingFinish=null;setTimeout(()=>kimemFinishGame(result),1000)};
- if(!kimemVoiceBusy&&!kimemVoiceQueue.length){finish();return}
- const previousEnded=()=>{if(!kimemVoiceBusy&&!kimemVoiceQueue.length){cleanup();finish()}};
- const cleanup=()=>{kimemVoicePlayer.removeEventListener('ended',previousEnded);kimemVoicePlayer.removeEventListener('error',previousEnded);clearTimeout(timeout)};
- kimemVoicePlayer.addEventListener('ended',previousEnded);kimemVoicePlayer.addEventListener('error',previousEnded);
- const timeout=setTimeout(()=>{cleanup();finish()},9000);
+ // Keep the final drawn ball visible for one second, then show the winner.
+ setTimeout(()=>{
+  if(kimemPendingFinish===null||kimemFinished)return;
+  const result=kimemPendingFinish;kimemPendingFinish=null;
+  kimemFlushServerBallVisual();
+  kimemFinishGame(result);
+ },1000);
 }
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
