@@ -913,7 +913,12 @@ function finishSphereReveal(now){
  else{spherePhase='waiting';nextDrawAt=now+1900}
 }
 function digitalTick(now){
- if(spherePhase==='shuffle'){
+ if(spherePhase==='server-reveal'){
+  const t=clamp3((now-sphereStart)/950,0,1),e=ease3(t);
+  sphereAngle=sphereFromAngle+(Math.PI*4.5)*e;
+  spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.15*(1-t);
+  if(t>=1){sphereCurrent=spherePending;spherePending=0;sphereReveal=null;spherePhase='idle';sphereAngle=0;spherePitch=0;digitalTick.serverStaticRendered=false;}
+ }else if(spherePhase==='shuffle'){
   const t=now-sphereStart;
   if(t<4000){
    sphereAngle=t*.047;
@@ -935,15 +940,15 @@ function digitalTick(now){
 
  }
  const kimemServerMode=new URLSearchParams(location.search).get('sync')!=='0';
- const renderInterval=kimemServerMode?(spherePhase==='shuffle'?50:250):30;
+ const renderInterval=kimemServerMode?((spherePhase==='shuffle'||spherePhase==='server-reveal')?50:250):30;
  if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=renderInterval){
-  if(!kimemServerMode||spherePhase==='shuffle'||spherePhase==='reveal'||!digitalTick.serverStaticRendered){
+  if(!kimemServerMode||spherePhase==='shuffle'||spherePhase==='reveal'||spherePhase==='server-reveal'||!digitalTick.serverStaticRendered){
    sphereRender(now);
-   if(kimemServerMode&&spherePhase!=='shuffle'&&spherePhase!=='reveal')digitalTick.serverStaticRendered=true;
+   if(kimemServerMode&&spherePhase!=='shuffle'&&spherePhase!=='reveal'&&spherePhase!=='server-reveal')digitalTick.serverStaticRendered=true;
   }
   digitalTick.lastFrame=now;
  }
- if(kimemServerMode){digitalTimer=setTimeout(()=>requestAnimationFrame(digitalTick),spherePhase==='shuffle'?45:200)}
+ if(kimemServerMode){digitalTimer=setTimeout(()=>requestAnimationFrame(digitalTick),(spherePhase==='shuffle'||spherePhase==='server-reveal')?45:200)}
  else digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
@@ -1118,11 +1123,24 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
      $('digital-number').textContent=String(n).padStart(2,'0');
      $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
     }
-    if(pending.length)digitalTick.serverStaticRendered=false;
+    if(pending.length){
+     digitalTick.serverStaticRendered=false;
+     if(!isNewServerBall){
+      const latest=drawn[drawn.length-1];
+      if(latest){sphereCurrent=latest;spherePending=0;sphereReveal=null;spherePhase='idle';sphereAngle=0;spherePitch=0;}
+     }
+    }
     if(isNewServerBall){
      const latest=pending[0];
      kimemCallBallAmharic(latest);
-     // Server controls the number; never restart a 4s shuffle for every received ball.
+     // Animate only the authoritative server number; no local random draw or duplicate voice.
+     spherePending=latest;
+     sphereFromAngle=sphereAngle;
+     sphereFromPitch=spherePitch;
+     sphereStart=performance.now();
+     sphereReveal={from:sphereCurrent||1,fromNumber:sphereCurrent,to:latest,start:sphereStart};
+     spherePhase='server-reveal';
+     digitalTick.serverStaticRendered=false;
     }
     kimemFirstServerSync=false;
     window.kimemServerDrawBatch=false;
