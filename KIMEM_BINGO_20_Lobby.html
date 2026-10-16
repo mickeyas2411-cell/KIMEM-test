@@ -160,7 +160,7 @@ const kimemRoundEndpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/a
 let kimemSyncTimer=null,kimemSyncRound=null,kimemSyncClockOffset=0,kimemSyncLastSecond=null,kimemSyncMoving=false;
 function kimemSyncGameId(gameId){
  const node=[...document.querySelectorAll('.stat-label')].find(el=>el.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value');
- if(node&&/^AA\\d{6}$/.test(gameId))node.innerHTML='<span style="color:#fbbf24">AA</span>'+gameId.slice(2);
+ if(node&&/^AA\d{6}$/.test(gameId))node.innerHTML='<span style="color:#fbbf24">AA</span>'+gameId.slice(2);
 }
 function kimemSyncRender(){
  const r=kimemSyncRound;
@@ -190,7 +190,7 @@ async function kimemSyncPoll(){
   const payload=await response.json();
   if(!payload.ok||!payload.round)throw Error('Round not initialized');
   const r=payload.round;
-  if(r.stake!=='20'||!/^AA\\d{6}$/.test(r.gameId))throw Error('Invalid round');
+  if(r.stake!=='20'||!/^AA\d{6}$/.test(r.gameId))throw Error('Invalid round');
   kimemSyncClockOffset=payload.serverTime-Date.now();
   kimemSyncRound=r;
   kimemSyncGameId(r.gameId);
