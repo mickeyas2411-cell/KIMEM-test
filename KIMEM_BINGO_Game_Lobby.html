@@ -121,7 +121,7 @@ const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
-function toggleCard(id){const index=selectedCards.indexOf(id);if(index!==-1){selectedCards.splice(index,1);if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;triggerToast('Unmarked Card #'+id)}else{if(selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}selectedCards.push(id);activeCard=id;triggerToast('Selected Card #'+id)}updateUI()}
+function toggleCard(id){const index=selectedCards.indexOf(id);if(index!==-1){selectedCards.splice(index,1);if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;triggerToast('Unmarked Card #'+id)}else{if(selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}selectedCards.push(id);activeCard=id;triggerToast('Selected Card #'+id)}updateUI();void kimemRegisterSelectedCards()}
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
@@ -156,6 +156,30 @@ function kimemSyncGameId(gameId){
 let kimemAwaitNextLobby=new URLSearchParams(location.search).get('returned')==='1';
 let kimemPreviousLiveRound=null;
 if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimemLastLiveRound10')}catch(e){}}
+const kimemRegistrationEndpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/register';
+let kimemRegisteredKey='',kimemRegisterBusy=false;
+async function kimemRegisterSelectedCards(){
+ const r=kimemSyncRound;
+ if(!r||r.stake!=='10'||r.phase!=='lobby'||!selectedCards.length||kimemRegisterBusy)return;
+ const initData=window.Telegram?.WebApp?.initData;
+ if(!initData)return;
+ const cardIds=selectedCards.slice(0,3);
+ const key=r.roundNumber+':'+cardIds.join(',');
+ if(key===kimemRegisteredKey)return;
+ kimemRegisterBusy=true;
+ try{
+  const response=await fetch(kimemRegistrationEndpoint,{
+   method:'POST',
+   headers:{'Content-Type':'application/json','X-Telegram-Init-Data':initData},
+   body:JSON.stringify({stake:'10',roundNumber:r.roundNumber,cardIds})
+  });
+  if(!response.ok)throw Error('Registration failed: '+response.status);
+  const result=await response.json();
+  if(!result.ok)throw Error('Registration not confirmed');
+  kimemRegisteredKey=key;
+ }catch(error){console.warn('Bingo card registration:',error)}
+ finally{kimemRegisterBusy=false}
+}
 function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
@@ -194,6 +218,7 @@ async function kimemSyncPoll(){
   if(r.stake!=='10'||!/^AA\d{6}$/.test(r.gameId))throw Error('Invalid round');
   kimemSyncClockOffset=payload.serverTime-Date.now();
   kimemSyncRound=r;
+  if(r.phase==='lobby')void kimemRegisterSelectedCards();
   kimemSyncGameId(r.gameId);
   kimemSyncRender();
  }catch(e){
