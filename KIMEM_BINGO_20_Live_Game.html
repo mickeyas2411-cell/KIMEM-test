@@ -946,7 +946,15 @@ function digitalTick(now){
   const left=Math.max(0,nextDrawAt-now);
 
  }
- if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=30){sphereRender(now);digitalTick.lastFrame=now}
+ const kimemServerMode=new URLSearchParams(location.search).get('sync')!=='0';
+ const renderInterval=kimemServerMode?250:30;
+ if(!digitalTick.lastFrame||now-digitalTick.lastFrame>=renderInterval){
+  if(!kimemServerMode||spherePhase==='shuffle'||spherePhase==='reveal'||!digitalTick.serverStaticRendered){
+   sphereRender(now);
+   if(kimemServerMode&&spherePhase!=='shuffle'&&spherePhase!=='reveal')digitalTick.serverStaticRendered=true;
+  }
+  digitalTick.lastFrame=now;
+ }
  digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
@@ -1114,6 +1122,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
      $('digital-number').textContent=String(n).padStart(2,'0');
      $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
     }
+    if(pending.length)digitalTick.serverStaticRendered=false;
     window.kimemServerDrawBatch=false;
     if(drawBatch)cards();
    }
@@ -1125,7 +1134,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
  }
- function begin(){running=false;sync();setInterval(sync,1500)}
+ function begin(){running=false;spherePhase='idle';sync();setInterval(sync,1500)}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',begin);
  else begin();
 })();
