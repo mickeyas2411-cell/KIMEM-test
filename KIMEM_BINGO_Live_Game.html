@@ -925,7 +925,7 @@ function kimemFlushServerBallVisual(){
 }
 function digitalTick(now){
  if(spherePhase==='server-reveal'){
-  const t=clamp3((now-sphereStart)/1050,0,1),e=ease3(t);
+  const t=clamp3((now-sphereStart)/1050,0,1),e=t<.85?t:.85+.15*(1-Math.pow(1-(t-.85)/.15,2));
   sphereAngle=sphereFromAngle+(Math.PI*4.5)*e;
   spherePitch=sphereFromPitch*(1-e)+Math.sin(t*TAU)*.15*(1-t);
   if(t>=.90)kimemFlushServerBallVisual();
