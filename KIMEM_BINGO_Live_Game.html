@@ -936,6 +936,7 @@ function digitalTick(now){
  digitalTimer=requestAnimationFrame(digitalTick);
 }
 function startGame(){
+ if(new URLSearchParams(location.search).get('sync')==='1')return;
  kimemUnlockVoice();
  if(drawn.length===75)return;
  if(running){running=false;$('draw-status').textContent='PAUSED';return}
@@ -1052,4 +1053,58 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 #kimem-winner-overlay #kimem-winner-card .play-cell{height:clamp(24px,6.5vw,34px)!important;font-size:12px!important}
 #kimem-winner-overlay .kimem-result-return{font-size:11px!important;color:#e8eafa!important;text-align:center!important}
 #kimem-winner-overlay #kimem-winner-timer{font-size:34px!important;font-weight:900!important;color:#ffce50!important}
-</style></body></html>
+</style><script>
+/* Opt-in read-only live synchronization. Local game behavior remains default. */
+(function(){
+ if(new URLSearchParams(location.search).get('sync')!=='1')return;
+ const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
+ let activeRound=null,redirecting=false,finished=false;
+ function showId(id){
+  const labels=[...document.querySelectorAll('*')].filter(e=>e.children.length===0&&e.textContent?.trim()==='GAME ID');
+  for(const label of labels){
+   const parent=label.parentElement;
+   const val=parent?.querySelector('.stat-value');
+   if(val)val.innerHTML='<span style="color:#fbbf24">AA</span>'+id.slice(2);
+  }
+ }
+ async function sync(){
+  try{
+   const response=await fetch(endpoint,{cache:'no-store'});
+   if(!response.ok)throw Error('Server unavailable');
+   const payload=await response.json();
+   const r=payload.round;
+   if(!payload.ok||!r||r.stake!=='10'||!/^AA\\d{6}$/.test(r.gameId))throw Error('Invalid round');
+   if(activeRound!==null&&activeRound!==r.roundNumber){
+    if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1')}
+    return;
+   }
+   activeRound=r.roundNumber;
+   showId(r.gameId);
+   if(r.phase==='lobby'){
+    if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1')}
+    return;
+   }
+   // Render only authoritative server draws; never generate local numbers.
+   if(Array.isArray(r.drawn)){
+    const samePrefix=drawn.every((n,i)=>r.drawn[i]===n);
+    if(!samePrefix){drawn=[];board();cards();}
+    for(const n of r.drawn.slice(drawn.length)){
+     if(!Number.isInteger(n)||n<1||n>75||drawn.includes(n))continue;
+     updateDraw(n);
+     $('digital-letter').textContent=letter(n);
+     $('digital-number').textContent=String(n).padStart(2,'0');
+     $('machine').style.setProperty('--studio-tone',colors[tone(n)]);
+    }
+   }
+   running=false;
+   if(r.phase==='finished'){
+    $('draw-status').textContent='ROUND FINISHED';
+    if(!finished){finished=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+   }else $('draw-status').textContent='LIVE · SERVER SYNC';
+  }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
+ }
+ function begin(){running=false;sync();setInterval(sync,1500)}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',begin);
+ else begin();
+})();
+</script></body></html>
