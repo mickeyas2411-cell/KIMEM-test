@@ -18,3 +18,9 @@ test('bonus purchases are disabled by default',()=>{
  assert.match(source,/bonus_purchases_not_enabled/);
  assert.ok(source.indexOf('if(!BONUS_PURCHASES_READY)')<source.indexOf('qimem_buy_10etb_bonus_card('));
 });
+
+test('health check does not expose wallet or secrets',()=>{
+ assert.match(source,/url\.pathname==='\/health'/);
+ assert.match(source,/database:'not_checked'/);
+ assert.match(source,/bonus_purchases_enabled:BONUS_PURCHASES_READY/);
+});
