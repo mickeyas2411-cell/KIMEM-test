@@ -7,6 +7,9 @@
  */
 import { neon } from '@neondatabase/serverless';
 
+// Must remain false until server-authoritative 10 ETB round validation is implemented.
+const BONUS_PURCHASES_READY = false;
+
 const json = (body, status=200) => new Response(JSON.stringify(body), {
   status,
   headers: {
@@ -105,7 +108,7 @@ export default {
       if(url.pathname==='/api/cards/buy-bonus') {
         // Fail closed: live round price/type is not yet reconciled with Neon.
         // Never charge a bonus against a 20 ETB room or unknown round.
-        if(true)
+        if(!BONUS_PURCHASES_READY)
           return json({ok:false,error:'bonus_purchases_not_enabled'},503);
         if(!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
           return json({ok:false,error:'invalid_content_type'},415);
