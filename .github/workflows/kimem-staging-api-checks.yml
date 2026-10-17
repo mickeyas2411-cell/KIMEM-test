@@ -20,8 +20,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Install backend dependencies
+        run: npm install --no-audit --no-fund
       - name: Check worker JavaScript syntax
         run: npm run check
       - name: Run safety contract tests
         run: npm test
+      - name: Build standalone staging Worker bundle
+        run: npx esbuild player-api-worker.js --bundle --format=esm --platform=browser --target=es2022 --outfile=dist/player-api-worker.js
+      - name: Upload staging bundle (no deploy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kimem-staging-worker-bundle
+          path: backend/dist/player-api-worker.js
+          retention-days: 7
 # No Cloudflare/Neon secrets; no deploy; no production mutation.
