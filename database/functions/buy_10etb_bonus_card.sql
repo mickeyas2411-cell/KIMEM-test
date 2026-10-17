@@ -1,4 +1,4 @@
--- STAGING ONLY. Requires migrations 001, 002 and 003.
+-- STAGING ONLY. Requires migrations 001, 002, 003 and 004.
 -- Assumes cards are pre-created with player_id NULL. The application must
 -- supply a server-verified player ID and a stable request key (16..128 chars).
 -- No 20 ETB mixed funding and no real-money debit in this function.
@@ -11,6 +11,8 @@ DECLARE
  v_card_id bigint;
  v_balance numeric;
  v_round_status text;
+ v_room_type text;
+ v_card_price numeric;
  v_purchase_id bigint;
 BEGIN
  IF p_player_id IS NULL OR p_round_id IS NULL OR p_card_number IS NULL
@@ -36,6 +38,12 @@ BEGIN
  WHERE id=p_round_id FOR UPDATE;
  IF NOT FOUND OR v_round_status<>'waiting' THEN
    RAISE EXCEPTION 'round not accepting purchases';
+ END IF;
+ -- Require server-verified round price in the same transaction as the debit.
+ SELECT room_type,card_price_etb INTO v_room_type,v_card_price
+ FROM qimem_round_pricing_authority WHERE round_id=p_round_id FOR SHARE;
+ IF NOT FOUND OR v_room_type<>'10' OR v_card_price<>10.00 THEN
+   RAISE EXCEPTION 'round not verified for 10 ETB bonus purchase';
  END IF;
  SELECT id INTO v_card_id FROM qimem_round_cards
  WHERE round_id=p_round_id AND card_number=p_card_number AND player_id IS NULL
