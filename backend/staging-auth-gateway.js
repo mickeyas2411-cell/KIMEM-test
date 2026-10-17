@@ -11,7 +11,7 @@ async function verifyTelegram(initData,token){
  if(!hash||!/^[a-f0-9]{64}$/i.test(hash))return false;
  const authDate=Number(values.get('auth_date')),now=Math.floor(Date.now()/1000);
  if(!Number.isSafeInteger(authDate)||authDate>now+60||now-authDate>3600)return false;
- const data=pairs.filter(([k])=>k!=='hash').sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>k+'='+v).join('\n');
+ const data=pairs.filter(([k])=>k!=='hash'&&k!=='signature').sort(([a],[b])=>a<b?-1:a>b?1:0).map(([k,v])=>k+'='+v).join('\n');
  const enc=new TextEncoder();
  const base=await crypto.subtle.importKey('raw',enc.encode('WebAppData'),{name:'HMAC',hash:'SHA-256'},false,['sign']);
  const secret=await crypto.subtle.sign('HMAC',base,enc.encode(token));
