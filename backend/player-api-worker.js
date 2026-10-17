@@ -71,6 +71,8 @@ export default {
     if(!auth.startsWith('tma ')) return json({ok:false,error:'unauthorized'},401);
     const user=await verifyTelegram(auth.slice(4),env.TELEGRAM_BOT_TOKEN);
     if(!user) return json({ok:false,error:'unauthorized'},401);
+    if(url.pathname==='/api/me/balances')
+      return json({ok:false,error:'wallet_reconciliation_required'},503);
     if(!env.DATABASE_URL) return json({ok:false,error:'not_configured'},503);
     try {
       const sql=neon(env.DATABASE_URL);
