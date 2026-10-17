@@ -14,7 +14,7 @@ test('unreconciled real balance is not returned',()=>{
 });
 
 test('bonus purchases are disabled by default',()=>{
- assert.match(source,/env\.ENABLE_BONUS_PURCHASES!=='true'/);
+ assert.match(source,/const BONUS_PURCHASES_READY = false;/);
  assert.match(source,/bonus_purchases_not_enabled/);
- assert.ok(source.indexOf("env.ENABLE_BONUS_PURCHASES!=='true'")<source.indexOf('qimem_buy_10etb_bonus_card('));
+ assert.ok(source.indexOf('if(!BONUS_PURCHASES_READY)')<source.indexOf('qimem_buy_10etb_bonus_card('));
 });
