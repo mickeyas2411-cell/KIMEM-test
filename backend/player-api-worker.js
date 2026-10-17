@@ -1,7 +1,7 @@
 /**
  * QIMEM authenticated player API - staging source, not deployed.
  * Dependencies: @neondatabase/serverless
- * Secrets: TELEGRAM_BOT_TOKEN, DATABASE_URL.
+ * Secrets: TELEGRAM_BOT_TOKEN, STAGING_DATABASE_URL.
  * Requires migrations 001 and 002. Existing Durable Object wallets must be
  * reconciled before treating Neon real balances as authoritative.
  */
@@ -73,9 +73,9 @@ export default {
     if(!user) return json({ok:false,error:'unauthorized'},401);
     if(url.pathname==='/api/me/balances')
       return json({ok:false,error:'wallet_reconciliation_required'},503);
-    if(!env.DATABASE_URL) return json({ok:false,error:'not_configured'},503);
+    if(!env.STAGING_DATABASE_URL) return json({ok:false,error:'not_configured'},503);
     try {
-      const sql=neon(env.DATABASE_URL);
+      const sql=neon(env.STAGING_DATABASE_URL);
       if(url.pathname.endsWith('/register')) {
         // The single statement commits registration, wallet and bonus together.
         // INSERT/ON CONFLICT relies on migration 002 unique indexes.
