@@ -74,6 +74,22 @@ export default {
     if(url.pathname==='/api/me/balances')
       return json({ok:false,error:'wallet_reconciliation_required'},503);
     if(!env.STAGING_DATABASE_URL) return json({ok:false,error:'not_configured'},503);
+    // Fail closed before ANY SQL if the configured secret targets a different Neon branch.
+    // This endpoint belongs exclusively to Neon staging branch br-proud-mountain-b52jxmxy.
+    const STAGING_NEON_HOSTS = new Set([
+      'ep-dawn-poetry-b5lh24kv.c-7.us-east-2.aws.neon.tech',
+      'ep-dawn-poetry-b5lh24kv-pooler.c-7.us-east-2.aws.neon.tech'
+    ]);
+    let configuredHost;
+    try {
+      const databaseUrl = new URL(env.STAGING_DATABASE_URL);
+      if(!['postgres:','postgresql:'].includes(databaseUrl.protocol)) throw new Error('invalid protocol');
+      configuredHost = databaseUrl.hostname.toLowerCase();
+    } catch {
+      return json({ok:false,error:'staging_database_target_unverified'},503);
+    }
+    if(!STAGING_NEON_HOSTS.has(configuredHost))
+      return json({ok:false,error:'staging_database_target_unverified'},503);
     try {
       const sql=neon(env.STAGING_DATABASE_URL);
       if(url.pathname.endsWith('/register')) {
