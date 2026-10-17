@@ -37,6 +37,6 @@ test('registration grant uses one-time bonus ledger and exposes new amount in CT
 });
 test('unverified requests cannot reach the database',()=>{
  const auth=source.indexOf('if(!user) return json');
- const database=source.indexOf('const sql=neon(env.DATABASE_URL)');
+ const database=source.indexOf('const sql=neon(env.STAGING_DATABASE_URL)');
  assert.ok(auth>=0 && database>=0 && auth<database);
 });
