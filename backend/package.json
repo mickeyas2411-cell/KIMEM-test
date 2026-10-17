@@ -1,0 +1,16 @@
+{
+  "name": "kimem-staging-player-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check player-api-worker.js",
+    "test": "node --test tests/*.test.js",
+    "deploy": "wrangler deploy --config wrangler.staging.toml"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
