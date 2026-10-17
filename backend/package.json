@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check player-api-worker.js",
+    "check": "node --check player-api-worker.js && node --check staging-auth-gateway.js && node --check staging-combined-worker.js",
     "test": "node --test tests/*.test.js",
-    "deploy": "wrangler deploy --config wrangler.staging.toml",
-    "build": "esbuild player-api-worker.js --bundle --format=esm --platform=browser --target=es2022 --outfile=dist/player-api-worker.js"
+    "deploy": "npm run build && wrangler deploy --config wrangler.staging.toml",
+    "build": "esbuild staging-combined-worker.js --bundle --format=esm --platform=browser --target=es2022 --outfile=dist/staging-combined-worker.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0"
