@@ -58,9 +58,9 @@ function formatMoney(v) {
 export default {
   async fetch(request,env) {
     const url=new URL(request.url);
-    if(!['/api/me/register','/api/me/balances','/api/cards/buy-bonus'].includes(url.pathname))
+    if(!['/api/me/register','/api/me/balances','/api/me/bonus-balance','/api/cards/buy-bonus'].includes(url.pathname))
       return json({ok:false,error:'not_found'},404);
-    if(request.method!==(url.pathname==='/api/me/balances'?'GET':'POST'))
+    if(request.method!==(['/api/me/balances','/api/me/bonus-balance'].includes(url.pathname)?'GET':'POST'))
       return json({ok:false,error:'method_not_allowed'},405);
     const auth=request.headers.get('Authorization')||'';
     if(!auth.startsWith('tma ')) return json({ok:false,error:'unauthorized'},401);
@@ -131,6 +131,19 @@ export default {
           console.error('QIMEM bonus purchase failed',e?.name||'Error');
           return json({ok:false,error:'purchase_rejected'},409);
         }
+      }
+
+      if(url.pathname==='/api/me/bonus-balance') {
+        // Only the dedicated registration bonus is authoritative in Neon.
+        // Never imply that this is the live real-money wallet balance.
+        const rows=await sql`
+          SELECT a.available_amount::text AS bonus_etb
+          FROM qimem_players p
+          JOIN qimem_registration_bonus_accounts a ON a.player_id=p.id
+          WHERE p.telegram_id=${user.id}
+        `;
+        if(rows.length!==1) return json({ok:false,error:'registration_required'},409);
+        return json({ok:true,bonus_etb:formatMoney(rows[0].bonus_etb)});
       }
       // Deliberately DO NOT return Neon real balance yet: live wallet may
       // be authoritative in Cloudflare Durable Objects. Fail closed until reconciled.
