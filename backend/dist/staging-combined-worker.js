@@ -5432,6 +5432,27 @@ var player_api_worker_default = {
     const url = new URL(request.url);
     if (url.pathname === "/health" && request.method === "GET")
       return json({ ok: true, service: "kimem-player-api-staging", mode: "api-source", database: "not_checked", bonus_purchases_enabled: BONUS_PURCHASES_READY });
+    if (url.pathname === "/health/database" && request.method === "GET") {
+      if (!env.STAGING_DATABASE_URL) return json({ ok: false, database: "secret_missing" }, 503);
+      let host;
+      try {
+        const parsed = new URL(env.STAGING_DATABASE_URL);
+        if (!["postgres:", "postgresql:"].includes(parsed.protocol)) throw new Error("protocol");
+        host = parsed.hostname.toLowerCase();
+      } catch {
+        return json({ ok: false, database: "staging_target_unverified" }, 503);
+      }
+      if (!(/* @__PURE__ */ new Set([
+        "ep-dawn-poetry-b5lh24kv.c-7.us-east-2.aws.neon.tech",
+        "ep-dawn-poetry-b5lh24kv-pooler.c-7.us-east-2.aws.neon.tech"
+      ])).has(host)) return json({ ok: false, database: "staging_target_unverified" }, 503);
+      try {
+        const rows = await ys(env.STAGING_DATABASE_URL)`SELECT 1 AS connected`;
+        return json({ ok: rows[0]?.connected === 1, database: "staging_connected", bonus_purchases_enabled: false });
+      } catch {
+        return json({ ok: false, database: "staging_connection_failed" }, 503);
+      }
+    }
     if (!["/api/me/register", "/api/me/balances", "/api/me/bonus-balance", "/api/cards/buy-bonus"].includes(url.pathname))
       return json({ ok: false, error: "not_found" }, 404);
     if (request.method !== (["/api/me/balances", "/api/me/bonus-balance"].includes(url.pathname) ? "GET" : "POST"))
@@ -5554,6 +5575,9 @@ var staging_combined_worker_default = {
         database: env.STAGING_DATABASE_URL ? "secret_configured_connection_unverified" : "secret_missing",
         bonus_purchases_enabled: false
       }), { status: response.status, headers: response.headers });
+    }
+    if (path === "/health/database" && request.method === "GET") {
+      return player_api_worker_default.fetch(request, env, ctx);
     }
     if (path === "/login-test" || path === "/diagnostics/auth") {
       return staging_auth_gateway_default.fetch(request, env, ctx);
