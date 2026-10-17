@@ -64,3 +64,18 @@ test('combined staging health identifies deployed bundle without claiming databa
  assert.match(combined,/secret_configured_connection_unverified/);
  assert.match(combined,/bonus_purchases_enabled: false/);
 });
+
+test('staging health does not claim database connectivity or enable purchases',()=>{
+ assert.match(combined,/path === '\/health' && request.method === 'GET'/);
+ assert.match(combined,/mode: 'combined-staging'/);
+ assert.match(combined,/database: env\.STAGING_DATABASE_URL \? 'secret_configured_connection_unverified' : 'secret_missing'/);
+ assert.match(combined,/bonus_purchases_enabled: false/);
+});
+test('staging login and auth diagnostic bypass the player API',()=>{
+ const loginStart=combined.indexOf("if (path === '/login-test' || path === '/diagnostics/auth')");
+ const apiStart=combined.indexOf("if (path === '/api/me/register'");
+ assert.ok(loginStart>=0 && apiStart>loginStart);
+ const loginBlock=combined.slice(loginStart,apiStart);
+ assert.match(loginBlock,/return loginGateway\.fetch\(request, env, ctx\)/);
+ assert.doesNotMatch(loginBlock,/playerApi\.fetch/);
+});
