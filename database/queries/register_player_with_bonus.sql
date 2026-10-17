@@ -21,7 +21,7 @@ bonus AS (
  INSERT INTO qimem_registration_bonus_accounts(player_id,granted_amount,available_amount)
  SELECT id,10.00,10.00 FROM player
  ON CONFLICT (player_id) DO NOTHING
- RETURNING player_id,granted_amount
+ RETURNING player_id,granted_amount,available_amount
 ),
 bonus_log AS (
  INSERT INTO qimem_registration_bonus_transactions(player_id,amount,reason)
@@ -30,5 +30,8 @@ bonus_log AS (
 )
 SELECT player.id AS player_id,
  EXISTS(SELECT 1 FROM bonus_log) AS bonus_newly_granted,
- (SELECT available_amount::text FROM qimem_registration_bonus_accounts WHERE player_id=player.id) AS bonus_balance_etb
+ COALESCE(
+ (SELECT available_amount::text FROM bonus WHERE player_id=player.id),
+ (SELECT available_amount::text FROM qimem_registration_bonus_accounts WHERE player_id=player.id)
+) AS bonus_balance_etb
 FROM player;
