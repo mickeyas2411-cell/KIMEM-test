@@ -61,6 +61,8 @@ function formatMoney(v) {
 export default {
   async fetch(request,env) {
     const url=new URL(request.url);
+    if(url.pathname==='/health' && request.method==='GET')
+      return json({ok:true,service:'kimem-player-api-staging',mode:'api-source',database:'not_checked',bonus_purchases_enabled:BONUS_PURCHASES_READY});
     if(!['/api/me/register','/api/me/balances','/api/me/bonus-balance','/api/cards/buy-bonus'].includes(url.pathname))
       return json({ok:false,error:'not_found'},404);
     if(request.method!==(['/api/me/balances','/api/me/bonus-balance'].includes(url.pathname)?'GET':'POST'))
