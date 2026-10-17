@@ -96,7 +96,7 @@ export default {
           bonus AS (
             INSERT INTO qimem_registration_bonus_accounts(player_id,granted_amount,available_amount)
             SELECT id,10.00,10.00 FROM player ON CONFLICT(player_id) DO NOTHING
-            RETURNING player_id,granted_amount
+            RETURNING player_id,granted_amount,available_amount
           ),
           bonus_log AS (
             INSERT INTO qimem_registration_bonus_transactions(player_id,amount,reason)
