@@ -1,0 +1,27 @@
+name: KIMEM Staging API Checks
+on:
+  push:
+    branches:
+      - feature/neon-cloudflare-integration
+    paths:
+      - 'backend/**'
+      - '.github/workflows/kimem-staging-api-checks.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+jobs:
+  staging-api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check worker JavaScript syntax
+        run: npm run check
+      - name: Run safety contract tests
+        run: npm test
+# No Cloudflare/Neon secrets; no deploy; no production mutation.
