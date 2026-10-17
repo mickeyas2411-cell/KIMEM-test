@@ -17,6 +17,9 @@ export default {
         bonus_purchases_enabled: false
       }), { status: response.status, headers: response.headers });
     }
+    if (path === '/health/database' && request.method === 'GET') {
+      return playerApi.fetch(request, env, ctx);
+    }
     if (path === '/login-test' || path === '/diagnostics/auth') {
       return loginGateway.fetch(request, env, ctx);
     }
