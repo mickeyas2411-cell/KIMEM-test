@@ -58,3 +58,9 @@ test('login test uses independent signature diagnostic, not bonus state',()=>{
  const login=loginGateway.split('const loginPage=')[1].split('const hex=')[0];
  assert.doesNotMatch(login,/fetch\('\/api\/me\/bonus-balance'/);
 });
+
+test('combined staging health identifies deployed bundle without claiming database connectivity',()=>{
+ assert.match(combined,/mode: 'combined-staging'/);
+ assert.match(combined,/secret_configured_connection_unverified/);
+ assert.match(combined,/bonus_purchases_enabled: false/);
+});
