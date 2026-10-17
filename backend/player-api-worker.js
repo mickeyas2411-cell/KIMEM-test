@@ -58,9 +58,9 @@ function formatMoney(v) {
 export default {
   async fetch(request,env) {
     const url=new URL(request.url);
-    if(!['/api/me/register','/api/me/balances'].includes(url.pathname))
+    if(!['/api/me/register','/api/me/balances','/api/cards/buy-bonus'].includes(url.pathname))
       return json({ok:false,error:'not_found'},404);
-    if(request.method!==(url.pathname.endsWith('/register')?'POST':'GET'))
+    if(request.method!==(url.pathname==='/api/me/balances'?'GET':'POST'))
       return json({ok:false,error:'method_not_allowed'},405);
     const auth=request.headers.get('Authorization')||'';
     if(!auth.startsWith('tma ')) return json({ok:false,error:'unauthorized'},401);
@@ -100,6 +100,37 @@ export default {
           FROM player
         `;
         return json({ok:true,registered:true,bonus_newly_granted:rows[0]?.bonus_newly_granted===true});
+      }
+
+      if(url.pathname==='/api/cards/buy-bonus') {
+        if(!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
+          return json({ok:false,error:'invalid_content_type'},415);
+        const raw=await request.text();
+        if(raw.length>2048) return json({ok:false,error:'payload_too_large'},413);
+        let body;
+        try { body=JSON.parse(raw); } catch { return json({ok:false,error:'invalid_json'},400); }
+        const {round_id,card_number,request_key}=body||{};
+        if(!Number.isSafeInteger(round_id)||round_id<=0||
+           !Number.isSafeInteger(card_number)||card_number<=0||
+           typeof request_key!=='string'||!/^[A-Za-z0-9_-]{16,128}$/.test(request_key))
+          return json({ok:false,error:'invalid_purchase_request'},400);
+        const players=await sql`SELECT id FROM qimem_players WHERE telegram_id=${user.id}`;
+        if(players.length!==1) return json({ok:false,error:'registration_required'},409);
+        try {
+          const rows=await sql`
+            SELECT purchase_id,card_id,charged
+            FROM qimem_buy_10etb_bonus_card(${players[0].id},${round_id},${card_number},${request_key})
+          `;
+          if(rows.length!==1) return json({ok:false,error:'purchase_not_completed'},503);
+          return json({ok:true,purchase:{
+            id:String(rows[0].purchase_id),
+            card_id:String(rows[0].card_id),
+            charged:rows[0].charged===true
+          }});
+        } catch(e) {
+          console.error('QIMEM bonus purchase failed',e?.name||'Error');
+          return json({ok:false,error:'purchase_rejected'},409);
+        }
       }
       // Deliberately DO NOT return Neon real balance yet: live wallet may
       // be authoritative in Cloudflare Durable Objects. Fail closed until reconciled.
