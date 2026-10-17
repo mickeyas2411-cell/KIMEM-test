@@ -1,0 +1,8 @@
+name = "kimem-player-api-staging"
+main = "player-api-worker.js"
+compatibility_date = "2026-10-17"
+workers_dev = true
+
+# Never deploy over existing live Workers.
+# Set TELEGRAM_BOT_TOKEN and DATABASE_URL as Cloudflare secrets.
+# DATABASE_URL must reference a staging Neon branch.
