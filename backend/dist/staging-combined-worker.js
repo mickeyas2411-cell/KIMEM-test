@@ -5566,6 +5566,11 @@ var player_api_worker_default = {
 var staging_combined_worker_default = {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
+    if (path === "/" && request.method === "GET") {
+      const url = new URL(request.url);
+      url.pathname = "/login-test";
+      return staging_auth_gateway_default.fetch(new Request(url, request), env, ctx);
+    }
     if (path === "/health" && request.method === "GET") {
       const response = await staging_auth_gateway_default.fetch(request, env, ctx);
       const health = await response.json();
