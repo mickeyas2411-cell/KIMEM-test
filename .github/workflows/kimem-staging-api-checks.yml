@@ -1,0 +1,49 @@
+name: KIMEM Staging API Checks
+on:
+  push:
+    branches:
+      - feature/neon-cloudflare-integration
+    paths:
+      - 'backend/**'
+      - '.github/workflows/kimem-staging-api-checks.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+jobs:
+  staging-api:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install backend dependencies
+        run: npm install --no-audit --no-fund
+      - name: Check worker JavaScript syntax
+        run: npm run check
+      - name: Run safety contract tests
+        run: npm test
+      - name: Build standalone staging Worker bundle
+        run: npx esbuild staging-combined-worker.js --bundle --format=esm --platform=browser --target=es2022 --outfile=dist/staging-combined-worker.js
+      - name: Save verified bundle to staging feature branch
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f dist/staging-combined-worker.js
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(staging): save tested Worker bundle [skip ci]"
+            git push origin HEAD:feature/neon-cloudflare-integration
+          fi
+      - name: Upload staging bundle (no deploy)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kimem-staging-worker-bundle
+          path: backend/dist/staging-combined-worker.js
+          retention-days: 7
+# No Cloudflare/Neon secrets; no deploy; no production mutation.
