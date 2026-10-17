@@ -32,7 +32,12 @@ export default {async fetch(request,env){
   const timestamp=Number(values.get('auth_date')),now=Math.floor(Date.now()/1000);
   if(!Number.isSafeInteger(timestamp)||timestamp>now+60||now-timestamp>3600)return respond({ok:false,reason:'telegram_data_expired'},401);
   if(!/^[a-f0-9]{64}$/i.test(values.get('hash')||''))return respond({ok:false,reason:'missing_or_invalid_hash'},401);
-  if(!await verifyTelegram(raw,env.TELEGRAM_BOT_TOKEN))return respond({ok:false,reason:'telegram_hash_or_user_mismatch'},401);
+  const verified=await verifyTelegram(raw,env.TELEGRAM_BOT_TOKEN);
+  if(!verified){
+   const userRaw=values.get('user');let validUser=false;
+   try{const u=JSON.parse(userRaw||'null');validUser=!!u&&Number.isSafeInteger(u.id)&&u.id>0;}catch{}
+   return respond({ok:false,reason:validUser?'telegram_hash_mismatch':'telegram_user_invalid_or_hash_mismatch'},401);
+  }
   return respond({ok:true,reason:'verified'});
  }
  if(path==='/login-test'&&request.method==='GET')return new Response(loginPage,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}});
