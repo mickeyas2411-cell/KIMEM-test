@@ -259,18 +259,26 @@ function refreshLobbyBalance(){
 async function kimemRefreshVerifiedBalances(){
  const tg=window.Telegram?.WebApp;
  if(!tg?.initData)return false;
+ const headers={Authorization:'tma '+tg.initData,Accept:'application/json'};
+ const valid=v=>typeof v==='string'&&/^(0|[1-9]\d*)\.\d{2}$/.test(v)&&Number.isSafeInteger(Math.round(Number(v)*100));
  try{
-  const response=await fetch('/api/me/balances',{
-   method:'GET',cache:'no-store',credentials:'omit',
-   headers:{Authorization:'tma '+tg.initData,Accept:'application/json'}
-  });
-  if(!response.ok)return false;
-  const payload=await response.json();
-  const balances=payload?.balances;
-  const valid=v=>typeof v==='string'&&/^(0|[1-9]\\d*)\\.\\d{2}$/.test(v)&&Number.isSafeInteger(Math.round(Number(v)*100));
-  if(payload?.ok!==true||!balances||!valid(balances.real_etb)||!valid(balances.bonus_etb))return false;
-  document.getElementById('lobby-balance').textContent=balances.real_etb;
-  document.getElementById('lobby-bonus-balance').textContent=balances.bonus_etb;
+  const response=await fetch('/api/me/balances',{method:'GET',cache:'no-store',credentials:'omit',headers});
+  if(response.ok){
+   const payload=await response.json();
+   const balances=payload?.balances;
+   if(payload?.ok===true&&balances&&valid(balances.real_etb)&&valid(balances.bonus_etb)){
+    document.getElementById('lobby-balance').textContent=balances.real_etb;
+    document.getElementById('lobby-bonus-balance').textContent=balances.bonus_etb;
+    return true;
+   }
+  }
+  // Until the real wallet is reconciled, show only independently verified bonus.
+  const bonusResponse=await fetch('/api/me/bonus-balance',{method:'GET',cache:'no-store',credentials:'omit',headers});
+  if(!bonusResponse.ok)return false;
+  const bonusPayload=await bonusResponse.json();
+  if(bonusPayload?.ok!==true||!valid(bonusPayload.bonus_etb))return false;
+  document.getElementById('lobby-bonus-balance').textContent=bonusPayload.bonus_etb;
+  // Real balance remains unknown; do not invent or zero it.
   return true;
  }catch(e){console.warn('Verified balances unavailable');return false;}
 }
