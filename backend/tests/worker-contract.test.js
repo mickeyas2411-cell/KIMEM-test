@@ -12,3 +12,9 @@ test('purchase calls atomic database function',()=>{
 test('unreconciled real balance is not returned',()=>{
  assert.match(source,/wallet_reconciliation_required/);
 });
+
+test('bonus purchases are disabled by default',()=>{
+ assert.match(source,/env\.ENABLE_BONUS_PURCHASES!=='true'/);
+ assert.match(source,/bonus_purchases_not_enabled/);
+ assert.ok(source.indexOf("env.ENABLE_BONUS_PURCHASES!=='true'")<source.indexOf('qimem_buy_10etb_bonus_card('));
+});
