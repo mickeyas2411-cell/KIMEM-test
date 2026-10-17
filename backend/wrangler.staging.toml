@@ -1,5 +1,5 @@
 name = "kimem-player-api-staging"
-main = "player-api-worker.js"
+main = "dist/staging-combined-worker.js"
 compatibility_date = "2026-10-17"
 workers_dev = true
 
