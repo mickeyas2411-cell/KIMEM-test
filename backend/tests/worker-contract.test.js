@@ -40,3 +40,21 @@ test('unverified requests cannot reach the database',()=>{
  const database=source.indexOf('const sql=neon(env.STAGING_DATABASE_URL)');
  assert.ok(auth>=0 && database>=0 && auth<database);
 });
+
+const combined=readFileSync(new URL('../staging-combined-worker.js',import.meta.url),'utf8');
+const loginGateway=readFileSync(new URL('../staging-auth-gateway.js',import.meta.url),'utf8');
+test('combined worker preserves login and diagnostics routes',()=>{
+ assert.match(combined,/path === '\/login-test'/);
+ assert.match(combined,/path === '\/diagnostics\/auth'/);
+ assert.match(combined,/return loginGateway\.fetch\(request, env, ctx\)/);
+});
+test('combined worker routes player endpoints to API',()=>{
+ for(const path of ['/api/me/register','/api/me/bonus-balance','/api/me/balances','/api/cards/buy-bonus'])
+  assert.ok(combined.includes(path));
+ assert.match(combined,/return playerApi\.fetch\(request, env, ctx\)/);
+});
+test('login test uses independent signature diagnostic, not bonus state',()=>{
+ assert.match(loginGateway,/fetch\('\/diagnostics\/auth'/);
+ const login=loginGateway.split('const loginPage=')[1].split('const hex=')[0];
+ assert.doesNotMatch(login,/fetch\('\/api\/me\/bonus-balance'/);
+});
