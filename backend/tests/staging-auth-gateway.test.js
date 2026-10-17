@@ -33,6 +33,14 @@ test('protected endpoint requires signed Telegram initData',async()=>{
  assert.equal(r.status,503);
  assert.equal((await r.json()).error,'staging_database_not_connected');
 });
+test('Telegram Ed25519 signature field is excluded from bot HMAC data-check-string',async()=>{
+ const signed=await signedInitData();
+ const p=new URLSearchParams(signed);
+ p.set('signature','test-ed25519-field');
+ const r=await call('/api/me/bonus-balance','GET',p.toString());
+ assert.equal(r.status,503);
+ assert.equal((await r.json()).error,'staging_database_not_connected');
+});
 test('invalid signature and duplicated auth_date are rejected',async()=>{
  const valid=await signedInitData();
  assert.equal((await call('/api/me/bonus-balance','GET',valid.replace('123456789','123456788'))).status,401);
