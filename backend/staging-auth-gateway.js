@@ -22,7 +22,7 @@ async function verifyTelegram(initData,token){
 }
 export default {async fetch(request,env){
  const path=new URL(request.url).pathname;
- if(path==='/health'&&request.method==='GET')return respond({ok:true,service:'kimem-player-api-staging',mode:'auth-only',database:'not_connected',bonus_purchases_enabled:false});
+ if(path==='/health'&&request.method==='GET')return respond({ok:true,service:'kimem-player-api-staging',mode:'auth-only',database:env.STAGING_DATABASE_URL?'secret_configured_connection_unverified':'secret_missing',bonus_purchases_enabled:false});
  if(path==='/diagnostics/auth'&&request.method==='GET'){
   const auth=request.headers.get('Authorization')||'';
   if(!auth.startsWith('tma '))return respond({ok:false,reason:'missing_telegram_data'},401);
