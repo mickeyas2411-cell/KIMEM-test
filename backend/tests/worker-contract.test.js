@@ -24,3 +24,13 @@ test('health check does not expose wallet or secrets',()=>{
  assert.match(source,/database:'not_checked'/);
  assert.match(source,/bonus_purchases_enabled:BONUS_PURCHASES_READY/);
 });
+
+test('registration grant uses one-time bonus ledger and exposes new amount in CTE',()=>{
+ assert.match(source,/ON CONFLICT\(telegram_id\) DO UPDATE/);
+ assert.match(source,/ON CONFLICT\(player_id\) DO NOTHING/);
+ assert.match(source,/RETURNING player_id,granted_amount,available_amount/);
+ assert.match(source,/SELECT player\.id,EXISTS\(SELECT 1 FROM bonus_log\) AS bonus_newly_granted/);
+});
+test('unverified requests cannot reach the database',()=>{
+ assert.ok(source.indexOf('if(!user) return json')<source.indexOf('const sql=neon(env.DATABASE_URL)'));
+});
