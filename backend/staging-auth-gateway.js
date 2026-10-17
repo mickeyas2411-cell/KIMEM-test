@@ -23,6 +23,15 @@ async function verifyTelegram(initData,token){
 export default {async fetch(request,env){
  const path=new URL(request.url).pathname;
  if(path==='/health'&&request.method==='GET')return respond({ok:true,service:'kimem-player-api-staging',mode:'auth-only',database:'not_connected',bonus_purchases_enabled:false});
+ if(path==='/diagnostics/bot-match'&&request.method==='GET'){
+  if(!env.TELEGRAM_BOT_TOKEN)return respond({ok:false,reason:'token_not_configured'},503);
+  try{
+   const result=await fetch('https://api.telegram.org/bot'+env.TELEGRAM_BOT_TOKEN+'/getMe',{signal:AbortSignal.timeout(5000)});
+   const data=await result.json();
+   if(!data.ok)return respond({ok:false,reason:'telegram_rejected_token'},503);
+   return respond({ok:true,matches_test_bot:String(data.result?.username||'').toLowerCase()==='kimemtest_bot'});
+  }catch{return respond({ok:false,reason:'telegram_check_unavailable'},503);}
+ }
  if(path==='/login-test'&&request.method==='GET')return new Response(loginPage,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff','referrer-policy':'no-referrer'}});
  const routes={'/api/me/register':'POST','/api/me/balances':'GET','/api/me/bonus-balance':'GET','/api/cards/buy-bonus':'POST'};
  if(!Object.hasOwn(routes,path))return respond({ok:false,error:'not_found'},404);
