@@ -5,6 +5,12 @@ import playerApi from './player-api-worker.js';
 export default {
   async fetch(request, env, ctx) {
     const path = new URL(request.url).pathname;
+    // Telegram Mini App root: render login without redirecting away from Telegram launch context.
+    if (path === '/' && request.method === 'GET') {
+      const url = new URL(request.url);
+      url.pathname = '/login-test';
+      return loginGateway.fetch(new Request(url, request), env, ctx);
+    }
     // Preserve the verified Telegram login and signature diagnostics unchanged.
     // The combined health response is a deployment marker, not a DB connectivity test.
     if (path === '/health' && request.method === 'GET') {
