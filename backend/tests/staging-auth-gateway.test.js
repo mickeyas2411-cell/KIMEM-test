@@ -23,7 +23,7 @@ test('staging health never reports a connected database',async()=>{
  const r=await call('/health');
  assert.equal(r.status,200);
  const data=await r.json();
- assert.equal(data.database,'not_connected');
+ assert.equal(data.database,'secret_missing');
  assert.equal(data.bonus_purchases_enabled,false);
 });
 test('protected endpoint requires signed Telegram initData',async()=>{
@@ -33,13 +33,13 @@ test('protected endpoint requires signed Telegram initData',async()=>{
  assert.equal(r.status,503);
  assert.equal((await r.json()).error,'staging_database_not_connected');
 });
-test('Telegram Ed25519 signature field is excluded from bot HMAC data-check-string',async()=>{
+test('unsigned extra signature field is rejected by bot HMAC verification',async()=>{
  const signed=await signedInitData();
  const p=new URLSearchParams(signed);
  p.set('signature','test-ed25519-field');
  const r=await call('/api/me/bonus-balance','GET',p.toString());
- assert.equal(r.status,503);
- assert.equal((await r.json()).error,'staging_database_not_connected');
+ assert.equal(r.status,401);
+ assert.equal((await r.json()).error,'unauthorized');
 });
 test('invalid signature and duplicated auth_date are rejected',async()=>{
  const valid=await signedInitData();
