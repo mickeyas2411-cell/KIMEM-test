@@ -714,7 +714,7 @@ function kimemFinishAfterBall(ids){
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
  if(kimemFinished)return;
- kimemFinished=true;running=false;spherePhase='idle';
+ kimemFinished=true;window.kimemBingoEnding=true;running=false;spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
  if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
  const winners=Array.isArray(ids)?ids:(ids===null||ids===undefined?[]:[ids]);
  const overlay=document.getElementById('kimem-winner-overlay');
@@ -1209,16 +1209,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     kimemFirstServerSync=false;
     window.kimemServerDrawBatch=false;
     if(drawBatch)cards();
-    // Check selected cards after authoritative server draws (including four corners).
-    if(pending.length&&mode==='auto'&&!kimemFinished&&!finished&&r.phase!=='finished'){
-     const wins=kimemWinningCards();
-     if(wins.length){$('draw-status').textContent='BINGO WINNER';kimemFinishAfterBall(wins)}
-    }
+    // Only server-confirmed finished rounds may end a synchronized game.
    }
    running=false;
    if(r.phase==='finished'){
     $('draw-status').textContent='ROUND FINISHED';
-    if(!finished){finished=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
