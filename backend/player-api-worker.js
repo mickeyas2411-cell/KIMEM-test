@@ -85,9 +85,9 @@ export default {
         return json({ok:false,database:'staging_connection_failed'},503);
       }
     }
-    if(!['/api/me/register','/api/me/balances','/api/me/bonus-balance','/api/cards/buy-bonus'].includes(url.pathname))
+    if(!['/api/me/register','/api/me/balances','/api/me/bonus-balance','/api/me/bonus-history','/api/cards/buy-bonus'].includes(url.pathname))
       return json({ok:false,error:'not_found'},404);
-    if(request.method!==(['/api/me/balances','/api/me/bonus-balance'].includes(url.pathname)?'GET':'POST'))
+    if(request.method!==(['/api/me/balances','/api/me/bonus-balance','/api/me/bonus-history'].includes(url.pathname)?'GET':'POST'))
       return json({ok:false,error:'method_not_allowed'},405);
     const auth=request.headers.get('Authorization')||'';
     if(!auth.startsWith('tma ')) return json({ok:false,error:'unauthorized'},401);
@@ -182,6 +182,21 @@ export default {
         }
       }
 
+      if(url.pathname==='/api/me/bonus-history') {
+        // Read-only, player-scoped bonus ledger. No live wallet data or payouts.
+        const rows=await sql`
+          SELECT t.id::text AS id,t.amount::text AS amount,t.reason,
+                 t.round_id::text AS round_id,t.created_at
+          FROM qimem_registration_bonus_transactions t
+          JOIN qimem_players p ON p.id=t.player_id
+          WHERE p.telegram_id=${user.id}
+          ORDER BY t.created_at DESC,t.id DESC LIMIT 50
+        `;
+        return json({ok:true,transactions:rows.map(row=>({
+          id:row.id,amount_etb:formatMoney(row.amount),reason:row.reason,
+          round_id:row.round_id,created_at:row.created_at
+        }))});
+      }
       if(url.pathname==='/api/me/bonus-balance') {
         // Only the dedicated registration bonus is authoritative in Neon.
         // Never imply that this is the live real-money wallet balance.
