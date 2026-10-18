@@ -1202,7 +1202,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    running=false;
    if(r.phase==='finished'){
     $('draw-status').textContent='ROUND FINISHED';
-    if(!finished){finished=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
