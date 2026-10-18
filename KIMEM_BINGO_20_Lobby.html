@@ -169,7 +169,7 @@ function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
  if(kimemAwaitNextLobby){
-  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound&&r.phase!=='lobby'){
+  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
    $('countdown').textContent='WAIT';resetCountdownScene();return;
   }
   kimemAwaitNextLobby=false;
