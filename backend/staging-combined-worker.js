@@ -33,7 +33,7 @@ export default {
     if (path === '/login-test' || path === '/diagnostics/auth') {
       return loginGateway.fetch(request, env, ctx);
     }
-    if (path === '/api/me/register' || path === '/api/me/bonus-balance' ||
+    if (path === '/api/me/register' || path === '/api/me/bonus-balance' || path === '/api/me/bonus-history' ||
         path === '/api/me/balances' || path === '/api/cards/buy-bonus') {
       return playerApi.fetch(request, env, ctx);
     }
