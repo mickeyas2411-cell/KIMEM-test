@@ -24,7 +24,7 @@ function generateDeterministicCard(id){
 let chosenCardIds=[];
 try{
  const stored=JSON.parse(sessionStorage.getItem('kimemPurchasedCards')||'[]');
- if(Array.isArray(stored))chosenCardIds=[...new Set(stored.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=1000))].slice(0,3);
+ if(Array.isArray(stored))chosenCardIds=[...new Set(stored.map(Number).filter(n=>Number.isInteger(n)&&n>=1&&n<=2500))].slice(0,6);
 }catch(e){}
 // Without a demo purchase, send player back to the card-buying lobby.
 if(!chosenCardIds.length){location.replace('./index.html');}
