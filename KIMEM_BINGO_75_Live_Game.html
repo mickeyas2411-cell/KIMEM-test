@@ -13,6 +13,20 @@
 .cards[data-count="1"] .cell{font-size:clamp(14px,4vw,25px)}
 .cards[data-count="2"] .cell{font-size:clamp(11px,3vw,20px)}
 .cards[data-count="1"] .cardtitle,.cards[data-count="2"] .cardtitle{font-size:clamp(12px,3vw,20px)}
+
+/* Refined live composition: roomier cards and balanced panels, no page scroll. */
+.app{grid-template-rows:minmax(0,6%) minmax(0,22%) minmax(0,23%) minmax(0,43%) minmax(0,6%)}
+.panel{box-shadow:inset 0 1px rgba(255,244,208,.1),0 4px 12px rgba(0,0,0,.22)}
+.cards{align-items:stretch;justify-items:stretch}
+.cards .card{box-shadow:inset 0 1px rgba(255,238,191,.13),0 3px 9px rgba(0,0,0,.28)}
+.cards[data-count="1"]{max-width:min(100%,420px)}
+.cards[data-count="2"]{max-width:100%}
+.cards[data-count="3"]{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}
+.cards[data-count="3"] .card:last-child{grid-column:1/-1;width:50%;justify-self:center}
+.cards[data-count="5"] .card:last-child{grid-column:2}
+.cards[data-count="1"] .cardgrid,.cards[data-count="2"] .cardgrid{gap:clamp(2px,.5vw,5px)}
+.cards[data-count="1"] .card,.cards[data-count="2"] .card{padding:clamp(5px,1vw,12px)}
+@media(max-height:700px){.app{grid-template-rows:minmax(0,7%) minmax(0,21%) minmax(0,23%) minmax(0,42%) minmax(0,7%)}}
 </style></head><body><div class="app"><header><button class="back" onclick="window.location.href='./KIMEM_BINGO_75_Lobby.html'" aria-label="Back">❮</button><div class="brand">KIMEM BINGO</div><span class="live">● LIVE</span><div class="callstat"><small>Call</small><strong id="call">17 / 75</strong></div><button class="menu" aria-label="Menu">☰</button></header><section class="stage"><div class="info-list"><div class="info"><span class="symbol">🏆</span><div><small>Target Prize</small><strong>80,000 ብር</strong><em>on call 48</em></div></div><div class="info"><span class="symbol">🎁</span><div><small>After Target</small><strong>20,000 ብር</strong></div></div><div class="info"><span class="symbol">👥</span><div><small>Players</small><strong>312</strong></div></div></div><div class="machine"><canvas id="kimem-sphere" width="512" height="512"></canvas></div></section><section class="panel"><div class="panelhead"><h2>🃏 CALLED NUMBERS (<span id="count">17</span> / 75)</h2><button class="outline" id="viewAllBtn">View All 75 ❯</button></div><div class="board" id="board"></div></section><section class="panel"><div class="panelhead"><h2>🃏 MY BINGO CARDS (<span id="cardCount">6</span> / 6)</h2><select class="outline" id="selector" aria-label="Number of cards"><option value="1">Cards: 1</option><option value="2">Cards: 2</option><option value="3">Cards: 3</option><option value="4">Cards: 4</option><option value="5">Cards: 5</option><option value="6" selected>Cards: 6</option></select></div><div class="cards" id="cards"></div></section><div class="controls"><button id="drawBtn">DRAW</button><button id="autoBtn">AUTO DRAW</button><button id="resetBtn">RESET</button></div></div>
 <script>
 'use strict';const $=id=>document.getElementById(id);const colors=['#e4ad2c','#0f9d83','#2373e8','#8d42c8','#d72d52'],lights=['#fff2a6','#a8ffe3','#c1e5ff','#ead0ff','#ffd3e1'];const tone=n=>Math.min(4,Math.floor((Math.max(1,n)-1)/15)),letter=n=>'BINGO'[tone(n)];const canvas=$('kimem-sphere'),ctx=canvas.getContext('2d',{alpha:true});const SZ=512,CTR=256,RAD=230,TAU=Math.PI*2,GLASS_TRANSPARENCY=.10;const clamp=(x,a,b)=>Math.max(a,Math.min(b,x)),smooth=t=>t*t*(3-2*t),ease=t=>1-Math.pow(1-t,4),lerp=(a,b,t)=>a+(b-a)*t,rgb=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));const img=ctx.createImageData(SZ,SZ),pix=img.data,points=[];for(let y=0;y<SZ;y++)for(let x=0;x<SZ;x++){const xx=(x-CTR)/RAD,yy=(CTR-y)/RAD,q=xx*xx+yy*yy;if(q<=1)points.push({i:(y*SZ+x)*4,x:xx,y:yy,z:Math.sqrt(1-q)})}
