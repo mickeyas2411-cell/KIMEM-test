@@ -116,6 +116,24 @@ html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
 .app .preview-panel .goodluck{margin:2px 0;padding:2px 0}
 .app .preview-panel .checkout{margin-top:3px}
 @media(max-height:700px){.app .hero{--circle:clamp(85px,16dvh,125px)}.app .topbar{min-height:36px}.app .preview-panel .checkout{padding:4px}.app .preview-panel .checkout .buy{min-height:28px}.app .panel-title{padding-bottom:3px}.app .legend{font-size:8px}}
+
+/* Telegram native close/menu overlays occupy the top corners. Keep brand/wallet clear. */
+@media(max-width:700px){
+.app .topbar{margin-top:clamp(38px,5.2dvh,52px);min-height:42px;padding:0 3px;gap:5px}
+.app .topbar .brand-name{font-size:clamp(17px,4.6vw,23px)}
+.app .topbar .wallet{padding:4px 5px}
+.app .hero{--circle:clamp(88px,15.5dvh,154px);margin-top:2px}
+.app .info-bar{min-height:39px}
+.app .game-layout{margin-top:4px}
+.app .panel-title{min-height:23px;padding-bottom:4px}
+.app .preview-stack{gap:3px}
+.app .preview-panel .checkout{padding:4px}
+}
+@media(max-height:700px) and (max-width:700px){
+.app .topbar{margin-top:35px;min-height:35px}
+.app .hero{--circle:clamp(77px,13dvh,108px)}
+.app .info-bar{min-height:35px}
+}
 </style>
 </head>
 <body>
