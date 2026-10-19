@@ -117,41 +117,29 @@ html,body{height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none}
 .app .preview-panel .checkout{margin-top:3px}
 @media(max-height:700px){.app .hero{--circle:clamp(85px,16dvh,125px)}.app .topbar{min-height:36px}.app .preview-panel .checkout{padding:4px}.app .preview-panel .checkout .buy{min-height:28px}.app .panel-title{padding-bottom:3px}.app .legend{font-size:8px}}
 
-/* Telegram native close/menu overlays occupy the top corners. Keep brand/wallet clear. */
+/* Stable Telegram layout: header is in normal flow, never over the prize cards. */
 @media(max-width:700px){
-.app .topbar{margin-top:clamp(38px,5.2dvh,52px);min-height:42px;padding:0 3px;gap:5px}
-.app .topbar .brand-name{font-size:clamp(17px,4.6vw,23px)}
-.app .topbar .wallet{padding:4px 5px}
-.app .hero{--circle:clamp(88px,15.5dvh,154px);margin-top:2px}
+.app{padding-top:calc(env(safe-area-inset-top) + 54px)!important}
+.app .topbar{position:relative!important;top:auto!important;left:auto!important;right:auto!important;margin:0 0 5px!important;padding:0 3px!important;height:40px!important;min-height:40px!important;display:flex!important;gap:7px;z-index:6;pointer-events:auto!important;flex-shrink:0}
+.app .topbar .menu{display:none}
+.app .topbar .brand{flex:1;min-width:0}
+.app .topbar .brand-name{font-size:clamp(16px,4.2vw,22px)!important}
+.app .topbar .brand-sub{font-size:7px;letter-spacing:1px}
+.app .topbar .wallet{padding:4px 5px;gap:4px}
+.app .topbar .wallet strong{font-size:12px}
+.app .topbar .wallet .add{width:24px;height:24px;font-size:17px}
+.app .hero{margin-top:0!important;--circle:clamp(90px,15dvh,150px)}
+.app .hero .prize{padding-top:9px}
 .app .info-bar{min-height:39px}
 .app .game-layout{margin-top:4px}
 .app .panel-title{min-height:23px;padding-bottom:4px}
 .app .preview-stack{gap:3px}
 .app .preview-panel .checkout{padding:4px}
 }
-@media(max-height:700px) and (max-width:700px){
-.app .topbar{margin-top:35px;min-height:35px}
-.app .hero{--circle:clamp(77px,13dvh,108px)}
-.app .info-bar{min-height:35px}
-}
-
-/* Move header identities into the prize section, away from Telegram chrome. */
-@media(max-width:700px){
-.app .topbar{position:absolute!important;top:clamp(96px,12dvh,124px)!important;left:13px;right:13px;margin:0!important;padding:0!important;min-height:35px!important;height:35px;z-index:12;display:flex!important;pointer-events:none}
-.app .topbar .menu{display:none!important}
-.app .topbar .brand,.app .topbar .wallet{pointer-events:auto}
-.app .topbar .brand-name{font-size:clamp(14px,3.8vw,19px)!important;letter-spacing:-.5px}
-.app .topbar .brand-sub{font-size:6px;letter-spacing:.8px}
-.app .topbar .wallet{padding:3px 4px!important;gap:3px;background:rgba(34,6,17,.86)}
-.app .topbar .wallet small{font-size:7px}
-.app .topbar .wallet strong{font-size:11px}
-.app .topbar .wallet .add{width:23px;height:23px;font-size:17px}
-.app .hero{margin-top:clamp(55px,8dvh,90px)!important}
-.app .hero .prize{padding-top:9px}
-}
-@media(max-width:700px) and (max-height:750px){
-.app .topbar{top:clamp(83px,11dvh,104px)!important}
-.app .hero{margin-top:clamp(48px,7dvh,68px)!important}
+@media(max-width:700px) and (max-height:700px){
+.app{padding-top:calc(env(safe-area-inset-top) + 48px)!important}
+.app .topbar{height:34px!important;min-height:34px!important;margin-bottom:2px!important}
+.app .hero{--circle:clamp(77px,12.5dvh,105px)}
 }
 </style>
 </head>
