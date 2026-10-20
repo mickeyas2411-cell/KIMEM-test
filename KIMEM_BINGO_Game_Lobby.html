@@ -148,7 +148,7 @@ function startTimer(){if(timerHandle)clearInterval(timerHandle);secondsRemaining
 // Opt-in server synchronization for testing; existing lobby remains unchanged by default.
 const kimemSyncEnabled=new URLSearchParams(location.search).get('sync')!=='0';
 const kimemRoundEndpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
-let kimemSyncTimer=null,kimemSyncRound=null,kimemSyncClockOffset=0,kimemSyncLastSecond=null,kimemSyncMoving=false;
+let kimemSyncTimer=null,kimemSyncRound=null,kimemSyncClockOffset=0,kimemSyncLastSecond=null,kimemSyncMoving=false,kimemCountdownRound=null;
 function kimemSyncGameId(gameId){
  const node=[...document.querySelectorAll('.stat-label')].find(el=>el.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value');
  if(node&&/^AA\d{6}$/.test(gameId))node.innerHTML='<span style="color:#fbbf24">AA</span>'+gameId.slice(2);
@@ -159,12 +159,9 @@ if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimem
 function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
- // After a completed live round, wait only for the backend's NEXT round.
- // Never replay the round the player has just finished.
+ const now=Date.now()+kimemSyncClockOffset;
  if(kimemAwaitNextLobby){
-  if(r.phase==='finished'){
-   $('countdown').textContent='NEXT';resetCountdownScene();return;
-  }
+  if(r.phase==='finished'){$('countdown').textContent='NEXT';resetCountdownScene();return;}
   if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
    $('countdown').textContent=r.phase==='live'?'LIVE':'WAIT';resetCountdownScene();return;
   }
@@ -174,9 +171,8 @@ function kimemSyncRender(){
   try{sessionStorage.removeItem('kimemLastLiveRound10')}catch(e){}
  }
  if(r.phase==='finished'){$('countdown').textContent='NEXT';resetCountdownScene();return;}
- if(r.phase==='live'){$('countdown').textContent='LIVE';resetCountdownScene();return;}
- const now=Date.now()+kimemSyncClockOffset;
  if(r.phase==='lobby'&&now<r.liveStartsAt){
+  kimemCountdownRound=String(r.roundNumber);
   const left=Math.max(0,Math.ceil((r.liveStartsAt-now)/1000));
   if(left!==kimemSyncLastSecond){
    kimemSyncLastSecond=left;
@@ -185,14 +181,22 @@ function kimemSyncRender(){
    if(left>=1&&left<=5)showCountdownSecond(left);
    else resetCountdownScene();
   }
- }else if(!kimemSyncMoving){
-  if(!selectedCards.length){$('countdown').textContent='LIVE';resetCountdownScene();return;}
-  kimemSyncMoving=true;
-  resetCountdownScene();
-  const ids=selectedCards.slice(0,3);
-  try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
-  window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1';
+  return;
  }
+ // Only enter live automatically if this player actually saw the lobby
+ // countdown for this round. Arriving mid-game never triggers a late entry.
+ if(kimemCountdownRound!==String(r.roundNumber)){
+  $('countdown').textContent='LIVE';resetCountdownScene();return;
+ }
+ if(!selectedCards.length){
+  $('countdown').textContent='LIVE';resetCountdownScene();return;
+ }
+ if(kimemSyncMoving)return;
+ kimemSyncMoving=true;
+ resetCountdownScene();
+ const ids=selectedCards.slice(0,3);
+ try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
+ window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1';
 }
 async function kimemSyncPoll(){
  try{
