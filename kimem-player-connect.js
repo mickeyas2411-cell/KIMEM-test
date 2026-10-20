@@ -2,21 +2,32 @@
 (() => {
   'use strict';
   const telegram = window.Telegram?.WebApp;
-  if (!telegram?.initData) return;
-  let account = null;
   const endpoint = 'https://kimem-test-backend.mickeyas2411.workers.dev/api/player/register';
+  let account = null;
+  let registrationStatus = 'Checking secure account registration…';
+
   const updateWallet = () => {
     const panel = document.getElementById('kimemAccountPanel');
-    if (!account || !panel?.classList.contains('visible')) return;
+    if (!panel?.classList.contains('visible')) return;
     if (panel.querySelector('h3')?.textContent.trim() !== 'Wallet') return;
     const description = panel.querySelector('p');
     const status = panel.querySelector('.account-status');
-    if (description) description.textContent = 'Available balance: ' + account.wallet.availableBalance + ' ETB';
-    if (status) status.textContent = 'Verified Telegram account. Payments and purchases are not enabled.';
+    if (account) {
+      if (description) description.textContent = 'Available balance: ' + account.wallet.availableBalance + ' ETB';
+      if (status) status.textContent = 'Verified Telegram account. Payments and purchases are not enabled.';
+    } else if (status) {
+      status.textContent = registrationStatus + ' Payments and purchases are not enabled.';
+    }
   };
+
   const start = async () => {
     const panel = document.getElementById('kimemAccountPanel');
     if (panel) new MutationObserver(updateWallet).observe(panel, {childList: true});
+    if (!telegram?.initData) {
+      registrationStatus = 'Registration check: Telegram authentication data unavailable. Open from the bot menu.';
+      updateWallet();
+      return;
+    }
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -24,14 +35,25 @@
         body: JSON.stringify({initData: telegram.initData}),
         cache: 'no-store'
       });
-      if (!response.ok) return;
-      const data = await response.json();
-      if (!data.ok || !data.player || !data.wallet) return;
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const safeErrors = ['invalid_telegram_auth', 'invalid_init_data', 'server_not_configured', 'registration_unavailable', 'origin_not_allowed', 'request_too_large'];
+        const code = safeErrors.includes(data.error) ? data.error : 'http_' + response.status;
+        registrationStatus = 'Registration check: ' + code + '.';
+        updateWallet();
+        return;
+      }
+      if (!data.ok || !data.player || !data.wallet) {
+        registrationStatus = 'Registration check: unexpected_server_response.';
+        updateWallet();
+        return;
+      }
       account = data;
       updateWallet();
       window.dispatchEvent(new CustomEvent('kimem:player-ready', {detail: {playerId: data.player.id}}));
     } catch {
-      console.warn('Verified player registration unavailable');
+      registrationStatus = 'Registration check: network_or_connection_error.';
+      updateWallet();
     }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
