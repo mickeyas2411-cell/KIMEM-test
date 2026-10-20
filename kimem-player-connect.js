@@ -4,7 +4,7 @@
   const telegram = window.Telegram?.WebApp;
   if (!telegram?.initData) return;
   let account = null;
-  const endpoint = 'https://kimem-bingo-backend.mickeyas2411.workers.dev/api/player/register';
+  const endpoint = 'https://kimem-test-backend.mickeyas2411.workers.dev/api/player/register';
   const updateWallet = () => {
     const panel = document.getElementById('kimemAccountPanel');
     if (!account || !panel?.classList.contains('visible')) return;
