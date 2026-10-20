@@ -6,6 +6,19 @@
   let account = null;
   let registrationStatus = 'Checking secure account registration…';
 
+  const updateGameCredit = () => {
+    const credit = document.querySelector('.bl-credit-left b');
+    if (!credit) return;
+    if (!account) {
+      credit.textContent = '— ETB';
+      return;
+    }
+    const balance = Number(account.wallet.availableBalance);
+    credit.textContent = Number.isFinite(balance) && balance >= 0
+      ? balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ETB'
+      : '— ETB';
+  };
+
   const updateWallet = () => {
     const panel = document.getElementById('kimemAccountPanel');
     if (!panel?.classList.contains('visible')) return;
@@ -49,6 +62,7 @@
         return;
       }
       account = data;
+      updateGameCredit();
       updateWallet();
       window.dispatchEvent(new CustomEvent('kimem:player-ready', {detail: {playerId: data.player.id}}));
     } catch {
