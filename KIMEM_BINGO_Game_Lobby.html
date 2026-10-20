@@ -254,7 +254,7 @@ async function refreshLobbyBalance(){
   if(!response.ok)throw new Error('Wallet verification unavailable');
   const data=await response.json();
   const amount=data?.wallet?.availableBalance;
-  if(!data?.ok||!data?.player||typeof amount!=='string'||!/^\\d+(?:\\.\\d{1,2})?$/.test(amount))
+  if(!data?.ok||!data?.player||typeof amount!=='string'||!/^\d+(?:\.\d{1,2})?$/.test(amount))
    throw new Error('Invalid verified wallet balance');
   kimemVerifiedLobbyBalance=Number(amount).toFixed(2);
   label.textContent=kimemVerifiedLobbyBalance;
