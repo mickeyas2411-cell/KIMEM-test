@@ -162,18 +162,19 @@ function kimemSyncRender(){
  // After a completed live round, wait only for the backend's NEXT round.
  // Never replay the round the player has just finished.
  if(kimemAwaitNextLobby){
-  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
-   $('countdown').textContent='WAIT';resetCountdownScene();return;
-  }
   if(r.phase==='finished'){
-   $('countdown').textContent='WAIT';resetCountdownScene();return;
+   $('countdown').textContent='NEXT';resetCountdownScene();return;
+  }
+  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
+   $('countdown').textContent=r.phase==='live'?'LIVE':'WAIT';resetCountdownScene();return;
   }
   kimemAwaitNextLobby=false;
   kimemPreviousLiveRound=null;
   kimemSyncLastSecond=null;
   try{sessionStorage.removeItem('kimemLastLiveRound10')}catch(e){}
  }
- if(r.phase==='finished'){$('countdown').textContent='WAIT';resetCountdownScene();return;}
+ if(r.phase==='finished'){$('countdown').textContent='NEXT';resetCountdownScene();return;}
+ if(r.phase==='live'){$('countdown').textContent='LIVE';resetCountdownScene();return;}
  const now=Date.now()+kimemSyncClockOffset;
  if(r.phase==='lobby'&&now<r.liveStartsAt){
   const left=Math.max(0,Math.ceil((r.liveStartsAt-now)/1000));
@@ -185,6 +186,7 @@ function kimemSyncRender(){
    else resetCountdownScene();
   }
  }else if(!kimemSyncMoving){
+  if(!selectedCards.length){$('countdown').textContent='LIVE';resetCountdownScene();return;}
   kimemSyncMoving=true;
   resetCountdownScene();
   const ids=selectedCards.slice(0,3);
