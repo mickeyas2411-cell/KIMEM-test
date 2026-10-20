@@ -159,11 +159,19 @@ if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimem
 function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
+ // After a completed live round, wait only for the backend's NEXT round.
+ // Never replay the round the player has just finished.
  if(kimemAwaitNextLobby){
   if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
    $('countdown').textContent='WAIT';resetCountdownScene();return;
   }
+  if(r.phase==='finished'){
+   $('countdown').textContent='WAIT';resetCountdownScene();return;
+  }
   kimemAwaitNextLobby=false;
+  kimemPreviousLiveRound=null;
+  kimemSyncLastSecond=null;
+  try{sessionStorage.removeItem('kimemLastLiveRound10')}catch(e){}
  }
  if(r.phase==='finished'){$('countdown').textContent='WAIT';resetCountdownScene();return;}
  const now=Date.now()+kimemSyncClockOffset;
