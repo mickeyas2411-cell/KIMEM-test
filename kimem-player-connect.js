@@ -10,13 +10,14 @@
     const credit = document.querySelector('.bl-credit-left b');
     if (!credit) return;
     if (!account) {
-      credit.textContent = '— ETB';
+      if (credit.textContent !== '— ETB') credit.textContent = '— ETB';
       return;
     }
     const balance = Number(account.wallet.availableBalance);
-    credit.textContent = Number.isFinite(balance) && balance >= 0
+    const formatted = Number.isFinite(balance) && balance >= 0
       ? balance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' ETB'
       : '— ETB';
+    if (credit.textContent !== formatted) credit.textContent = formatted;
   };
 
   const updateWallet = () => {
@@ -36,6 +37,11 @@
   const start = async () => {
     const panel = document.getElementById('kimemAccountPanel');
     if (panel) new MutationObserver(updateWallet).observe(panel, {childList: true});
+    // The lobby can be rebuilt by the existing navigation logic after registration.
+    // Reapply only the verified credit text when its DOM node is replaced.
+    const bingo = document.getElementById('bingo');
+    if (bingo) new MutationObserver(updateGameCredit).observe(bingo, {childList: true, subtree: true});
+    updateGameCredit();
     if (!telegram?.initData) {
       registrationStatus = 'Registration check: Telegram authentication data unavailable. Open from the bot menu.';
       updateWallet();
