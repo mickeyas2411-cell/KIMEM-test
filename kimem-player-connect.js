@@ -38,7 +38,7 @@
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
         const safeErrors = ['invalid_telegram_auth', 'telegram_auth_expired', 'telegram_signature_mismatch', 'invalid_init_data', 'server_not_configured', 'registration_unavailable', 'origin_not_allowed', 'request_too_large'];
-        const code = safeErrors.includes(data.error) ? data.error : (typeof data.error === 'string' && /^[a-z_]{3,60}$/.test(data.error) ? data.error : 'http_' + response.status + '_unknown_response');
+        const code = safeErrors.includes(data.error) ? data.error : (typeof data.error === 'string' && /^[a-z_]{3,60}$/.test(data.error) ? data.error : 'http_' + response.status + '_' + (response.headers.get('content-type')?.includes('application/json') ? 'unknown_json' : 'non_json'));
         registrationStatus = 'Registration check: ' + code + '.';
         updateWallet();
         return;
