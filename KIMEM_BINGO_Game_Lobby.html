@@ -196,7 +196,7 @@ function kimemSyncRender(){
  resetCountdownScene();
  const ids=selectedCards.slice(0,3);
  try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
- window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1';
+ window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1&v=20261021r2';
 }
 async function kimemSyncPoll(){
  try{
