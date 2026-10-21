@@ -161,9 +161,14 @@ function kimemSyncRender(){
  if(!r)return;
  const now=Date.now()+kimemSyncClockOffset;
  if(kimemAwaitNextLobby){
-  if(r.phase==='finished'){$('countdown').textContent='NEXT';resetCountdownScene();return;}
-  if(kimemPreviousLiveRound!==null&&String(r.roundNumber)===kimemPreviousLiveRound){
-   $('countdown').textContent=r.phase==='live'?'LIVE':'WAIT';resetCountdownScene();return;
+  // A returning player must not replay the round they just completed.
+  // Release the guard only during a NEW authoritative lobby phase.
+  const newLobby=r.phase==='lobby'&&now<r.liveStartsAt&&
+    (kimemPreviousLiveRound===null||String(r.roundNumber)!==kimemPreviousLiveRound);
+  if(!newLobby){
+   $('countdown').textContent='NEXT';
+   resetCountdownScene();
+   return;
   }
   kimemAwaitNextLobby=false;
   kimemPreviousLiveRound=null;
