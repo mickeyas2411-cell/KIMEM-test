@@ -1146,8 +1146,12 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1&returned=1')}
     return;
    }
+   // A new lobby round must not overwrite the last round actually played.
+   // Otherwise the return guard mistakes the new 35-second lobby for the old live game.
+   if(r.phase==='live'){
+    try{sessionStorage.setItem('kimemLastLiveRound'+r.stake,String(r.roundNumber))}catch(e){}
+   }
    activeRound=r.roundNumber;
-   try{sessionStorage.setItem('kimemLastLiveRound'+r.stake,String(r.roundNumber))}catch(e){}
    showId(r.gameId);
    if(r.phase==='lobby'){
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1&returned=1')}
