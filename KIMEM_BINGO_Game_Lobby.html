@@ -193,7 +193,7 @@ function kimemSyncRender(){
  try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
  window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1';
 }
-async async function kimemSyncPoll(){
+async function kimemSyncPoll(){
  try{
   const response=await fetch(kimemRoundEndpoint,{cache:'no-store'});
   if(!response.ok)throw Error('Round service unavailable');
