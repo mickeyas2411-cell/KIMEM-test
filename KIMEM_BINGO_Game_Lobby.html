@@ -183,14 +183,9 @@ function kimemSyncRender(){
   }
   return;
  }
- // Only enter live automatically if this player actually saw the lobby
- // countdown for this round. Arriving mid-game never triggers a late entry.
- if(kimemCountdownRound!==String(r.roundNumber)){
-  $('countdown').textContent='LIVE';resetCountdownScene();return;
- }
- if(!selectedCards.length){
-  $('countdown').textContent='LIVE';resetCountdownScene();return;
- }
+ // The backend is authoritative: when the round is live, open the live
+ // screen even if the player arrived after the lobby countdown began.
+ // The returned-from-winner guard above prevents replaying the old round.
  if(kimemSyncMoving)return;
  kimemSyncMoving=true;
  resetCountdownScene();
