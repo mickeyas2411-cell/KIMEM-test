@@ -140,7 +140,7 @@ function leaveToLobby(){window.location.href='./index.html'}
 function enterLiveGame(){
  if(!selectedCards.length){triggerToast('Select at least 1 card to play!');return}
  const ids=selectedCards.slice(0,3);
- try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids));localStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
+ try{sessionStorage.setItem('kimemSelectedCards',JSON.stringify(ids))}catch(e){}
  window.location.href='./KIMEM_BINGO_20_Live_Game.html?cards='+encodeURIComponent(ids.join(','));
 }
 function handleActionSubmit(){enterLiveGame()}
