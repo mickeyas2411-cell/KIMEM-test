@@ -249,7 +249,26 @@ function syncTelegramViewport(){
  document.documentElement.style.setProperty('--kimem-bottom',Math.max(6,safeBottom)+'px');
 }
 
-function refreshLobbyBalance(){try{const w=JSON.parse(localStorage.getItem('qimem-wallet-preview-v1')||'null');const v=w&&Number.isInteger(w.balance)?w.balance:10000;document.getElementById('lobby-balance').textContent=(v/100).toFixed(2)}catch(e){document.getElementById('lobby-balance').textContent='100.00'}}
+let kimemVerifiedLobbyBalance = null;
+async function refreshLobbyBalance(){
+ const label=document.getElementById('lobby-balance');
+ if(!label)return;
+ const tg=window.Telegram?.WebApp;
+ if(!tg?.initData){label.textContent='—';return;}
+ try{
+  const response=await fetch('https://kimem-test-backend.mickeyas2411.workers.dev/api/player/register',{
+   method:'POST',headers:{'content-type':'application/json'},
+   body:JSON.stringify({initData:tg.initData}),cache:'no-store'
+  });
+  if(!response.ok)throw new Error('Wallet verification unavailable');
+  const data=await response.json();
+  const amount=data?.wallet?.availableBalance;
+  if(!data?.ok||!data?.player||typeof amount!=='string'||!/^\d+(?:\.\d{1,2})?$/.test(amount))
+   throw new Error('Invalid verified wallet balance');
+  kimemVerifiedLobbyBalance=Number(amount).toFixed(2);
+  label.textContent=kimemVerifiedLobbyBalance;
+ }catch(e){kimemVerifiedLobbyBalance=null;label.textContent='—';}
+}
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
  const tg=window.Telegram?.WebApp;
