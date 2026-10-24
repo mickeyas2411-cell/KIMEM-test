@@ -254,4 +254,5 @@ function openQimemDeposit(){
   overlay.append(header,frame);document.body.append(overlay)
  }
 }
+if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay_deposit'){window.addEventListener('load',()=>setTimeout(openQimemDeposit,350),{once:true})}
 </script></body></html>
