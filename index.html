@@ -250,7 +250,7 @@ function openQimemDeposit(){
   const back=document.createElement('button');back.textContent='← Back';back.style.cssText='background:#204b36;color:white;border:0;border-radius:10px;padding:10px 16px';back.onclick=()=>overlay.remove();
   const title=document.createElement('span');title.textContent='QIMEM PAY · Deposit';header.append(back,title);
   const frame=document.createElement('iframe');frame.id='qimemDepositFrame';frame.title='QIMEM PAY Deposit';frame.src='https://qimem-pay.mickeyas2411.workers.dev/customer?action=deposit';frame.style.cssText='border:0;width:100%;flex:1;min-height:0';
-  frame.onload=()=>{frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},'https://qimem-pay.mickeyas2411.workers.dev')};
+  const sendAuth=()=>{if(tg.initData)frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},'https://qimem-pay.mickeyas2411.workers.dev')};frame.onload=sendAuth;const onReady=event=>{if(event.origin==='https://qimem-pay.mickeyas2411.workers.dev'&&event.source===frame.contentWindow&&event.data?.type==='qimem-auth-ready')sendAuth()};window.addEventListener('message',onReady);back.onclick=()=>{window.removeEventListener('message',onReady);overlay.remove()};
   overlay.append(header,frame);document.body.append(overlay)
  }
 }
