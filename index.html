@@ -253,7 +253,7 @@ function openQimemPay(mode){
   const header=document.createElement('div');header.style.cssText='display:flex;align-items:center;gap:12px;padding:10px 16px;background:#07150e;color:white;font:600 16px system-ui';
   const back=document.createElement('button');back.textContent='← Back';back.style.cssText='background:#204b36;color:white;border:0;border-radius:10px;padding:10px 16px';back.onclick=()=>overlay.remove();
   const title=document.createElement('span');title.textContent='QIMEM PAY · '+(mode==='wallet'?'Wallet':mode==='withdraw'?'Withdraw':'Deposit');header.append(back,title);
-  const payOrigin=mode==='deposit'?'https://3ce15d82-qimem-pay.mickeyas2411.workers.dev':'https://qimem-pay.mickeyas2411.workers.dev';
+  const payOrigin=(mode==='deposit'||mode==='wallet')?'https://3ce15d82-qimem-pay.mickeyas2411.workers.dev':'https://qimem-pay.mickeyas2411.workers.dev';
   const frame=document.createElement('iframe');frame.id='qimemDepositFrame';frame.title='QIMEM PAY '+mode;frame.src=payOrigin+(mode==='withdraw'?'/customer/withdraw':mode==='wallet'?'/customer/wallet':'/customer?action=deposit');frame.style.cssText='border:0;width:100%;flex:1;min-height:0';
   const sendAuth=()=>{if(tg.initData)frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},payOrigin)};frame.onload=sendAuth;const onReady=event=>{if(event.origin===payOrigin&&event.source===frame.contentWindow&&event.data?.type==='qimem-auth-ready')sendAuth()};window.addEventListener('message',onReady);back.onclick=()=>{window.removeEventListener('message',onReady);overlay.remove()};
   overlay.append(header,frame);document.body.append(overlay)
