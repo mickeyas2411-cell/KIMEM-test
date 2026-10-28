@@ -253,10 +253,21 @@ function openQimemPay(mode){
   const header=document.createElement('div');header.style.cssText='display:flex;align-items:center;gap:12px;padding:10px 16px;background:#07150e;color:white;font:600 16px system-ui';
   const back=document.createElement('button');back.textContent='← Back';back.style.cssText='background:#204b36;color:white;border:0;border-radius:10px;padding:10px 16px';back.onclick=()=>overlay.remove();
   const title=document.createElement('span');title.textContent='QIMEM PAY · '+(mode==='wallet'?'Wallet':mode==='withdraw'?'Withdraw':'Deposit');header.append(back,title);
-  const payOrigin=mode==='deposit'?'https://fbc38569-qimem-pay.mickeyas2411.workers.dev':'https://qimem-pay.mickeyas2411.workers.dev';
-  const frame=document.createElement('iframe');frame.id='qimemDepositFrame';frame.title='QIMEM PAY '+mode;frame.src=payOrigin+(mode==='withdraw'?'/customer/withdraw':mode==='wallet'?'/customer/wallet':'/customer?action=deposit');frame.style.cssText='border:0;width:100%;flex:1;min-height:0';
-  const sendAuth=()=>{if(tg.initData)frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},payOrigin)};frame.onload=sendAuth;const onReady=event=>{if(event.origin===payOrigin&&event.source===frame.contentWindow&&event.data?.type==='qimem-auth-ready')sendAuth()};window.addEventListener('message',onReady);back.onclick=()=>{window.removeEventListener('message',onReady);overlay.remove()};
-  overlay.append(header,frame);document.body.append(overlay)
+  const primaryOrigin=mode==='deposit'?'https://fbc38569-qimem-pay.mickeyas2411.workers.dev':'https://qimem-pay.mickeyas2411.workers.dev';
+  const fallbackOrigin='https://d43d9ed6-qimem-pay.mickeyas2411.workers.dev';
+  let payOrigin=primaryOrigin,ready=false,retried=false,checkTimer;
+  const frame=document.createElement('iframe');frame.id='qimemDepositFrame';frame.title='QIMEM PAY '+mode;frame.style.cssText='border:0;width:100%;flex:1;min-height:0';
+  const path=mode==='withdraw'?'/customer/withdraw':mode==='wallet'?'/customer/wallet':'/customer?action=deposit';
+  const loading=document.createElement('div');loading.textContent='Loading QIMEM PAY…';loading.style.cssText='color:#c4ddcb;text-align:center;font:14px system-ui;padding:12px;background:#07150e';
+  const clearLoading=()=>{loading.remove();clearTimeout(checkTimer)};
+  const sendAuth=()=>{if(tg.initData)frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},payOrigin)};
+  const openFrame=()=>{ready=false;frame.src=payOrigin+path;checkTimer=setTimeout(()=>{if(ready||!overlay.isConnected)return;if(mode==='deposit'&&!retried){retried=true;payOrigin=fallbackOrigin;loading.textContent='Reconnecting deposit…';openFrame()}else{loading.textContent='Payment page could not open. Use Back and try again.'}},6500)};
+  frame.onload=sendAuth;
+  const onReady=event=>{if(event.origin===payOrigin&&event.source===frame.contentWindow&&event.data?.type==='qimem-auth-ready'){ready=true;clearLoading();sendAuth()}};
+  window.addEventListener('message',onReady);
+  back.onclick=()=>{clearLoading();window.removeEventListener('message',onReady);overlay.remove()};
+  overlay.append(header,loading,frame);document.body.append(overlay);openFrame();
+
  }
 }
 if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay_deposit'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemDeposit()}else if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemWallet()}
