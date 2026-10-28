@@ -36,15 +36,15 @@
 
   const start = async () => {
     const panel = document.getElementById('kimemAccountPanel');
-    if (panel) new MutationObserver(updateWallet).observe(panel, {childList: true});
+    // QIMEM PAY owns the balance and transaction history; registration never overrides them.
     // The lobby can be rebuilt by the existing navigation logic after registration.
     // Reapply only the verified credit text when its DOM node is replaced.
     const bingo = document.getElementById('bingo');
-    if (bingo) new MutationObserver(updateGameCredit).observe(bingo, {childList: true, subtree: true});
-    updateGameCredit();
+    // Do not overwrite QIMEM PAY verified wallet credit.
+    // Wallet sync is handled by the QIMEM PAY integration.
     if (!telegram?.initData) {
       registrationStatus = 'Registration check: Telegram authentication data unavailable. Open from the bot menu.';
-      updateWallet();
+      // The QIMEM PAY wallet view is independent of player registration.
       return;
     }
     try {
@@ -59,21 +59,21 @@
         const safeErrors = ['invalid_telegram_auth', 'telegram_auth_expired', 'telegram_signature_mismatch', 'invalid_init_data', 'server_not_configured', 'registration_unavailable', 'origin_not_allowed', 'request_too_large'];
         const code = safeErrors.includes(data.error) ? data.error : (typeof data.error === 'string' && /^[a-z_]{3,60}$/.test(data.error) ? data.error : 'http_' + response.status + '_' + (response.headers.get('content-type')?.includes('application/json') ? 'unknown_json' : 'non_json'));
         registrationStatus = 'Registration check: ' + code + '.';
-        updateWallet();
+        // The QIMEM PAY wallet view is independent of player registration.
         return;
       }
       if (!data.ok || !data.player || !data.wallet) {
         registrationStatus = 'Registration check: unexpected_server_response.';
-        updateWallet();
+        // The QIMEM PAY wallet view is independent of player registration.
         return;
       }
       account = data;
-      updateGameCredit();
-      updateWallet();
+      // Wallet sync is handled by the QIMEM PAY integration.
+      // The QIMEM PAY wallet view is independent of player registration.
       window.dispatchEvent(new CustomEvent('kimem:player-ready', {detail: {playerId: data.player.id}}));
     } catch {
       registrationStatus = 'Registration check: network_or_connection_error.';
-      updateWallet();
+      // The QIMEM PAY wallet view is independent of player registration.
     }
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, {once:true});
