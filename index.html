@@ -185,6 +185,33 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 #lobby .game.keno .g-action{background:linear-gradient(100deg,#008d77,#10d6af,#007f70);border-color:#8af9df;color:white}
 @media(max-width:365px){#lobby .keno-drum{right:-12px;width:32%}#lobby .game.spin .wheel{border-width:7px}}
 </style>
+<style id="kimem-account-fullscreen-layout">
+/* Only Wallet, History and Profile fill the mobile viewport. */
+#bingo.bingo-redesign.kimem-account-fullscreen{
+ display:flex;flex-direction:column;
+ min-height:calc(100dvh - 95px);
+ padding-bottom:max(12px,env(safe-area-inset-bottom));
+}
+#bingo.kimem-account-fullscreen .bl-top,
+#bingo.kimem-account-fullscreen .bl-credit,
+#bingo.kimem-account-fullscreen .bl-note{flex-shrink:0}
+#bingo.kimem-account-fullscreen #kimemAccountPanel.visible{
+ display:flex;flex-direction:column;flex:1 0 auto;
+ margin:12px -2px 12px;
+ padding:22px 18px 24px;
+ min-height:calc(100dvh - 335px);
+ border:0;border-radius:0;
+ background:linear-gradient(180deg,#102541 0%,#0a1a33 44%,#071326 100%);
+ box-shadow:none;
+}
+#bingo.kimem-account-fullscreen #kimemAccountPanel h3{font-size:clamp(24px,6vw,31px);margin-bottom:22px}
+#bingo.kimem-account-fullscreen #kimemAccountPanel .account-row{padding:17px 0;font-size:14px}
+#bingo.kimem-account-fullscreen #kimemAccountPanel .account-status{margin-top:22px;padding:16px}
+#bingo.kimem-account-fullscreen .bl-bottom{flex-shrink:0;margin-top:auto}
+@media(max-height:700px){
+ #bingo.kimem-account-fullscreen #kimemAccountPanel.visible{min-height:calc(100dvh - 290px);padding-top:14px}
+}
+</style>
 <style id="kimem-account-panel-style">
 #kimemAccountPanel{display:none;margin:16px 0 88px;padding:19px;border:1px solid #28517d;border-radius:17px;background:linear-gradient(140deg,#122b4b,#08182e);color:#f4f7ff}
 #kimemAccountPanel.visible{display:block}#kimemAccountPanel h3{margin:0 0 12px;font-size:21px;color:#e8c37e}#kimemAccountPanel p{color:#a9b9d1;line-height:1.6;font-size:14px}#kimemAccountPanel .account-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #294361;font-size:13px}#kimemAccountPanel .account-row strong{overflow-wrap:anywhere;text-align:right}#kimemAccountPanel .account-status{margin-top:16px;padding:12px;border:1px solid #44658c;border-radius:10px;background:#10243e;color:#b9cce4;font-size:13px}
@@ -208,7 +235,7 @@ function bingoLobbyTab(name){
  const panel=document.getElementById('kimemAccountPanel');
  const rooms=document.querySelector('.bl-rooms');const arena=document.querySelector('.bl-arena');const actions=document.querySelector('.bl-actions');
  document.querySelectorAll('.bl-tab').forEach(b=>b.classList.toggle('active',b.textContent.trim()===name));
- const game=name==='Game';panel.classList.toggle('visible',!game);[rooms,arena,actions].forEach(el=>{if(el)el.style.display=game?'':'none'});
+ const game=name==='Game';document.getElementById('bingo')?.classList.toggle('kimem-account-fullscreen',!game);panel.classList.toggle('visible',!game);[rooms,arena,actions].forEach(el=>{if(el)el.style.display=game?'':'none'});
  document.getElementById('blNotice').classList.remove('visible');
  if(game){panel.innerHTML='';return}
  const safe=s=>String(s??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
