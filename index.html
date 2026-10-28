@@ -191,7 +191,7 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 </style>
 </head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div><span class="live"><i></i> TEST EDITION</span></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>4 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b> · TEST BUILD</footer></section><section class="screen bingo-redesign" id="bingo">
 <div class="bl-top"><button class="bl-back" onclick="showScreen('lobby')" aria-label="Back to games">‹</button><div class="bl-head"><small>QIMEM GAME ARENA</small><strong>QIMEM <em>BINGO</em></strong></div><div class="bl-live">LIVE</div></div>
-<div class="bl-credit"><div class="bl-credit-left"><span class="bl-wallet-icon">▣</span><div><small>YOUR GAME CREDIT</small><b>— ETB</b></div></div><span style="color:#879bb7">›</span></div>
+<div class="bl-credit"><div class="bl-credit-left"><span class="bl-wallet-icon">▣</span><div><small>YOUR GAME CREDIT</small><b id="qimemLobbyBalance">— ETB</b></div></div><span style="color:#879bb7">›</span></div>
 <div class="bl-arena"><small>PREMIUM LIVE ARENA</small><h2>Choose Your Game</h2><p>Choose a game mode below</p></div>
 <div class="bl-rooms">
 <article class="bl-room bl-blue"><div class="bl-patterns" aria-hidden="true"><span class="bl-pattern bl-horizontal" aria-hidden="true"><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span><span class="bl-pattern bl-vertical" aria-hidden="true"><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i></span><span class="bl-pattern bl-diagonal" aria-hidden="true"><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i></span><span class="bl-pattern bl-corners" aria-hidden="true"><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i><i class=""></i><i class=""></i><i class=""></i><i class="hit"></i></span></div><div class="bl-room-main"><div class="bl-ball bl-emblem" aria-hidden="true"><span class="bl-ball-core">10</span></div><div class="bl-room-info"><div class="bl-price">10 <small>ETB</small></div><small>ANY LINE</small></div></div><button class="bl-play" onclick="window.location.href='./KIMEM_BINGO_Game_Lobby.html?sync=1&v=20261021r2'">PLAY NOW ›</button></article>
@@ -239,6 +239,37 @@ function newBoard(){const el=document.getElementById('board');el.innerHTML='';co
   });
 })();
 </script><script defer src="./kimem-player-connect.js?v=b0a660d"></script><script>
+const qimemWalletOrigin='https://qimem-pay.mickeyas2411.workers.dev';
+let qimemBalanceFrame=null;
+function refreshQimemLobbyBalance(){
+ const tg=window.Telegram?.WebApp;
+ if(!tg?.initData)return;
+ if(!qimemBalanceFrame){
+  const frame=document.createElement('iframe');
+  frame.title='Secure wallet balance sync';
+  frame.setAttribute('aria-hidden','true');
+  frame.style.cssText='position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;border:0;left:-9999px';
+  frame.src=qimemWalletOrigin+'/customer/wallet';
+  document.body.appendChild(frame);
+  qimemBalanceFrame=frame;
+  frame.onload=()=>frame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},qimemWalletOrigin);
+ }else{
+  qimemBalanceFrame.contentWindow?.postMessage({type:'qimem-telegram-auth',initData:tg.initData},qimemWalletOrigin);
+ }
+}
+window.addEventListener('message',event=>{
+ if(event.origin!==qimemWalletOrigin||event.source!==qimemBalanceFrame?.contentWindow)return;
+ if(event.data?.type==='qimem-auth-ready'){refreshQimemLobbyBalance();return}
+ if(event.data?.type!=='qimem-wallet-balance')return;
+ const value=event.data.availableBalance;
+ if(typeof value!=='number'||!Number.isFinite(value)||value<0)return;
+ const amount=document.getElementById('qimemLobbyBalance');
+ if(amount)amount.textContent=value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshQimemLobbyBalance()});
+window.addEventListener('pageshow',refreshQimemLobbyBalance);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refreshQimemLobbyBalance);
+else refreshQimemLobbyBalance();
 function openQimemDeposit(){return openQimemPay('deposit')}
 function openQimemWithdraw(){return openQimemPay('withdraw')}
 function openQimemWallet(){return openQimemPay('wallet')}
@@ -265,7 +296,7 @@ function openQimemPay(mode){
   frame.onload=sendAuth;
   const onReady=event=>{if(event.origin===payOrigin&&event.source===frame.contentWindow&&event.data?.type==='qimem-auth-ready'){ready=true;clearLoading();sendAuth()}};
   window.addEventListener('message',onReady);
-  back.onclick=()=>{clearLoading();window.removeEventListener('message',onReady);overlay.remove()};
+  back.onclick=()=>{clearLoading();window.removeEventListener('message',onReady);overlay.remove();refreshQimemLobbyBalance()};
   overlay.append(header,loading,frame);document.body.append(overlay);openFrame();
 
  }
