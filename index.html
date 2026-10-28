@@ -216,6 +216,42 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 #kimemAccountPanel{display:none;margin:16px 0 88px;padding:19px;border:1px solid #28517d;border-radius:17px;background:linear-gradient(140deg,#122b4b,#08182e);color:#f4f7ff}
 #kimemAccountPanel.visible{display:block}#kimemAccountPanel h3{margin:0 0 12px;font-size:21px;color:#e8c37e}#kimemAccountPanel p{color:#a9b9d1;line-height:1.6;font-size:14px}#kimemAccountPanel .account-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #294361;font-size:13px}#kimemAccountPanel .account-row strong{overflow-wrap:anywhere;text-align:right}#kimemAccountPanel .account-status{margin-top:16px;padding:12px;border:1px solid #44658c;border-radius:10px;background:#10243e;color:#b9cce4;font-size:13px}
 </style>
+<style id="kimem-account-viewport-fix">
+/* Account tabs only: keep the Bingo game tab and all existing data wiring intact. */
+#bingo.bingo-redesign.kimem-account-fullscreen.active{
+ display:flex;
+ flex-direction:column;
+ box-sizing:border-box;
+ height:calc(100dvh - 96px);
+ min-height:calc(100dvh - 96px);
+ padding-bottom:max(10px,env(safe-area-inset-bottom));
+}
+#bingo.kimem-account-fullscreen .bl-top,
+#bingo.kimem-account-fullscreen .bl-credit,
+#bingo.kimem-account-fullscreen .bl-note{flex:0 0 auto}
+#bingo.kimem-account-fullscreen #kimemAccountPanel.visible{
+ display:flex;
+ flex-direction:column;
+ flex:1 1 0%;
+ box-sizing:border-box;
+ min-height:0;
+ margin:12px 0 10px;
+ padding:22px 18px 20px;
+ overflow-y:auto;
+ -webkit-overflow-scrolling:touch;
+ border:1px solid #28517d;
+ border-radius:17px;
+ background:linear-gradient(180deg,#122b4b 0%,#0c203b 50%,#08182e 100%);
+}
+#bingo.kimem-account-fullscreen .bl-bottom{
+ position:relative;
+ flex:0 0 auto;
+ margin-top:0;
+}
+@media(max-height:650px){
+ #bingo.kimem-account-fullscreen #kimemAccountPanel.visible{padding:14px 16px}
+}
+</style>
 </head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div><span class="live"><i></i> TEST EDITION</span></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>4 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b> · TEST BUILD</footer></section><section class="screen bingo-redesign" id="bingo">
 <div class="bl-top"><button class="bl-back" onclick="showScreen('lobby')" aria-label="Back to games">‹</button><div class="bl-head"><small>QIMEM GAME ARENA</small><strong>QIMEM <em>BINGO</em></strong></div><div class="bl-live">LIVE</div></div>
 <div class="bl-credit"><div class="bl-credit-left"><span class="bl-wallet-icon">▣</span><div><small>YOUR GAME CREDIT</small><b id="qimemLobbyBalance">— ETB</b></div></div><span style="color:#879bb7">›</span></div>
