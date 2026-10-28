@@ -121,7 +121,45 @@ const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
-function toggleCard(id){const index=selectedCards.indexOf(id);if(index!==-1){selectedCards.splice(index,1);if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;triggerToast('Unmarked Card #'+id)}else{if(selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}selectedCards.push(id);activeCard=id;triggerToast('Selected Card #'+id)}updateUI()}
+let kimemCardTransactionPending=false;
+async function toggleCard(id){
+ if(kimemCardTransactionPending){triggerToast('Please wait for confirmation');return}
+ const tg=window.Telegram?.WebApp;
+ if(!tg?.initData){triggerToast('Open Bingo from Telegram to purchase cards');return}
+ const round=kimemSyncRound;
+ if(!round||round.stake!=='10'||round.phase!=='lobby'||Date.now()+kimemSyncClockOffset>=round.liveStartsAt-5000){
+  triggerToast('Card selection is closed for this round');return
+ }
+ const index=selectedCards.indexOf(id),action=index===-1?'select':'unselect';
+ if(action==='select'&&selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}
+ if(action==='select'&&(kimemVerifiedLobbyBalance===null||kimemVerifiedLobbyBalance<10)){
+  triggerToast('Insufficient balance. Deposit to buy a card.');return
+ }
+ kimemCardTransactionPending=true;
+ try{
+  const response=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/bingo10/card',{
+   method:'POST',headers:{'content-type':'application/json'},
+   body:JSON.stringify({initData:tg.initData,roundCode:round.gameId,card:id,action}),cache:'no-store'
+  });
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok||!result.ok)throw Error(result.error||'Payment unavailable');
+  if(result.roundCode!==round.gameId)throw Error('Round changed; refresh');
+  kimemVerifiedLobbyBalance=Number(result.balance);
+  const label=document.getElementById('lobby-balance');
+  if(label)label.textContent=kimemVerifiedLobbyBalance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if(action==='unselect'){
+   if(index!==-1)selectedCards.splice(index,1);
+   if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;
+   triggerToast('10 ETB returned to wallet');
+  }else{
+   if(!selectedCards.includes(id))selectedCards.push(id);
+   activeCard=id;
+   triggerToast('Card #'+id+' purchased for 10 ETB');
+  }
+  updateUI();
+ }catch(error){triggerToast(String(error?.message||'Transaction failed'))}
+ finally{kimemCardTransactionPending=false}
+}
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
