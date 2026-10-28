@@ -199,7 +199,7 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 <article class="bl-room bl-gold"><div class="bl-patterns" aria-hidden="true"><span class="bl-pattern bl-full" aria-hidden="true"><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i><i class="hit"></i></span></div><div class="bl-room-main"><div class="bl-ball bl-emblem" aria-hidden="true"><span class="bl-ball-core">75</span></div><div class="bl-room-info"><div class="bl-gold-title">ሙሉ ዝግ</div></div></div><button class="bl-play" onclick="window.location.href='./KIMEM_BINGO_75_Lobby.html'">PLAY NOW ›</button></article>
 </div>
 <div class="bl-actions"><button class="bl-deposit" onclick="openQimemDeposit()">↓ DEPOSIT</button><button class="bl-withdraw" onclick="openQimemWithdraw()">↑ WITHDRAW</button></div>
-<p class="bl-note">UI SAMPLE · No real balance or transactions</p><div id="blNotice" class="bl-message" role="status"></div>
+<p class="bl-note">QIMEM PAY · Verified Wallet</p><div id="blNotice" class="bl-message" role="status"></div>
 <div id="kimemAccountPanel" aria-live="polite"></div><nav class="bl-bottom" aria-label="Bingo navigation"><button class="bl-tab active" onclick="bingoLobbyTab('Game')"><span>🎮</span>Game</button><button class="bl-tab" onclick="bingoLobbyTab('History')"><span>◷</span>History</button><button class="bl-tab" onclick="bingoLobbyTab('Wallet')"><span>▣</span>Wallet</button><button class="bl-tab" onclick="bingoLobbyTab('Profile')"><span>♙</span>Profile</button></nav>
 </section><section class="screen" id="bingoGame"><div class="bingo-top"><button class="back" onclick="showScreen('bingo')">← Bingo Rooms</button><div class="eyebrow">ROOM 42 · DEMO</div></div><div class="panel game-panel"><div class="eyebrow">QIMEM BINGO • DEMO</div><h2>Your Bingo Card</h2><p>Tap numbers to mark them. This is an interactive practice card, not a real-money game.</p><div class="letters"><span>B</span><span>I</span><span>N</span><span>G</span><span>O</span></div><div class="board" id="board"></div><button class="g-action" onclick="newBoard()">NEW DEMO CARD ↻</button></div></section><section class="screen" id="sport"><button class="back" onclick="showScreen('lobby')">← Game Lobby</button><div class="panel"><div class="eyebrow">QIMEM SPORTS</div><h2>Sport Betting</h2><p>Coming soon. The odds displayed in the lobby are visual examples only, not live matches or betting offers.</p></div></section><section class="screen" id="spin"><button class="back" onclick="showScreen('lobby')">← Game Lobby</button><div class="panel"><div class="eyebrow">QIMEM LUCKY</div><h2>Spin Games</h2><p>Coming soon. This section will contain the different spin games, each with its own game screen.</p></div></section><section class="screen" id="keno"><button class="back" onclick="showScreen('lobby')">← Game Lobby</button><div class="panel"><div class="eyebrow">QIMEM ORIGINAL</div><h2>Keno</h2><p>Coming soon. The Keno balls and number grid in the lobby are a visual preview.</p></div></section></main><div class="toast" id="toast"></div><script>
 const tg=window.Telegram?.WebApp;try{tg?.ready();tg?.expand();const u=tg?.initDataUnsafe?.user;if(u){const name=[u.first_name,u.last_name].filter(Boolean).join(' ')||u.username||'Player';document.getElementById('greeting').textContent='Welcome, '+name;document.getElementById('username').textContent=u.username?'@'+u.username:name;document.getElementById('avatar').textContent=(u.first_name||u.username||'P').charAt(0).toUpperCase()}}catch(e){}// Display only: Telegram initDataUnsafe is not authentication. Validate initData server-side before any account actions.
@@ -216,10 +216,11 @@ function bingoLobbyTab(name){
  if(name==='Profile'){
   panel.innerHTML='<h3>Profile</h3>'+(user?'<div class="account-row"><span>Name</span><strong>'+safe([user.first_name,user.last_name].filter(Boolean).join(' '))+'</strong></div><div class="account-row"><span>Telegram username</span><strong>'+safe(user.username?'@'+user.username:'Not set')+'</strong></div><div class="account-row"><span>Telegram ID</span><strong>'+safe(user.id)+'</strong></div>':'<p>Open this Mini App in Telegram to see your account details.</p>')+'<div class="account-status">Telegram profile information is shown for identification only. Server verification is required before account or payment actions.</div>';
  }else if(name==='Wallet'){
-  panel.innerHTML='<h3>Wallet</h3><p>Your verified account balance will appear here after the server wallet is connected.</p><div class="account-status">No verified balance available. Deposits, withdrawals and purchases are not enabled.</div>';
+  panel.innerHTML='<h3>Wallet</h3><p id="qimemTabWalletBalance">Loading verified QIMEM PAY balance…</p><div class="account-status" id="qimemTabWalletHeld">Connecting securely to QIMEM PAY…</div>';
  }else if(name==='History'){
-  panel.innerHTML='<h3>History</h3><p>Game and transaction records will appear here when they are retrieved from your verified account.</p><div class="account-status">No server-verified history is available yet. No sample transactions are shown.</div>';
+  panel.innerHTML='<h3>History</h3><p>Verified QIMEM PAY transactions</p><div id="qimemTabTransactions" class="account-status">Loading transaction history…</div>';
  }
+ if(name==='Wallet'||name==='History'){renderQimemLobbyWallet();refreshQimemLobbyBalance()}
 }
 function newBoard(){const el=document.getElementById('board');el.innerHTML='';const columns=Array.from({length:5},(_,c)=>{let a=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,5)});for(let r=0;r<5;r++)for(let c=0;c<5;c++){const b=document.createElement('button');b.className='cell';b.textContent=r===2&&c===2?'★':columns[c][r];if(r===2&&c===2)b.classList.add('marked');b.onclick=()=>{b.classList.toggle('marked');try{tg?.HapticFeedback?.selectionChanged()}catch(e){}};el.appendChild(b)}}const mini=document.getElementById('miniTicket');'BINGO'.split('').forEach(x=>{let s=document.createElement('span');s.textContent=x;mini.appendChild(s)});for(let i=0;i<25;i++){let s=document.createElement('span');s.textContent=i===12?'★':(i*7+11)%75+1;mini.appendChild(s)}const kb=document.getElementById('kenoBoard');for(let i=1;i<=40;i++){let s=document.createElement('span');s.textContent=i;if([5,11,24,37].includes(i))s.className='hit';kb.appendChild(s)}newBoard();
 </script><script id="kimem-main-lobby-amharic-greeting">
@@ -238,9 +239,35 @@ function newBoard(){const el=document.getElementById('board');el.innerHTML='';co
     if(el)new MutationObserver(translateGreeting).observe(el,{childList:true,characterData:true,subtree:true});
   });
 })();
-</script><script defer src="./kimem-player-connect.js?v=b0a660d"></script><script>
+</script><script defer src="./kimem-player-connect.js?v=05a2bd0"></script><script>
 const qimemWalletOrigin='https://qimem-pay.mickeyas2411.workers.dev';
 let qimemBalanceFrame=null;
+let qimemVerifiedWallet=null;
+const qimemCurrency=n=>Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+function renderQimemLobbyWallet(){
+ const panel=document.getElementById('kimemAccountPanel');
+ if(!panel)return;
+ const balance=panel.querySelector('#qimemTabWalletBalance');
+ if(balance&&qimemVerifiedWallet)balance.textContent='Available Balance: '+qimemCurrency(qimemVerifiedWallet.availableBalance);
+ const held=panel.querySelector('#qimemTabWalletHeld');
+ if(held&&qimemVerifiedWallet)held.textContent='Held: '+qimemCurrency(qimemVerifiedWallet.heldBalance);
+ const list=panel.querySelector('#qimemTabTransactions');
+ if(!list||!qimemVerifiedWallet)return;
+ list.replaceChildren();
+ const history=qimemVerifiedWallet.history;
+ if(!history.length){list.textContent='No transactions yet.';return}
+ for(const item of history){
+  const line=document.createElement('div');
+  line.className='account-row';
+  const what=document.createElement('span');
+  what.textContent=String(item.entry_type||'Transaction').replaceAll('_',' ');
+  const amount=document.createElement('strong');
+  amount.textContent=qimemCurrency(Number(item.amount_birr)||0);
+  const when=document.createElement('small');
+  when.textContent=item.created_at&&Number.isFinite(Date.parse(item.created_at))?new Date(item.created_at).toLocaleString():'';
+  line.append(what,amount,when);list.append(line);
+ }
+}
 function refreshQimemLobbyBalance(){
  const tg=window.Telegram?.WebApp;
  if(!tg?.initData)return;
@@ -263,8 +290,10 @@ window.addEventListener('message',event=>{
  if(event.data?.type!=='qimem-wallet-balance')return;
  const value=event.data.availableBalance;
  if(typeof value!=='number'||!Number.isFinite(value)||value<0)return;
+ qimemVerifiedWallet={availableBalance:value,heldBalance:Number(event.data.heldBalance)||0,history:Array.isArray(event.data.history)?event.data.history:[]};
  const amount=document.getElementById('qimemLobbyBalance');
- if(amount)amount.textContent=value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+ if(amount)amount.textContent=qimemCurrency(value);
+ renderQimemLobbyWallet();
 });
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshQimemLobbyBalance()});
 window.addEventListener('pageshow',refreshQimemLobbyBalance);
