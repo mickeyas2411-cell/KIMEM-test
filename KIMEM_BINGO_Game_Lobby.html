@@ -121,6 +121,26 @@ const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+let kimemCardStateRound=null;
+async function syncPaidBingo10Cards(roundCode){
+ const tg=window.Telegram?.WebApp;
+ if(!tg?.initData||!/^(AA)[0-9]{6}$/.test(roundCode))return;
+ try{
+  const response=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/bingo10/card',{
+   method:'POST',headers:{'content-type':'application/json'},cache:'no-store',
+   body:JSON.stringify({initData:tg.initData,roundCode,action:'state'})
+  });
+  const result=await response.json();
+  if(!response.ok||!result.ok||result.roundCode!==kimemSyncRound?.gameId)return;
+  if(kimemCardTransactionPending)return;
+  selectedCards.splice(0,selectedCards.length,...result.cards.filter(x=>Number.isInteger(x)&&x>0&&x<=1000).slice(0,3));
+  activeCard=selectedCards[selectedCards.length-1]||null;
+  kimemVerifiedLobbyBalance=Number(result.balance);
+  const label=document.getElementById('lobby-balance');
+  if(label)label.textContent=kimemVerifiedLobbyBalance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  updateUI();
+ }catch{}
+}
 let kimemCardTransactionPending=false;
 async function toggleCard(id){
  if(kimemCardTransactionPending){triggerToast('Please wait for confirmation');return}
@@ -251,6 +271,7 @@ async function kimemSyncPoll(){
   if(playersNode)playersNode.textContent=verifiedStats?r.cardsSold.toLocaleString('en-US'):'—';
   if(salesNode)salesNode.textContent=verifiedStats?r.totalSales.toLocaleString('en-US')+' ETB':'— ETB';
   kimemSyncRound=r;
+  if(kimemCardStateRound!==r.gameId){kimemCardStateRound=r.gameId;selectedCards.length=0;activeCard=null;updateUI();syncPaidBingo10Cards(r.gameId)}
   kimemSyncGameId(r.gameId);
   kimemSyncRender();
  }catch(e){
