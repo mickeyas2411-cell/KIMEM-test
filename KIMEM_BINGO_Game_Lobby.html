@@ -259,26 +259,38 @@ function syncTelegramViewport(){
  document.documentElement.style.setProperty('--kimem-bottom',Math.max(6,safeBottom)+'px');
 }
 
-let kimemVerifiedLobbyBalance = null;
-async function refreshLobbyBalance(){
+let kimemVerifiedLobbyBalance=null;
+let qimemBingo10WalletFrame=null;
+const qimemBingo10WalletOrigin='https://qimem-pay.mickeyas2411.workers.dev';
+function refreshLobbyBalance(){
  const label=document.getElementById('lobby-balance');
- if(!label)return;
  const tg=window.Telegram?.WebApp;
- if(!tg?.initData){label.textContent='—';return;}
- try{
-  const response=await fetch('https://kimem-test-backend.mickeyas2411.workers.dev/api/player/register',{
-   method:'POST',headers:{'content-type':'application/json'},
-   body:JSON.stringify({initData:tg.initData}),cache:'no-store'
-  });
-  if(!response.ok)throw new Error('Wallet verification unavailable');
-  const data=await response.json();
-  const amount=data?.wallet?.availableBalance;
-  if(!data?.ok||!data?.player||typeof amount!=='string'||!/^\d+(?:\.\d{1,2})?$/.test(amount))
-   throw new Error('Invalid verified wallet balance');
-  kimemVerifiedLobbyBalance=Number(amount).toFixed(2);
-  label.textContent=kimemVerifiedLobbyBalance;
- }catch(e){kimemVerifiedLobbyBalance=null;label.textContent='—';}
+ if(!label||!tg?.initData){if(label)label.textContent='—';return}
+ const send=()=>qimemBingo10WalletFrame?.contentWindow?.postMessage(
+  {type:'qimem-telegram-auth',initData:tg.initData},qimemBingo10WalletOrigin);
+ if(!qimemBingo10WalletFrame){
+  const frame=document.createElement('iframe');
+  frame.title='Verified QIMEM PAY balance';
+  frame.setAttribute('aria-hidden','true');
+  frame.style.cssText='position:absolute;left:-9999px;width:1px;height:1px;border:0;opacity:0;pointer-events:none';
+  frame.onload=send;
+  frame.src=qimemBingo10WalletOrigin+'/customer/wallet';
+  document.body.appendChild(frame);
+  qimemBingo10WalletFrame=frame;
+ }else send();
 }
+window.addEventListener('message',event=>{
+ if(event.origin!==qimemBingo10WalletOrigin||event.source!==qimemBingo10WalletFrame?.contentWindow)return;
+ if(event.data?.type==='qimem-auth-ready'){refreshLobbyBalance();return}
+ if(event.data?.type!=='qimem-wallet-balance')return;
+ const amount=event.data.availableBalance;
+ if(typeof amount!=='number'||!Number.isFinite(amount)||amount<0)return;
+ kimemVerifiedLobbyBalance=Number(amount.toFixed(2));
+ const label=document.getElementById('lobby-balance');
+ if(label)label.textContent=kimemVerifiedLobbyBalance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLobbyBalance()});
+window.addEventListener('pageshow',refreshLobbyBalance);
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
  const tg=window.Telegram?.WebApp;
