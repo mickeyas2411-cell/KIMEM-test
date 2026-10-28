@@ -121,7 +121,44 @@ const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
-function toggleCard(id){const index=selectedCards.indexOf(id);if(index!==-1){selectedCards.splice(index,1);if(activeCard===id)activeCard=selectedCards[selectedCards.length-1]||null;triggerToast('Unmarked Card #'+id)}else{if(selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}selectedCards.push(id);activeCard=id;triggerToast('Selected Card #'+id)}updateUI()}
+let kimemCardRequest=null;
+function toggleCard(id){
+ if(kimemCardRequest){triggerToast('Please finish the previous card request');return}
+ const round=kimemSyncRound;
+ if(!round||round.phase!=='lobby'||!Number.isSafeInteger(Number(round.liveStartsAt))||Date.now()+kimemSyncClockOffset>=Number(round.liveStartsAt)-1500){triggerToast('Card selection is closed or connecting');return}
+ const selected=selectedCards.includes(id),action=selected?'unselect':'select';
+ if(!selected&&selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}
+ if(!selected&&kimemVerifiedLobbyBalance!==null&&kimemVerifiedLobbyBalance<10){triggerToast('Insufficient wallet balance');return}
+ const tg=window.Telegram?.WebApp;
+ if(!tg?.initData||!qimemBingo10WalletFrame?.contentWindow){triggerToast('Connecting verified wallet. Try again');refreshLobbyBalance();return}
+ const requestId='b10-'+Date.now()+'-'+id;
+ kimemCardRequest={requestId,id,action,roundCode:round.gameId};
+ qimemBingo10WalletFrame.contentWindow.postMessage({type:'qimem-bingo10-card-change',requestId,card:id,action,roundCode:round.gameId},qimemBingo10WalletOrigin);
+ triggerToast('Processing card #'+id+'…');
+ setTimeout(()=>{if(kimemCardRequest?.requestId===requestId){kimemCardRequest=null;triggerToast('Card request timed out. Refresh to verify before retrying')}},15000);
+}
+window.addEventListener('message',event=>{
+ if(event.origin!==qimemBingo10WalletOrigin||event.source!==qimemBingo10WalletFrame?.contentWindow||event.data?.type!=='qimem-bingo10-card-result')return;
+ const req=kimemCardRequest;
+ if(!req||req.requestId!==event.data.requestId)return;
+ kimemCardRequest=null;
+ if(!event.data.ok){triggerToast(String(event.data.error||'Card request failed').replaceAll('_',' '));return}
+ if(req.action==='select'){
+  if(!selectedCards.includes(req.id))selectedCards.push(req.id);
+  activeCard=req.id;
+  triggerToast('10 ETB charged · Card #'+req.id);
+ }else{
+  const i=selectedCards.indexOf(req.id);if(i>=0)selectedCards.splice(i,1);
+  if(activeCard===req.id)activeCard=selectedCards[selectedCards.length-1]||null;
+  triggerToast('10 ETB refunded · Card #'+req.id);
+ }
+ if(typeof event.data.balance==='number'&&Number.isFinite(event.data.balance)){
+  kimemVerifiedLobbyBalance=event.data.balance;
+  const balanceNode=document.getElementById('lobby-balance');
+  if(balanceNode)balanceNode.textContent=event.data.balance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+ }
+ updateUI();
+});
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
