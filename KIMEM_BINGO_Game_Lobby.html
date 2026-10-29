@@ -203,10 +203,15 @@ function kimemSyncRender(){
   // A returning player must not replay the round they just completed.
   // Release the guard only during a NEW authoritative lobby phase.
   const lastPlayed=kimemPreviousLiveRound||sessionStorage.getItem('kimemLastCompletedRound10');
+  const laterRound=lastPlayed!==null&&/^\d+$/.test(String(lastPlayed))&&
+    Number.isSafeInteger(r.roundNumber)&&r.roundNumber>Number(lastPlayed);
   const newLobby=r.phase==='lobby'&&now<r.liveStartsAt&&
-    (lastPlayed===null||String(r.roundNumber)!==lastPlayed);
-  if(!newLobby){
-   $('countdown').textContent='NEXT';
+    (lastPlayed===null||laterRound);
+  const laterLive=laterRound&&r.phase==='live';
+  if(!newLobby&&!laterLive){
+   // The returned round may still be drawing all 75 balls: show the
+   // real live state rather than suggesting NEXT is a frozen timer.
+   $('countdown').textContent=r.phase==='live'?'LIVE':'NEXT';
    resetCountdownScene();
    return;
   }
