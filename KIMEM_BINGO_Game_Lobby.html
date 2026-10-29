@@ -270,9 +270,8 @@ async function kimemSyncPoll(){
   kimemSyncClockOffset=payload.serverTime-Date.now();
   const playersNode=document.getElementById('kimem-verified-players');
   const salesNode=document.getElementById('kimem-verified-sales');
-  const verifiedStats=Number.isSafeInteger(r.cardsSold)&&r.cardsSold>=0&&Number.isSafeInteger(r.totalSales)&&r.totalSales>=0&&r.players===r.cardsSold&&r.totalSales===r.cardsSold*Number(r.stake);
-  if(playersNode)playersNode.textContent=verifiedStats?r.cardsSold.toLocaleString('en-US'):'—';
-  if(salesNode)salesNode.textContent=verifiedStats?r.totalSales.toLocaleString('en-US')+' ETB':'— ETB';
+  // Financial figures are supplied only by the verified purchase endpoint.
+  // Do not overwrite them with unrelated draw-service counters.
   kimemRefreshVerifiedMoney(r.gameId);
   kimemSyncRound=r;
   kimemSyncGameId(r.gameId);
