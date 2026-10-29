@@ -720,11 +720,17 @@ function kimemFinishGame(ids){
    const candidateLines=[...g,...Array.from({length:5},(_,c)=>g.map(row=>row[c])),[0,1,2,3,4].map(i=>g[i][i]),[0,1,2,3,4].map(i=>g[i][4-i]),[g[0][0],g[0][4],g[4][0],g[4][4]]];
    const winningNumbers=new Set(candidateLines.filter(line=>line.every(isHit)).flat());
    const grid=document.createElement('div');grid.className='play-numbers';
-   cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';grid.append(cell)}));temp.append(grid);host.append(temp);
+   cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';if(n&&n===drawn[drawn.length-1]&&winningNumbers.has(n)){cell.classList.add('kimem-final-winning-ball')}grid.append(cell)}));temp.append(grid);host.append(temp);
   }
  }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
- const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
- document.getElementById('kimem-winner-user').textContent=username?'@'+username:'Demo player';
+ const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
+ const displayName=tgUser?.username?'@'+tgUser.username:[tgUser?.first_name,tgUser?.last_name].filter(Boolean).join(' ');
+ document.getElementById('kimem-winner-user').textContent=displayName||'Player';
+ const gameId=[...document.querySelectorAll('.stat-label')].find(e=>e.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value')?.textContent?.replace(/\\s/g,'').trim();
+ document.getElementById('kimem-winner-round').textContent='GAME ID '+(/^AA[0-9]{6}$/.test(gameId||'')?gameId:'—');
+ // No personal prize or jackpot is displayed until a verified payout exists.
+ document.getElementById('kimem-winner-prize').style.display='none';
+ document.getElementById('kimem-winner-jackpot').style.display='none';
  overlay.classList.add('visible');
  // Independent return guard: keeps navigation working even if the result timer is interrupted.
  if(!window.kimemWinnerReturnGuard){
@@ -1044,7 +1050,7 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requ
  },200);
  digitalTimer=requestAnimationFrame(digitalTick);
 })();
-</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px">GAME ID 00123 • <span id="kimem-winner-user"></span></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div><style id="kimem-two-controls-precise-fix-v10">
+</script><div id="kimem-winner-overlay" role="dialog" aria-modal="true"><div style="font-size:24px;font-weight:900;color:#f5cb67">ROUND COMPLETE</div><div style="font-size:12px;margin-top:6px"><span id="kimem-winner-round">GAME ID —</span> • <span id="kimem-winner-user"></span></div><div id="kimem-winner-prize" style="display:none;color:#f5cb67;font-size:19px;font-weight:900;margin:5px 0"></div><div id="kimem-winner-jackpot" style="display:none;color:#f5cb67;font-size:23px;font-weight:900;margin:5px 0"></div><div id="kimem-winner-card"></div><div style="font-size:12px;color:#a9c7f7">RETURNING TO GAME LOBBY IN</div><div id="kimem-winner-timer">7</div></div><style id="kimem-two-controls-precise-fix-v10">
 @media(max-width:699px){
 #live-main #kimem-cards-mount .cards-head{
 display:grid!important;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr)!important;
@@ -1245,4 +1251,4 @@ async function kimemRefreshVerifiedMoney(roundCode){
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',begin);
  else begin();
 })();
-</script></body></html>
+</script><style id="kimem-winner-final-ball-only">@keyframes kimemLastWinPulse{0%,100%{filter:brightness(1);box-shadow:0 0 9px #ffd36a88}50%{filter:brightness(1.38);box-shadow:0 0 19px #ffe28e}}#kimem-winner-overlay .kimem-final-winning-ball{animation:kimemLastWinPulse 1.1s ease-in-out infinite!important;outline:2px solid #fff3bd!important;outline-offset:-2px}</style></body></html>
