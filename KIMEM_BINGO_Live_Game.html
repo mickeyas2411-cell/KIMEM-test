@@ -654,6 +654,19 @@ function kimemSmallNotice(message){
  clearTimeout(window.kimemNoticeTimeout);
  window.kimemNoticeTimeout=setTimeout(()=>{box.style.setProperty('display','none','important')},2000);
 }
+// Restore the existing KIMEM countdown sound used in the Bingo lobby, for the 7-second result screen.
+const kimemResultCountdownAudio=new Audio('https://good-bingo-telegram.floot.app/_cdn/static/23b33aa8-da40-4604-b45f-8a2cf1b2a7c4-qimem-countdown-final.wav');
+kimemResultCountdownAudio.preload='auto';
+kimemResultCountdownAudio.volume=.78;
+document.addEventListener('pointerdown',()=>{try{kimemResultCountdownAudio.load()}catch(e){}},{once:true});
+function kimemPlayResultCountdown(){
+ try{
+  kimemResultCountdownAudio.pause();
+  kimemResultCountdownAudio.currentTime=0;
+  const play=kimemResultCountdownAudio.play();
+  if(play&&play.catch)play.catch(()=>{});
+ }catch(e){}
+}
 const kimemBingoWinSound=new Audio(new URL('./kimem-bingo-win.mp3',location.href).href);
 const kimemBingoWrongSound=new Audio(new URL('./kimem-bingo-wrong.wav',location.href).href);
 kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
@@ -666,7 +679,7 @@ function claimBingo(){
 }
 let kimemFinished=false,kimemReturnTimer=null;
 let kimemPendingFinish=null;
-function kimemFinishAfterBall(ids){
+function kimemFinishAfterBall(ids,afterCallDelayMs=1000){
  if(kimemFinished||kimemPendingFinish!==null)return;
  running=false;
  kimemPendingFinish=ids;
@@ -693,7 +706,7 @@ function kimemFinishAfterBall(ids){
  const readyCheck=setInterval(()=>{
   if((audioDone&&visualDone)||Date.now()-started>=12000){
    clearInterval(readyCheck);clearInterval(audioCheck);clearInterval(visualCheck);
-   setTimeout(finish,1000);
+   setTimeout(finish,afterCallDelayMs);
   }
  },50);
 }
@@ -787,6 +800,7 @@ function kimemFinishGame(ids){
  overlay.style.setProperty('inset','0','important');
  overlay.style.setProperty('z-index','10000','important');
  let left=7;document.getElementById('kimem-winner-timer').textContent=left;
+ kimemPlayResultCountdown();
  const returnToLobby=()=>{window.location.href=new URL('./KIMEM_BINGO_Game_Lobby.html?sync=1&returned=1&v=20261021r2',document.baseURI).href;};
  const deadline=Date.now()+7000;
  clearInterval(kimemReturnTimer);
@@ -1311,7 +1325,7 @@ async function kimemRefreshVerifiedMoney(roundCode){
    if(r.phase==='finished'){
     try{sessionStorage.setItem('kimemLastCompletedRound10',String(r.roundNumber))}catch(e){}
     $('draw-status').textContent='ROUND FINISHED';
-    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+    if(!finished){finished=true;kimemFinishAfterBall(Array.isArray(r.winners)?r.winners:[],0)}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
@@ -1345,4 +1359,18 @@ async function kimemRefreshVerifiedMoney(roundCode){
 #kimem-winner-overlay:not(.kimem-multi-winners) .kimem-winner-identity{display:none}
 #kimem-winner-overlay #kimem-winner-card{scroll-behavior:smooth;touch-action:pan-y}
 @media(max-width:380px){#kimem-winner-overlay .kimem-winner-amount{font-size:11px}}
+</style><style id="kimem-winner-name-visibility-only">
+/* Larger verified Telegram winner names; keep approved winner card geometry intact. */
+#kimem-winner-overlay .kimem-result-meta{width:100%;text-align:center;line-height:1.35!important}
+#kimem-winner-overlay #kimem-winner-user{
+ display:block!important;width:100%;max-width:100%;margin:7px auto 0;
+ font-size:clamp(19px,5.3vw,27px)!important;line-height:1.15!important;
+ font-weight:900!important;letter-spacing:.1px;color:#ffdc77!important;
+ overflow-wrap:anywhere;word-break:break-word;text-shadow:0 2px 12px #a16d2370;
+}
+#kimem-winner-overlay.kimem-multi-winners .kimem-winner-person{
+ font-size:clamp(14px,4vw,18px)!important;line-height:1.2!important;
+ font-weight:900!important;color:#ffda78!important;
+ text-overflow:clip;white-space:normal;overflow-wrap:anywhere;
+}
 </style></body></html>
