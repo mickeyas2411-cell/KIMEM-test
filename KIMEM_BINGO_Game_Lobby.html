@@ -192,9 +192,9 @@ function kimemSyncGameId(gameId){
 }
 let kimemAwaitNextLobby=new URLSearchParams(location.search).get('returned')==='1';
 // A completed round must stay closed even after navigating away and back.
-try{if(sessionStorage.getItem('kimemLastLiveRound10'))kimemAwaitNextLobby=true}catch(e){}
+try{if(sessionStorage.getItem('kimemLastCompletedRound10'))kimemAwaitNextLobby=true}catch(e){}
 let kimemPreviousLiveRound=null;
-if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimemLastLiveRound10')}catch(e){}}
+if(kimemAwaitNextLobby){try{kimemPreviousLiveRound=sessionStorage.getItem('kimemLastCompletedRound10')}catch(e){}}
 function kimemSyncRender(){
  const r=kimemSyncRound;
  if(!r)return;
@@ -202,7 +202,7 @@ function kimemSyncRender(){
  if(kimemAwaitNextLobby){
   // A returning player must not replay the round they just completed.
   // Release the guard only during a NEW authoritative lobby phase.
-  const lastPlayed=kimemPreviousLiveRound||sessionStorage.getItem('kimemLastLiveRound10');
+  const lastPlayed=kimemPreviousLiveRound||sessionStorage.getItem('kimemLastCompletedRound10');
   const newLobby=r.phase==='lobby'&&now<r.liveStartsAt&&
     (lastPlayed===null||String(r.roundNumber)!==lastPlayed);
   if(!newLobby){
@@ -213,7 +213,7 @@ function kimemSyncRender(){
   kimemAwaitNextLobby=false;
   kimemPreviousLiveRound=null;
   kimemSyncLastSecond=null;
-  try{sessionStorage.removeItem('kimemLastLiveRound10')}catch(e){}
+  try{sessionStorage.removeItem('kimemLastCompletedRound10')}catch(e){}
  }
  if(r.phase==='finished'){$('countdown').textContent='NEXT';resetCountdownScene();return;}
  if(r.phase==='lobby'&&now<r.liveStartsAt){
