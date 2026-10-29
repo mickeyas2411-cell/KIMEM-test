@@ -1238,6 +1238,16 @@ async function kimemRefreshVerifiedMoney(roundCode){
   const sales=document.getElementById('kimem-verified-sales');
   if(player)player.textContent=d.players.toLocaleString('en-US');
   if(sales)sales.textContent=d.derash.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+  // A verified zero-card round cannot contain purchased player cards.
+  // Clear any stale cards left by earlier Telegram navigation.
+  if(d.cardsSold===0&&selected.length&&
+     /^AA[0-9]{6}$/.test(roundCode)&&
+     activeRound!==null&&roundCode==='AA'+String(activeRound).padStart(6,'0')){
+   selected=[];
+   manualMarks={};
+   try{sessionStorage.removeItem('kimemSelectedCards')}catch(e){}
+   cards();
+  }
   const funds=d.funds;
   if(funds&&['daily','weekly','jackpot'].every(k=>typeof funds[k]==='number'&&Number.isFinite(funds[k]))){
    const buttons=[...document.querySelectorAll('button')];
