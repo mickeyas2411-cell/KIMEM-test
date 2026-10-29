@@ -726,7 +726,7 @@ function kimemFinishGame(ids){
  const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
  const displayName=tgUser?.username?'@'+tgUser.username:[tgUser?.first_name,tgUser?.last_name].filter(Boolean).join(' ');
  document.getElementById('kimem-winner-user').textContent=displayName||'Player';
- const gameId=[...document.querySelectorAll('.stat-label')].find(e=>e.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value')?.textContent?.replace(/\\s/g,'').trim();
+ const gameId=[...document.querySelectorAll('.stat-label')].find(e=>e.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value')?.textContent?.replace(/\s/g,'').trim();
  document.getElementById('kimem-winner-round').textContent='GAME ID '+(/^AA[0-9]{6}$/.test(gameId||'')?gameId:'—');
  // No personal prize or jackpot is displayed until a verified payout exists.
  document.getElementById('kimem-winner-prize').style.display='none';
