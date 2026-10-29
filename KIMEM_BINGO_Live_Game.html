@@ -1234,6 +1234,7 @@ async function kimemRefreshVerifiedMoney(roundCode){
    }
    running=false;
    if(r.phase==='finished'){
+    try{sessionStorage.setItem('kimemLastCompletedRound10',String(r.roundNumber))}catch(e){}
     $('draw-status').textContent='ROUND FINISHED';
     if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
