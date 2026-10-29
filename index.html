@@ -288,9 +288,10 @@ function bingoLobbyTab(name){
  }else if(name==='Wallet'){
   panel.innerHTML='<h3>Wallet</h3><p id="qimemTabWalletBalance">Loading verified QIMEM PAY balance…</p><div class="account-status" id="qimemTabWalletHeld">Connecting securely to QIMEM PAY…</div>';
  }else if(name==='History'){
-  panel.innerHTML='<h3>History</h3><p>Verified QIMEM PAY transactions</p><div id="qimemTabTransactions" class="account-status">Loading transaction history…</div>';
+  panel.innerHTML="<h3>History</h3><div id=\"kimemGameHistory\" aria-label=\"Bingo 10 game history\"><div class=\"kh-head\"><span>BINGO 10 · GAME HISTORY</span><span class=\"kh-sub\">Completed rounds only</span></div><div class=\"kh-periods\" role=\"group\" aria-label=\"History period\"><button type=\"button\" data-kh-period=\"today\" onclick=\"kimemHistorySetPeriod('today')\">Today</button><button type=\"button\" data-kh-period=\"7d\" onclick=\"kimemHistorySetPeriod('7d')\">7 Days</button><button type=\"button\" data-kh-period=\"30d\" onclick=\"kimemHistorySetPeriod('30d')\">30 Days</button><button type=\"button\" data-kh-period=\"all\" onclick=\"kimemHistorySetPeriod('all')\">All Time</button></div><div class=\"kh-totals\"><button type=\"button\" class=\"kh-total\" data-kh-filter=\"all\" onclick=\"kimemHistorySetFilter('all')\"><span>GAMES</span><strong id=\"khGames\">—</strong></button><button type=\"button\" class=\"kh-total kh-win\" data-kh-filter=\"WIN\" onclick=\"kimemHistorySetFilter('WIN')\"><span>WIN</span><strong id=\"khWins\">—</strong></button><button type=\"button\" class=\"kh-total kh-lost\" data-kh-filter=\"LOST\" onclick=\"kimemHistorySetFilter('LOST')\"><span>LOST</span><strong id=\"khLosses\">—</strong></button></div><div class=\"kh-list-title\"><span>GAME RESULTS</span><span id=\"khCardCount\"></span></div><div id=\"khStatus\" class=\"kh-message\" aria-live=\"polite\">Loading verified games…</div><div id=\"khResults\" class=\"kh-results\"></div><div id=\"khMore\" class=\"kh-footnote\" hidden>Showing the most recent 100 cards. Counters include all completed games.</div></div><div class=\"kh-transactions-title\">QIMEM PAY TRANSACTIONS</div><div id=\"qimemTabTransactions\" class=\"account-status\">Loading transaction history…</div>";
  }
  if(name==='Wallet'||name==='History'){renderQimemLobbyWallet();refreshQimemLobbyBalance()}
+ if(name==='History')kimemHistoryLoad();
 }
 function newBoard(){const el=document.getElementById('board');el.innerHTML='';const columns=Array.from({length:5},(_,c)=>{let a=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,5)});for(let r=0;r<5;r++)for(let c=0;c<5;c++){const b=document.createElement('button');b.className='cell';b.textContent=r===2&&c===2?'★':columns[c][r];if(r===2&&c===2)b.classList.add('marked');b.onclick=()=>{b.classList.toggle('marked');try{tg?.HapticFeedback?.selectionChanged()}catch(e){}};el.appendChild(b)}}const mini=document.getElementById('miniTicket');'BINGO'.split('').forEach(x=>{let s=document.createElement('span');s.textContent=x;mini.appendChild(s)});for(let i=0;i<25;i++){let s=document.createElement('span');s.textContent=i===12?'★':(i*7+11)%75+1;mini.appendChild(s)}const kb=document.getElementById('kenoBoard');for(let i=1;i<=40;i++){let s=document.createElement('span');s.textContent=i;if([5,11,24,37].includes(i))s.className='hit';kb.appendChild(s)}newBoard();
 </script><script id="kimem-main-lobby-amharic-greeting">
@@ -401,4 +402,107 @@ function openQimemPay(mode){
  }
 }
 if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay_deposit'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemDeposit()}else if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemWallet()}
+</script><style id="kimem-bingo10-history-only">
+#kimemAccountPanel #kimemGameHistory{margin:0 0 22px;font:inherit}
+#kimemAccountPanel .kh-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;font-weight:850;letter-spacing:.7px;color:#e8cc87;margin-bottom:12px}
+#kimemAccountPanel .kh-sub{font-size:9px;font-weight:500;color:#8ea8cb;letter-spacing:0}
+#kimemAccountPanel .kh-periods{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:12px}
+#kimemAccountPanel .kh-periods button{border:1px solid #335275;color:#b9c7de;background:#10213b;border-radius:8px;padding:9px 2px;font-size:10px;font-weight:750}
+#kimemAccountPanel .kh-periods button.kh-active{border-color:#dfbd73;background:#253555;color:#ffe2a4}
+#kimemAccountPanel .kh-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:17px}
+#kimemAccountPanel .kh-total{min-width:0;border-radius:11px;border:1px solid #304d77;background:linear-gradient(155deg,#182d4c,#101f39);display:flex;flex-direction:column;align-items:center;gap:4px;padding:11px 4px 9px;color:#f2f5ff}
+#kimemAccountPanel .kh-total span{font-size:10px;letter-spacing:1px;font-weight:850}
+#kimemAccountPanel .kh-total strong{font-size:25px;line-height:1.15;font-weight:900;font-variant-numeric:tabular-nums}
+#kimemAccountPanel .kh-win strong,#kimemAccountPanel .kh-win span{color:#6beba8}
+#kimemAccountPanel .kh-lost strong,#kimemAccountPanel .kh-lost span{color:#fc8995}
+#kimemAccountPanel .kh-total.kh-selected{outline:1px solid #e9c979;outline-offset:1px}
+#kimemAccountPanel .kh-list-title{display:flex;justify-content:space-between;align-items:center;color:#e6c986;font-size:11px;letter-spacing:.7px;font-weight:850;margin:5px 0 8px}
+#kimemAccountPanel .kh-list-title #khCardCount{font-size:10px;color:#a4b9d6;letter-spacing:0}
+#kimemAccountPanel .kh-results{display:flex;flex-direction:column;gap:6px}
+#kimemAccountPanel .kh-result{border:1px solid #2b4669;background:#0f213b;border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+#kimemAccountPanel .kh-result-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+#kimemAccountPanel .kh-result-title{font-size:12px;font-weight:850;color:#f4f6fc}
+#kimemAccountPanel .kh-result-detail{font-size:10px;color:#93a9ca;font-variant-numeric:tabular-nums}
+#kimemAccountPanel .kh-result-end{display:flex;align-items:flex-end;gap:4px;flex-direction:column;flex:0 0 auto}
+#kimemAccountPanel .kh-result-label{font-size:10px;letter-spacing:.5px;font-weight:900}
+#kimemAccountPanel .kh-result-label.kh-win{color:#70e6a2}
+#kimemAccountPanel .kh-result-label.kh-lost{color:#fc8f9a}
+#kimemAccountPanel .kh-result-amount{font-size:11px;color:#d0dcf0;font-weight:700}
+#kimemAccountPanel .kh-message{font-size:12px;color:#aebfd9;padding:9px 0}
+#kimemAccountPanel .kh-footnote{font-size:10px;color:#96a9c6;margin:8px 0}
+#kimemAccountPanel .kh-transactions-title{font-size:11px;font-weight:850;letter-spacing:.65px;color:#e8c889;margin:20px 0 0;border-top:1px solid #324763;padding-top:15px}
+#kimemAccountPanel .kh-transactions-title+#qimemTabTransactions{margin-top:8px}
+</style><script id="kimem-bingo10-game-history-only">
+let kimemHistoryPeriod='all',kimemHistoryFilter='all',kimemHistoryData=null,kimemHistoryRequest=0;
+function kimemHistorySetPeriod(period){
+ if(!['today','7d','30d','all'].includes(period))return;
+ kimemHistoryPeriod=period;
+ kimemHistoryLoad();
+}
+function kimemHistorySetFilter(filter){
+ if(!['all','WIN','LOST'].includes(filter))return;
+ kimemHistoryFilter=filter;
+ kimemHistoryRender();
+}
+function kimemHistoryRender(){
+ const root=document.getElementById('kimemGameHistory');
+ if(!root)return;
+ root.querySelectorAll('[data-kh-period]').forEach(b=>b.classList.toggle('kh-active',b.dataset.khPeriod===kimemHistoryPeriod));
+ root.querySelectorAll('[data-kh-filter]').forEach(b=>b.classList.toggle('kh-selected',b.dataset.khFilter===kimemHistoryFilter));
+ const info=kimemHistoryData;
+ if(!info||info.period!==kimemHistoryPeriod)return;
+ root.querySelector('#khGames').textContent=info.games.toLocaleString('en-US');
+ root.querySelector('#khWins').textContent=info.wins.toLocaleString('en-US');
+ root.querySelector('#khLosses').textContent=info.losses.toLocaleString('en-US');
+ root.querySelector('#khCardCount').textContent=info.totalCards+' CARDS';
+ const host=root.querySelector('#khResults'),status=root.querySelector('#khStatus');
+ const records=info.items.filter(x=>kimemHistoryFilter==='all'||x.result===kimemHistoryFilter);
+ host.replaceChildren();
+ status.textContent=records.length?'':info.totalCards===0?'No completed Bingo 10 games in this period.':'No '+(kimemHistoryFilter==='WIN'?'winning':kimemHistoryFilter==='LOST'?'lost':'matching')+' cards in the displayed results.';
+ for(const item of records){
+  if(!/^AA[0-9]{6}$/.test(String(item.gameId||''))||
+     !Number.isInteger(item.card)||item.card<1||item.card>1000||
+     !['WIN','LOST'].includes(item.result))continue;
+  const line=document.createElement('div');line.className='kh-result';
+  const main=document.createElement('div');main.className='kh-result-main';
+  const name=document.createElement('div');name.className='kh-result-title';name.textContent='CARD #'+String(item.card).padStart(4,'0');
+  const detail=document.createElement('div');detail.className='kh-result-detail';
+  let when='';
+  try{const d=new Date(item.finishedAt);if(Number.isFinite(d.getTime()))when=d.toLocaleString('en-US',{timeZone:'Africa/Addis_Ababa',month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'})}catch(e){}
+  detail.textContent=item.gameId+(when?' · '+when:'');
+  main.append(name,detail);
+  const end=document.createElement('div');end.className='kh-result-end';
+  const result=document.createElement('div');result.className='kh-result-label '+(item.result==='WIN'?'kh-win':'kh-lost');
+  result.textContent=item.result;
+  const amount=document.createElement('div');amount.className='kh-result-amount';
+  const prize=Number(item.prizeBirr);
+  amount.textContent=item.result==='WIN'&&Number.isFinite(prize)&&prize>0?
+   '+'+prize.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB':
+   'Stake '+Number(item.stakeBirr||10).toFixed(2)+' ETB';
+  end.append(result,amount);line.append(main,end);host.append(line);
+ }
+ root.querySelector('#khMore').hidden=!info.hasMore;
+}
+async function kimemHistoryLoad(){
+ const root=document.getElementById('kimemGameHistory');if(!root)return;
+ const request=++kimemHistoryRequest,period=kimemHistoryPeriod;
+ root.querySelectorAll('[data-kh-period]').forEach(b=>b.classList.toggle('kh-active',b.dataset.khPeriod===period));
+ const status=root.querySelector('#khStatus');
+ status.textContent='Loading verified games…';
+ const initData=window.Telegram?.WebApp?.initData;
+ if(!initData){status.textContent='Open the Mini App in Telegram to view verified game history.';return}
+ try{
+  const response=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/customer/bingo10/game-history',{
+   method:'POST',headers:{'content-type':'application/json'},cache:'no-store',
+   body:JSON.stringify({initData,period})
+  });
+  if(!response.ok)throw Error('history_unavailable');
+  const data=await response.json();
+  if(!data?.ok||data.period!==period||!Number.isSafeInteger(data.games)||
+     !Number.isSafeInteger(data.wins)||!Number.isSafeInteger(data.losses)||
+     !Number.isSafeInteger(data.totalCards)||!Array.isArray(data.items))throw Error('invalid_history');
+  if(request!==kimemHistoryRequest)return;
+  kimemHistoryData=data;kimemHistoryRender();
+ }catch(e){if(request===kimemHistoryRequest)status.textContent='Could not load game history. Please reopen History to retry.'}
+}
 </script></body></html>
