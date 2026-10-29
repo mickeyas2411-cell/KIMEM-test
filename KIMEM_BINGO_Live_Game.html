@@ -658,7 +658,24 @@ function kimemSmallNotice(message){
 const kimemResultCountdownAudio=new Audio('https://good-bingo-telegram.floot.app/_cdn/static/23b33aa8-da40-4604-b45f-8a2cf1b2a7c4-qimem-countdown-final.wav');
 kimemResultCountdownAudio.preload='auto';
 kimemResultCountdownAudio.volume=.78;
-document.addEventListener('pointerdown',()=>{try{kimemResultCountdownAudio.load()}catch(e){}},{once:true});
+// One-time gesture priming makes later result audio more reliable in Telegram's iOS WebView.
+let kimemResultCountdownPrimed=false;
+function kimemPrimeResultCountdown(){
+ if(kimemResultCountdownPrimed)return;
+ kimemResultCountdownPrimed=true;
+ try{
+  kimemResultCountdownAudio.muted=true;
+  const p=kimemResultCountdownAudio.play();
+  if(p&&p.then)p.then(()=>{
+   kimemResultCountdownAudio.pause();
+   kimemResultCountdownAudio.currentTime=0;
+   kimemResultCountdownAudio.muted=false;
+  }).catch(()=>{kimemResultCountdownAudio.muted=false});
+  else {kimemResultCountdownAudio.pause();kimemResultCountdownAudio.muted=false}
+ }catch(e){kimemResultCountdownAudio.muted=false}
+}
+document.addEventListener('pointerdown',kimemPrimeResultCountdown,{once:true,capture:true});
+document.addEventListener('touchstart',kimemPrimeResultCountdown,{once:true,capture:true,passive:true});
 function kimemPlayResultCountdown(){
  try{
   kimemResultCountdownAudio.pause();
