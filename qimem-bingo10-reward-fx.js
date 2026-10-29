@@ -38,7 +38,7 @@ function pulse(){
    if(Number.isFinite(balance)&&Number.isFinite(min)&&min>0){
     if(k==='jackpot'){if(balance>=min)speed='.52s';else if(balance>=min*.75)speed='.78s';else if(balance>=min*.5)speed='1.1s';}
     else if(balance>=min&&(k!=='weekly'||Number(r.weeklyDay)===t.day)){
-     const match=/^([01]\\d|2[0-3]):([0-5]\\d)$/.exec(String(r.drawTime||''));
+     const match=/^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(r.drawTime||''));
      if(match){const diff=+match[1]*60+(+match[2])-t.minutes;if(diff>=0&&diff<=180)speed=diff<=5?'.42s':diff<=20?'.72s':'1.25s';}
     }
    }
