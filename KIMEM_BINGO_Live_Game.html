@@ -716,7 +716,11 @@ function kimemFinishGame(ids){
  if(winners.length){
   for(const id of winners){
    const temp=document.createElement('div');temp.className='play-card';
-   const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.append(title);
+   const title=document.createElement('div');title.className='play-card-title';title.textContent='WINNING CARD #'+String(id).padStart(4,'0');temp.dataset.kimemWinnerCard=String(id);temp.append(title);
+   const identity=document.createElement('div');identity.className='kimem-winner-identity';
+   const person=document.createElement('span');person.className='kimem-winner-person';person.textContent='WINNER';
+   const prize=document.createElement('span');prize.className='kimem-winner-amount';prize.textContent='VERIFYING PRIZE';
+   identity.append(person,prize);temp.append(identity);
    const headers=document.createElement('div');headers.className='play-letters';
    'BINGO'.split('').forEach((l,i)=>{const h=document.createElement('span');h.textContent=l;h.style.color=colors[i];headers.append(h)});temp.append(headers);
    const g=cardFor(id);
@@ -727,15 +731,49 @@ function kimemFinishGame(ids){
    cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';if(n&&n===drawn[drawn.length-1]&&winningNumbers.has(n)){cell.classList.add('kimem-final-winning-ball')}grid.append(cell)}));temp.append(grid);host.append(temp);
   }
  }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
- const tgUser=window.Telegram?.WebApp?.initDataUnsafe?.user;
- const displayName=tgUser?.username?'@'+tgUser.username:[tgUser?.first_name,tgUser?.last_name].filter(Boolean).join(' ');
- document.getElementById('kimem-winner-user').textContent=displayName||'Player';
+ document.getElementById('kimem-winner-user').textContent=winners.length?(winners.length===1?'VERIFIED WINNER':winners.length+' WINNING CARDS'):'ROUND COMPLETE';
  const gameId=[...document.querySelectorAll('.stat-label')].find(e=>e.textContent.trim()==='GAME ID')?.parentElement?.querySelector('.stat-value')?.textContent?.replace(/\s/g,'').trim();
  document.getElementById('kimem-winner-round').textContent='GAME ID '+(/^AA[0-9]{6}$/.test(gameId||'')?gameId:'—');
  // No personal prize or jackpot is displayed until a verified payout exists.
  document.getElementById('kimem-winner-prize').style.display='none';
  document.getElementById('kimem-winner-jackpot').style.display='none';
  overlay.classList.add('visible');
+ if(winners.length && /^AA[0-9]{6}$/.test(gameId||'')){
+  const expectedRound=gameId;
+  let receiptTimer=null;
+  const refreshReceipt=async()=>{
+   if(!overlay.classList.contains('visible')){clearInterval(receiptTimer);return}
+   try{
+    const response=await fetch('https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10',{cache:'no-store'});
+    if(!response.ok)return;
+    const payload=await response.json();const round=payload?.round;
+    if(round?.gameId!==expectedRound||round.phase!=='finished')return;
+    const receipt=round.settlementBingo10;
+    if(!receipt?.ok||receipt.roundCode!==expectedRound||!Array.isArray(receipt.credits))return;
+    const map=new Map(receipt.credits.map(x=>[Number(x.card),x]));
+    if(map.size!==winners.length||winners.some(id=>!map.has(Number(id))))return;
+    for(const card of host.querySelectorAll('[data-kimem-winner-card]')){
+     const entry=map.get(Number(card.dataset.kimemWinnerCard));if(!entry)continue;
+     const amt=Number(entry.amountBirr);
+     if(!Number.isFinite(amt)||amt<=0)continue;
+     const name=String(entry.name||'Player').slice(0,45);
+     card.querySelector('.kimem-winner-person').textContent=name;
+     card.querySelector('.kimem-winner-amount').textContent=amt.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+    }
+    if(winners.length===1){
+     const only=map.get(Number(winners[0]));
+     document.getElementById('kimem-winner-user').textContent=String(only.name||'Player').slice(0,45);
+     const prizeLabel=document.getElementById('kimem-winner-prize');
+     prizeLabel.textContent='WINNING PRIZE · '+Number(only.amountBirr).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ETB';
+     prizeLabel.style.display='block';
+    }
+    clearInterval(receiptTimer);
+   }catch(e){}
+  };
+  receiptTimer=setInterval(refreshReceipt,1000);
+  refreshReceipt();
+  setTimeout(()=>clearInterval(receiptTimer),7000);
+ }
  // Independent return guard: keeps navigation working even if the result timer is interrupted.
  if(!window.kimemWinnerReturnGuard){
   window.kimemWinnerReturnGuard=setTimeout(()=>{
@@ -1270,4 +1308,13 @@ async function kimemRefreshVerifiedMoney(roundCode){
 #kimem-winner-overlay.kimem-scroll-winners .play-card{margin-bottom:12px!important}
 #kimem-winner-overlay.kimem-multi-winners #kimem-winner-timer{flex-shrink:0}
 @media(max-height:700px){#kimem-winner-overlay.kimem-two-winners #kimem-winner-card{overflow-y:auto}#kimem-winner-overlay.kimem-two-winners .play-cell{height:25px!important}}
+</style><style id="kimem-winner-verified-prize-style">
+#kimem-winner-overlay .play-card{border:1px solid rgba(240,188,77,.74)!important;box-shadow:0 7px 28px #0007,0 0 15px #e7b34a1c!important;border-radius:13px!important}
+#kimem-winner-overlay .kimem-winner-identity{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 7px 7px;color:#dbe9ff;font-size:12px;font-weight:750}
+#kimem-winner-overlay .kimem-winner-person{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;max-width:56%}
+#kimem-winner-overlay .kimem-winner-amount{color:#f5cb67;font-size:12px;font-weight:900;white-space:nowrap;letter-spacing:.15px}
+#kimem-winner-overlay.kimem-two-winners .kimem-winner-identity{padding:2px 6px 4px;font-size:11px}
+#kimem-winner-overlay.kimem-two-winners .kimem-winner-amount{font-size:11px}
+#kimem-winner-overlay #kimem-winner-card{scroll-behavior:smooth;touch-action:pan-y}
+@media(max-width:380px){#kimem-winner-overlay .kimem-winner-amount{font-size:11px}}
 </style></body></html>
