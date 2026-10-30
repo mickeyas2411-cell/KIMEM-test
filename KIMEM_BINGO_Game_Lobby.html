@@ -380,11 +380,11 @@ function init(){
   for(const [name,key] of Object.entries(names)){
    const btn=buttons.find(b=>b.textContent.includes(name)&&b.textContent.includes('ETB'));
    if(!btn)continue;
-   const heading=[...btn.querySelectorAll('div')].find(x=>x.children.length===0&&x.textContent.trim()===name);
+   const heading=[...btn.querySelectorAll('div')].find(x=>x.firstChild?.nodeType===3&&x.firstChild.textContent.trim()===name);
    if(!heading)continue;
    let tag=heading.querySelector('[data-qimem-rate]');
    if(!tag){tag=document.createElement('span');tag.dataset.qimemRate=key;tag.style.cssText='margin-left:4px;font-size:9px;opacity:.85;white-space:nowrap';heading.appendChild(tag)}
-   tag.textContent='· '+format(active[key]);
+   tag.textContent=' · Config '+format(active[key]);
    const cfg=active;
    btn.title=name==='DAILY'?(cfg.dailyMode==='game'?'Game ID: '+(cfg.dailyGameId||'Not selected'):'Scheduled: '+(cfg.dailyDate||'Daily')+' '+cfg.dailyTime):name==='WEEKLY'?'Scheduled: '+cfg.weeklyDay:'Range: '+cfg.jackpotMin+'–'+cfg.jackpotMax+' ETB';
   }
