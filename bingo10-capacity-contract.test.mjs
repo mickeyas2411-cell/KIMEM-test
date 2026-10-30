@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-const html=readFileSync(new URL("../KIMEM_BINGO_Game_Lobby.html",import.meta.url),"utf8");
+const html=readFileSync(new URL("./KIMEM_BINGO_Game_Lobby.html",import.meta.url),"utf8");
 test("Bingo 10 grid follows authoritative round limit",()=>{
  for(const marker of ["kimemCapacityFromRound(r)","i<=kimemRoundCardCapacity","target<=kimemRoundCardCapacity","id>kimemRoundCardCapacity"])assert.ok(html.includes(marker),marker);
 });
