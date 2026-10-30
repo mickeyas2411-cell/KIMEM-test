@@ -127,6 +127,48 @@ const qimemOtherPlayerLocks=new Set();let qimemLockRound=null,qimemLocksReady=fa
 let qimemOwnedRound=null,qimemOwnedLastRequestedAt=0,qimemOwnedReady=false;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
+
+// Card locking is server-authoritative. Never infer ownership from a lock snapshot.
+function kimemOnRoundCardChange(roundCode){
+ if(qimemLockRound===roundCode)return;
+ qimemLockRound=roundCode;qimemLocksReady=false;qimemOtherPlayerLocks.clear();
+ qimemLockCheckedAt=0;qimemOwnedRound=null;qimemOwnedReady=false;qimemOwnedLastRequestedAt=0;
+ selectedCards.length=0;activeCard=null;updateUI();
+}
+async function kimemRefreshGlobalCardLocks(roundCode,force=false){
+ if(!/^AA[0-9]{6}$/.test(roundCode||'')||qimemLockRound!==roundCode||qimemLockLoading||document.hidden)return;
+ const now=Date.now();
+ if(!force&&now-qimemLockCheckedAt<3000)return;
+ qimemLockCheckedAt=now;qimemLockLoading=true;
+ try{
+  const url=qimemBingo10WalletOrigin+'/api/v1/public/bingo10/locked-cards?round='+encodeURIComponent(roundCode);
+  const res=await fetch(url,{cache:'no-store'});
+  if(!res.ok)throw Error('Lock snapshot unavailable');
+  const data=await res.json();
+  if(data.ok!==true||data.source!=='verified_paid_cards'||data.roundCode!==roundCode||
+   !Array.isArray(data.lockedCards)||data.lockedCards.length>3000||
+   data.lockedCards.some(n=>!Number.isSafeInteger(n)||n<1||n>3000)||
+   new Set(data.lockedCards).size!==data.lockedCards.length)throw Error('Invalid lock snapshot');
+  if(qimemLockRound!==roundCode)return;
+  const updated=new Set(data.lockedCards);
+  const changed=!qimemLocksReady||updated.size!==qimemOtherPlayerLocks.size||
+   [...updated].some(n=>!qimemOtherPlayerLocks.has(n));
+  qimemOtherPlayerLocks.clear();for(const n of updated)qimemOtherPlayerLocks.add(n);
+  qimemLocksReady=true;
+  if(changed)updateUI();
+ }catch(e){console.warn('Verified Bingo card locks unavailable',e);
+  if(qimemLockRound===roundCode&&!qimemLocksReady)renderLockedCards();
+ }finally{qimemLockLoading=false}
+}
+function kimemRequestOwnedCards(roundCode){
+ if(!/^AA[0-9]{6}$/.test(roundCode||'')||roundCode!==qimemLockRound||
+  !window.Telegram?.WebApp?.initData||!qimemBingo10WalletFrame?.contentWindow||
+  qimemOwnedReady&&qimemOwnedRound===roundCode)return;
+ const now=Date.now();if(now-qimemOwnedLastRequestedAt<5000)return;
+ qimemOwnedLastRequestedAt=now;
+ qimemBingo10WalletFrame.contentWindow.postMessage({type:'qimem-bingo10-my-cards',roundCode},
+  qimemBingo10WalletOrigin);
+}
 function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=3000;i++){const owned=selectedCards.includes(i),other=qimemLocksReady&&qimemOtherPlayerLocks.has(i)&&!owned;const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(owned?' selected':'')+(other?' other-locked':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(owned));btn.setAttribute('aria-label',other?'Card '+i+' locked by another player':'Card '+i);btn.disabled=other;btn.innerHTML=String(i)+((owned||other)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
 let kimemCardRequest=null;
 function toggleCard(id){
@@ -295,6 +337,9 @@ async function kimemSyncPoll(){
   // Do not overwrite them with unrelated draw-service counters.
   kimemRefreshVerifiedMoney(r.gameId);
   kimemSyncRound=r;
+  kimemOnRoundCardChange(r.gameId);
+  kimemRefreshGlobalCardLocks(r.gameId);
+  kimemRequestOwnedCards(r.gameId);
   kimemSyncGameId(r.gameId);
   kimemSyncRender();
  }catch(e){
@@ -363,7 +408,18 @@ function refreshLobbyBalance(){
 }
 window.addEventListener('message',event=>{
  if(event.origin!==qimemBingo10WalletOrigin||event.source!==qimemBingo10WalletFrame?.contentWindow)return;
- if(event.data?.type==='qimem-auth-ready'){refreshLobbyBalance();return}
+ if(event.data?.type==='qimem-auth-ready'){refreshLobbyBalance();if(qimemLockRound)kimemRequestOwnedCards(qimemLockRound);return}
+ if(event.data?.type==='qimem-bingo10-my-cards-result'){
+  const d=event.data;
+  if(d.roundCode!==qimemLockRound||!d.ok||!Array.isArray(d.cards)||d.cards.length>3||
+   d.cards.some(n=>!Number.isSafeInteger(n)||n<1||n>3000)||
+   new Set(d.cards).size!==d.cards.length){qimemOwnedLastRequestedAt=0;return}
+  if(kimemCardRequest){qimemOwnedLastRequestedAt=0;return}
+  qimemOwnedRound=d.roundCode;qimemOwnedReady=true;
+  selectedCards.splice(0,selectedCards.length,...d.cards);
+  if(!selectedCards.includes(activeCard))activeCard=selectedCards[selectedCards.length-1]||null;
+  updateUI();return;
+ }
  if(event.data?.type!=='qimem-wallet-balance')return;
  const amount=event.data.availableBalance;
  if(typeof amount!=='number'||!Number.isFinite(amount)||amount<0)return;
@@ -371,7 +427,7 @@ window.addEventListener('message',event=>{
  const label=document.getElementById('lobby-balance');
  if(label)label.textContent=kimemVerifiedLobbyBalance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 });
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLobbyBalance()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshLobbyBalance();if(qimemLockRound){kimemRefreshGlobalCardLocks(qimemLockRound,true);kimemRequestOwnedCards(qimemLockRound)}}});
 window.addEventListener('pageshow',refreshLobbyBalance);
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
