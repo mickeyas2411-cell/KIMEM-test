@@ -46,7 +46,7 @@ test('Bingo 10 Lobby, Live Game and 3000-card generation agree on all card numbe
  for(const id of [1,27,999,1000,1001,1500,2000,2500,2999,3000]){
   const p=preview(id).map(row=>Array.from(row,n=>n==='FREE'?0:n));
   const g=play(id);
-  assert.deepEqual(p,JSON.parse(JSON.stringify(g)),'Card #'+id+' must not change from Lobby to Live');
+  assert.equal(JSON.stringify(p),JSON.stringify(g),'Card #'+id+' must not change from Lobby to Live');
   assert.equal(new Set(g.flat().filter(Boolean)).size,24);
  }
 });
