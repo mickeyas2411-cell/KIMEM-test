@@ -103,6 +103,7 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 #countdown-scene .countdown-balls{gap:clamp(4px,1.3vw,10px)!important;margin:8px 0!important}
 #countdown-scene .countdown-ball{max-width:62px!important;flex:0 1 62px!important}
 #countdown-scene .scene-footer{font-size:11px!important;margin-top:6px!important}
+#lobby-main #card-matrix .card-grid-item.kimem-sold:not(.selected){opacity:.45!important;filter:grayscale(.6);cursor:not-allowed!important}
 </style><link rel="prefetch" href="./KIMEM_BINGO_Live_Game.html" as="document"></head>
 <body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
 <div class="flex items-center justify-between px-3.5 py-2.5 bg-[#02081a]/90 border-b border-blue-900/40 z-30 shrink-0"><button onclick="leaveToLobby()" class="text-cyan-400 font-semibold text-xs"><i class="fa-solid fa-arrow-left mr-1.5"></i> Leave</button><div class="text-center"><div class="font-black text-xs tracking-wider">KIMEM GAMES</div><div class="text-[8px] font-bold tracking-widest text-blue-400">MINI APP</div></div><button onclick="triggerToast('Menu opened')" class="w-7 h-7 rounded-full bg-blue-950/80 border border-blue-600/50 text-blue-300"><i class="fa-solid fa-ellipsis"></i></button></div>
@@ -110,7 +111,7 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 <div class="hero-banner rounded-xl p-3 relative overflow-hidden flex items-center justify-between"><div style="position:absolute;left:0;right:0;bottom:3px;text-align:center;font:700 10px Inter,sans-serif;color:#f2c66e;z-index:12;pointer-events:none">Balance: <span id="lobby-balance">—</span> ETB</div><div class="z-10 max-w-[65%]"><div class="text-amber-400 text-[9px] font-black tracking-widest mb-0.5">PREMIUM LIVE ARENA</div><h1 class="text-xl font-black italic tracking-wide leading-none my-0.5"><span class="glow-text-white">KIMEM </span><span class="glow-text-gold">BINGO</span></h1><p class="text-[8px] font-bold text-blue-200/90 tracking-wider">THE ULTIMATE BINGO EXPERIENCE</p></div><div class="relative z-10 flex -space-x-2 items-center"><div class="w-7 h-7 rounded-full bg-gradient-to-b from-red-400 to-red-700 border border-red-200 flex items-center justify-center font-black text-[11px]">B</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-blue-400 to-blue-700 border border-blue-200 flex items-center justify-center font-black text-[11px]">I</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-amber-300 to-amber-600 border border-amber-100 flex items-center justify-center font-black text-[11px]">N</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-emerald-400 to-emerald-700 border border-emerald-200 flex items-center justify-center font-black text-[11px]">G</div><div class="w-7 h-7 rounded-full bg-gradient-to-b from-purple-400 to-purple-700 border border-purple-200 flex items-center justify-center font-black text-[11px]">O</div></div></div>
 <div class="neon-panel rounded-lg grid grid-cols-5 gap-0.5 text-center items-center stats-panel"><div><i class="fa-solid fa-gamepad stat-icon text-sky-400"></i><div class="stat-label">GAME ID</div><div class="stat-value" style="font-size:11px;white-space:nowrap;letter-spacing:-0.35px"><span style="color:#fbbf24">AA</span>000000</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-money-bill-wave stat-icon text-amber-400"></i><div class="stat-label">DERASH</div><div class="stat-value text-amber-400" id="kimem-verified-sales">— ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-users stat-icon text-cyan-300"></i><div class="stat-label">PLAYERS</div><div class="stat-value" id="kimem-verified-players">—</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-coins stat-icon text-amber-400"></i><div class="stat-label">STAKE</div><div class="stat-value text-amber-400">10 ETB</div></div><div class="border-l border-blue-900/50"><i class="fa-solid fa-clock stat-icon text-yellow-300"></i><div class="stat-label">STARTS IN</div><div id="countdown" class="stat-value text-yellow-300">35s</div></div></div>
 <div class="grid grid-cols-3 gap-1.5 bonus-row"><button onclick="triggerToast('Daily bonus fund awaiting verified purchases')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-red-600/30 text-red-400 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">DAILY</div><div class="text-[10px] font-black">— ETB</div></div></button><button onclick="triggerToast('Weekly bonus fund awaiting verified purchases')" class="neon-panel rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-purple-600/30 text-purple-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-gift"></i></div><div><div class="text-[7px] font-extrabold text-blue-300">WEEKLY</div><div class="text-[10px] font-black">— ETB</div></div></button><button onclick="triggerToast('Jackpot fund awaiting verified purchases')" class="bg-gradient-to-r from-amber-950/80 to-yellow-900/80 border border-amber-500/60 rounded-lg p-1.5 flex items-center space-x-1.5 text-left"><div class="w-6 h-6 rounded bg-amber-500/30 text-amber-300 flex items-center justify-center text-[10px]"><i class="fa-solid fa-coins"></i></div><div><div class="text-[7px] font-extrabold text-amber-300">JACKPOT</div><div class="text-[10px] font-black text-amber-300">— ETB</div></div></button></div>
-<section class="neon-panel rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><h2 class="text-xs font-black tracking-wide">Choose cards (1 – 1000)</h2><div id="selected-badge" class="px-2 py-0.5 rounded-full bg-blue-600/30 border border-blue-400/60 text-blue-200 text-[9px] font-extrabold">0 / 3 SELECTED</div></div><div class="relative flex items-center"><i class="fa-solid fa-magnifying-glass absolute left-2.5 text-blue-400 text-[10px] pointer-events-none"></i><input type="text" inputmode="numeric" id="card-search-input" placeholder="Search card number (1-1000)..." oninput="handleSearch()" class="w-full bg-[#030d29] border border-blue-800/80 rounded-lg pl-7 pr-7 py-1.5 text-[11px] text-white placeholder-blue-400/60 focus:outline-none focus:border-cyan-400"><button onclick="clearSearch()" class="absolute right-2.5 text-blue-400" aria-label="Clear search"><i class="fa-solid fa-xmark text-xs"></i></button></div><div id="card-matrix" class="card-scroll-area grid grid-cols-10 gap-1 content-start p-1 bg-[#01081f]/80 rounded-lg border border-blue-900/60" aria-label="Choose cards 1 to 1000"></div><div class="text-center text-[8px] font-bold text-cyan-400 tracking-tight">SCROLL TO VIEW ALL CARDS (1–1000) • TAP GOLD CARD TO UNMARK</div></section>
+<section class="neon-panel rounded-xl p-2.5 space-y-2"><div class="flex items-center justify-between"><h2 class="text-xs font-black tracking-wide">Choose cards (1 – <span id="kimem-card-limit">1000</span>)</h2><div id="selected-badge" class="px-2 py-0.5 rounded-full bg-blue-600/30 border border-blue-400/60 text-blue-200 text-[9px] font-extrabold">0 / 3 SELECTED</div></div><div class="relative flex items-center"><i class="fa-solid fa-magnifying-glass absolute left-2.5 text-blue-400 text-[10px] pointer-events-none"></i><input type="text" inputmode="numeric" id="card-search-input" placeholder="Search card number (1-1000)..." oninput="handleSearch()" class="w-full bg-[#030d29] border border-blue-800/80 rounded-lg pl-7 pr-7 py-1.5 text-[11px] text-white placeholder-blue-400/60 focus:outline-none focus:border-cyan-400"><button onclick="clearSearch()" class="absolute right-2.5 text-blue-400" aria-label="Clear search"><i class="fa-solid fa-xmark text-xs"></i></button></div><div id="card-matrix" class="card-scroll-area grid grid-cols-10 gap-1 content-start p-1 bg-[#01081f]/80 rounded-lg border border-blue-900/60" aria-label="Choose cards 1 to 1000"></div><div class="text-center text-[8px] font-bold text-cyan-400 tracking-tight">SCROLL TO VIEW ALL CARDS (1–<span id="kimem-card-footer-limit">1000</span>) • TAP GOLD CARD TO UNMARK</div></section>
 <section aria-label="Locked cards" class="locked-inline"><div class="locked-label">LOCKED CARDS</div><div id="locked-cards" class="locked-row"><span class="text-[10px] text-slate-500">No cards selected</span></div></section>
 <section class="neon-panel rounded-xl p-2 space-y-1.5"><div class="flex items-center justify-between px-0.5"><h2 class="text-xs font-black tracking-wide">CARD PREVIEW</h2><div id="preview-title" class="text-[9px] font-black text-blue-400 tracking-wider uppercase">NO CARD SELECTED</div></div><div class="bg-[#020a22] border border-blue-900/80 rounded-lg p-1.5 space-y-1"><div id="bingo-header" class="grid grid-cols-5 gap-1 text-center"></div><div id="bingo-board" class="grid grid-cols-5 gap-1 text-center"></div></div></section>
 </main><div id="toast-msg" role="status" class="absolute top-12 left-1/2 -translate-x-1/2 bg-blue-900/95 border border-cyan-400 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg shadow-2xl opacity-0 pointer-events-none transition-all duration-300 z-50 whitespace-nowrap max-w-[95%] overflow-hidden text-ellipsis">Notification</div></div>
@@ -118,12 +119,15 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 <script>
 'use strict';
 const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
+let kimemCardCapacity=1000;
+let kimemTakenCards=new Set(),kimemRecoveredRound=null,kimemRecoveryPending=null,kimemSelectionRevision=0;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
-function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=1000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=kimemCardCapacity;i++){const owned=selectedCards.includes(i),sold=!owned&&kimemTakenCards.has(i);const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(owned?' selected':'')+(sold?' kimem-sold':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.disabled=sold;btn.title=sold?'Already sold in this round':'';btn.setAttribute('aria-pressed',String(owned));if(sold)btn.setAttribute('aria-label','Card '+i+' sold');btn.innerHTML=String(i)+(owned||sold?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
 let kimemCardRequest=null;
 function toggleCard(id){
  if(kimemCardRequest){triggerToast('Please finish the previous card request');return}
+ if(kimemTakenCards.has(id)&&!selectedCards.includes(id)){triggerToast('Card #'+id+' is already sold');return}
  const round=kimemSyncRound;
  if(!round||round.phase!=='lobby'||!Number.isSafeInteger(Number(round.liveStartsAt))||Date.now()+kimemSyncClockOffset>=Number(round.liveStartsAt)-1500){triggerToast('Card selection is closed or connecting');return}
  const selected=selectedCards.includes(id),action=selected?'unselect':'select';
@@ -142,13 +146,17 @@ window.addEventListener('message',event=>{
  const req=kimemCardRequest;
  if(!req||req.requestId!==event.data.requestId)return;
  kimemCardRequest=null;
- if(!event.data.ok){triggerToast(String(event.data.error||'Card request failed').replaceAll('_',' '));return}
+ if(kimemSyncRound?.gameId!==req.roundCode)return;
+ if(!event.data.ok){triggerToast(String(event.data.error||'Card request failed').replaceAll('_',' '));kimemRefreshVerifiedMoney(req.roundCode);kimemRecoverPaidCards(req.roundCode,true);return}
+ kimemSelectionRevision++;
  if(req.action==='select'){
   if(!selectedCards.includes(req.id))selectedCards.push(req.id);
+  kimemTakenCards.add(req.id);
   activeCard=req.id;
   triggerToast('10 ETB charged · Card #'+req.id);
  }else{
   const i=selectedCards.indexOf(req.id);if(i>=0)selectedCards.splice(i,1);
+  kimemTakenCards.delete(req.id);
   if(activeCard===req.id)activeCard=selectedCards[selectedCards.length-1]||null;
   triggerToast('10 ETB refunded · Card #'+req.id);
  }
@@ -158,11 +166,12 @@ window.addEventListener('message',event=>{
   if(balanceNode)balanceNode.textContent=event.data.balance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
  }
  updateUI();
+ kimemRecoverPaidCards(req.roundCode,true);
 });
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
-function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=1000){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
+function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=kimemCardCapacity){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
 function clearSearch(){$('card-search-input').value='';searchQuery='';renderCardGrid()}
 function leaveToLobby(){window.location.href='./index.html'}
 function enterLiveGame(){
@@ -244,6 +253,32 @@ function kimemSyncRender(){
  window.location.href='./KIMEM_BINGO_Live_Game.html?cards='+encodeURIComponent(ids.join(','))+'&sync=1&v=20261021r2';
 }
 
+// Recover signed-in Telegram player's real paid cards, not locally cached IDs.
+async function kimemRecoverPaidCards(roundCode,force=false){
+ if(!/^AA[0-9]{6}$/.test(roundCode||'')||kimemSyncRound?.gameId!==roundCode)return;
+ if((!force&&kimemRecoveredRound===roundCode)||kimemRecoveryPending===roundCode||kimemCardRequest)return;
+ const initData=window.Telegram?.WebApp?.initData;
+ if(typeof initData!=='string'||!initData)return;
+ kimemRecoveryPending=roundCode;
+ const revision=kimemSelectionRevision;
+ try{
+  const response=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/customer/bingo10/my-cards',{
+   method:'POST',headers:{'content-type':'application/json'},cache:'no-store',body:JSON.stringify({initData,roundCode})
+  });
+  if(!response.ok)return;
+  const data=await response.json(),ids=data?.cards;
+  if(data?.ok!==true||data.roundCode!==roundCode||!Array.isArray(ids)||ids.length>3||
+    ids.some(n=>!Number.isSafeInteger(n)||n<1||n>3000)||new Set(ids).size!==ids.length)return;
+  if(kimemSyncRound?.gameId!==roundCode||kimemSelectionRevision!==revision||kimemCardRequest)return;
+  selectedCards.splice(0,selectedCards.length,...ids);
+  activeCard=ids.includes(activeCard)?activeCard:(ids[0]||null);
+  ids.forEach(n=>kimemTakenCards.add(n));
+  kimemRecoveredRound=roundCode;
+  updateUI();
+ }catch(e){console.warn('Bingo 10 card recovery unavailable',e)}
+ finally{if(kimemRecoveryPending===roundCode)kimemRecoveryPending=null}
+}
+
 async function kimemRefreshVerifiedMoney(roundCode){
  if(!/^AA[0-9]{6}$/.test(roundCode||''))return;
  try{
@@ -251,6 +286,14 @@ async function kimemRefreshVerifiedMoney(roundCode){
   if(!response.ok)return;
   const d=await response.json();
   if(!d.ok||d.roundCode!==roundCode||!Number.isSafeInteger(d.players)||!Number.isSafeInteger(d.cardsSold)||!Number.isFinite(d.derash))return;
+  if(kimemSyncRound?.gameId!==roundCode)return;
+  if(Array.isArray(d.takenCards)&&d.takenCards.length===d.cardsSold&&
+     d.takenCards.every(n=>Number.isSafeInteger(n)&&n>=1&&n<=3000)&&new Set(d.takenCards).size===d.takenCards.length){
+   const next=new Set(d.takenCards);
+   const changed=next.size!==kimemTakenCards.size||[...next].some(n=>!kimemTakenCards.has(n));
+   kimemTakenCards=next;
+   if(changed)renderCardGrid();
+  }
   const player=document.getElementById('kimem-verified-players');
   const sales=document.getElementById('kimem-verified-sales');
   if(player)player.textContent=d.players.toLocaleString('en-US');
@@ -275,13 +318,26 @@ async function kimemSyncPoll(){
   if(!payload.ok||!payload.round)throw Error('Round not initialized');
   const r=payload.round;
   if(r.stake!=='10'||!/^AA\d{6}$/.test(r.gameId))throw Error('Invalid round');
+  const nextCapacity=Number.isSafeInteger(r.cardCapacity)&&r.cardCapacity>=1&&r.cardCapacity<=3000?r.cardCapacity:1000;
+  if(kimemCardCapacity!==nextCapacity){
+   kimemCardCapacity=nextCapacity;
+   const tag=document.getElementById('kimem-card-limit');if(tag)tag.textContent=String(nextCapacity);
+   const footer=document.getElementById('kimem-card-footer-limit');if(footer)footer.textContent=String(nextCapacity);
+   const search=document.getElementById('card-search-input');
+   if(search)search.placeholder='Search card number (1-'+nextCapacity+')...';
+   const matrix=document.getElementById('card-matrix');
+   if(matrix)matrix.setAttribute('aria-label','Choose cards 1 to '+nextCapacity);
+   updateUI();
+  }
   kimemSyncClockOffset=payload.serverTime-Date.now();
   const playersNode=document.getElementById('kimem-verified-players');
   const salesNode=document.getElementById('kimem-verified-sales');
   // Financial figures are supplied only by the verified purchase endpoint.
   // Do not overwrite them with unrelated draw-service counters.
-  kimemRefreshVerifiedMoney(r.gameId);
+  if(kimemSyncRound?.gameId!==r.gameId){kimemTakenCards=new Set();kimemRecoveredRound=null;selectedCards.splice(0);activeCard=null;kimemSelectionRevision++;updateUI()}
   kimemSyncRound=r;
+  kimemRefreshVerifiedMoney(r.gameId);
+  kimemRecoverPaidCards(r.gameId);
   kimemSyncGameId(r.gameId);
   kimemSyncRender();
  }catch(e){
@@ -358,8 +414,8 @@ window.addEventListener('message',event=>{
  const label=document.getElementById('lobby-balance');
  if(label)label.textContent=kimemVerifiedLobbyBalance.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 });
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLobbyBalance()});
-window.addEventListener('pageshow',refreshLobbyBalance);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshLobbyBalance();if(kimemSyncRound?.gameId){kimemRefreshVerifiedMoney(kimemSyncRound.gameId);kimemRecoverPaidCards(kimemSyncRound.gameId,true)}}});
+window.addEventListener('pageshow',()=>{refreshLobbyBalance();if(kimemSyncRound?.gameId)kimemRecoverPaidCards(kimemSyncRound.gameId,true)});
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
  const tg=window.Telegram?.WebApp;
