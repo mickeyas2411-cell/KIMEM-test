@@ -29,3 +29,24 @@ test('Bingo 10 retains card recovery, ownership locks, server cap, wrong-Bingo s
  assert.ok(game.includes('n<=3000'));
  assert.ok(game.includes('event.stopImmediatePropagation()'));
 });
+
+test('Bingo 10 Lobby, Live Game and 3000-card generation agree on all card numbers',()=>{
+ const lobby=text('KIMEM_BINGO_Game_Lobby.html');
+ const live=text('KIMEM_BINGO_Live_Game.html');
+ const extract=(source,name)=>{
+  const marker='function '+name+'(id){';
+  const start=source.indexOf(marker);
+  assert.ok(start>=0,name+' function exists');
+  const end=source.indexOf('\\n',start);
+  assert.ok(end>start,name+' stays self-contained');
+  return vm.runInNewContext('('+source.slice(start,end)+')');
+ };
+ const preview=extract(lobby,'generateDeterministicCard');
+ const play=extract(live,'cardFor');
+ for(const id of [1,27,999,1000,1001,1500,2000,2500,2999,3000]){
+  const p=preview(id).map(row=>Array.from(row,n=>n==='FREE'?0:n));
+  const g=play(id);
+  assert.deepEqual(p,JSON.parse(JSON.stringify(g)),'Card #'+id+' must not change from Lobby to Live');
+  assert.equal(new Set(g.flat().filter(Boolean)).size,24);
+ }
+});
