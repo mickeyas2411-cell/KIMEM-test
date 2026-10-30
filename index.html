@@ -461,7 +461,7 @@ function kimemHistoryRender(){
  status.textContent=records.length?'':info.totalCards===0?'No completed Bingo 10 games in this period.':'No '+(kimemHistoryFilter==='WIN'?'winning':kimemHistoryFilter==='LOST'?'lost':'matching')+' cards in the displayed results.';
  for(const item of records){
   if(!/^AA[0-9]{6}$/.test(String(item.gameId||''))||
-     !Number.isInteger(item.card)||item.card<1||item.card>1000||
+     !Number.isInteger(item.card)||item.card<1||item.card>3000||
      !['WIN','LOST'].includes(item.result))continue;
   const line=document.createElement('div');line.className='kh-result';
   const main=document.createElement('div');main.className='kh-result-main';
