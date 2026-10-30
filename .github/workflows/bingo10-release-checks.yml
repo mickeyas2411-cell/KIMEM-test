@@ -1,0 +1,24 @@
+name: Bingo 10 Safe Release Checks
+on:
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'KIMEM_BINGO_Live_Game.html'
+      - 'KIMEM_BINGO_20_Lobby.html'
+      - 'KIMEM_BINGO_20_Live_Game.html'
+      - 'test/bingo10-safe-integration.test.mjs'
+      - '.github/workflows/bingo10-release-checks.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test test/bingo10-safe-integration.test.mjs
