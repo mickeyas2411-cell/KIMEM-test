@@ -1,0 +1,23 @@
+name: Bingo settings visibility checks
+on:
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'KIMEM_BINGO_Live_Game.html'
+      - 'KIMEM_BINGO_20_Lobby.html'
+      - 'KIMEM_BINGO_20_Live_Game.html'
+      - 'test/bingo-management-display.test.mjs'
+      - '.github/workflows/bingo-settings-visibility.yml'
+  push:
+    branches: ['feat/bingo-settings-visibility-20261030']
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test test/bingo-management-display.test.mjs
