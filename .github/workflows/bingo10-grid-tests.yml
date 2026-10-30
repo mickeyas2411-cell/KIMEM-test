@@ -1,0 +1,20 @@
+name: Bingo 10 staging grid-performance regression tests
+on:
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'test/bingo10-card-grid-perf.test.mjs'
+      - '.github/workflows/bingo10-grid-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  grid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify ONLY local Bingo 10 UI rendering (no network, wallet or server)
+        run: node --test test/bingo10-card-grid-perf.test.mjs
