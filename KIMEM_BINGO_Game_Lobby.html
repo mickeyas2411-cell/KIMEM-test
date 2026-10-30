@@ -173,7 +173,57 @@ function kimemRequestOwnedCards(roundCode){
  qimemBingo10WalletFrame.contentWindow.postMessage({type:'qimem-bingo10-my-cards',roundCode},
   qimemBingo10WalletOrigin);
 }
-function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=3000;i++){const owned=selectedCards.includes(i),other=qimemLocksReady&&qimemOtherPlayerLocks.has(i)&&!owned;const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(owned?' selected':'')+(other?' other-locked':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(owned));btn.setAttribute('aria-label',other?'Card '+i+' locked by another player':'Card '+i);btn.disabled=other;btn.innerHTML=String(i)+((owned||other)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+// Bingo 10 grid performance: keep existing 3,000 card nodes and their click handlers.
+ // Only cards whose ownership, global lock or search state changed are repainted.
+ // Wallet charges, refunds and lock ownership stay exclusively server-authoritative.
+let qimemGridRenderedOwn=new Set(),qimemGridRenderedOther=new Set(),qimemGridRenderedSearch=0;
+function renderCardGrid(){
+ const container=$('card-matrix');
+ const ownNow=new Set(selectedCards);
+ const otherNow=new Set();
+ if(qimemLocksReady)for(const id of qimemOtherPlayerLocks)
+  if(!ownNow.has(id))otherNow.add(id);
+ const searchNow=searchQuery?Number(searchQuery):0;
+ const paint=(id,btn)=>{
+  const owned=ownNow.has(id),other=otherNow.has(id);
+  btn.className='card-grid-item'+(owned?' selected':'')+(other?' other-locked':'')+(searchNow===id?' soft-match':'');
+  btn.setAttribute('aria-pressed',String(owned));
+  btn.setAttribute('aria-label',other?'Card '+id+' locked by another player':'Card '+id);
+  btn.disabled=other;
+  btn.innerHTML=String(id)+((owned||other)?'<span class="lock" aria-label="locked">🔒</span>':'');
+ };
+ if(container.children.length!==3000){
+  const scrollTop=container.scrollTop,frag=document.createDocumentFragment();
+  for(let id=1;id<=3000;id++){
+   const btn=document.createElement('button');
+   btn.type='button';btn.id='card-btn-'+id;
+   paint(id,btn);
+   btn.addEventListener('click',()=>toggleCard(id));
+   frag.appendChild(btn);
+  }
+  container.replaceChildren(frag);
+  container.scrollTop=scrollTop;
+ }else{
+  const dirty=new Set();
+  const diff=(previous,current)=>{
+   for(const id of previous)if(!current.has(id))dirty.add(id);
+   for(const id of current)if(!previous.has(id))dirty.add(id);
+  };
+  diff(qimemGridRenderedOwn,ownNow);
+  diff(qimemGridRenderedOther,otherNow);
+  if(qimemGridRenderedSearch!==searchNow){
+   if(qimemGridRenderedSearch>=1&&qimemGridRenderedSearch<=3000)dirty.add(qimemGridRenderedSearch);
+   if(searchNow>=1&&searchNow<=3000)dirty.add(searchNow);
+  }
+  for(const id of dirty){
+   const btn=$('card-btn-'+id);
+   if(btn)paint(id,btn);
+  }
+ }
+ qimemGridRenderedOwn=ownNow;
+ qimemGridRenderedOther=otherNow;
+ qimemGridRenderedSearch=searchNow;
+}
 let kimemCardRequest=null;
 function toggleCard(id){
  if(kimemCardRequest){triggerToast('Please finish the previous card request');return}
