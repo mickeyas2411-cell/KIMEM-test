@@ -120,12 +120,15 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
-function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=3000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+let kimemRoundCardCapacity=3000;
+function kimemCapacityFromRound(round){const v=round?.cardCapacity;return Number.isSafeInteger(v)&&v>=100&&v<=3000?v:3000}
+function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=kimemRoundCardCapacity;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
 let kimemCardRequest=null;
 function toggleCard(id){
  if(kimemCardRequest){triggerToast('Please finish the previous card request');return}
  const round=kimemSyncRound;
  if(!round||round.phase!=='lobby'||!Number.isSafeInteger(Number(round.liveStartsAt))||Date.now()+kimemSyncClockOffset>=Number(round.liveStartsAt)-1500){triggerToast('Card selection is closed or connecting');return}
+ if(!Number.isSafeInteger(id)||id<1||id>kimemRoundCardCapacity){triggerToast('Card outside this round’s limit');return}
  const selected=selectedCards.includes(id),action=selected?'unselect':'select';
  if(!selected&&selectedCards.length>=3){triggerToast('Maximum 3 cards allowed!');return}
  if(!selected&&kimemVerifiedLobbyBalance!==null&&kimemVerifiedLobbyBalance<10){triggerToast('Insufficient wallet balance');return}
@@ -162,7 +165,7 @@ window.addEventListener('message',event=>{
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='No cards selected';row.appendChild(msg);return}for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}}
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
-function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=3000){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
+function handleSearch(){searchQuery=$('card-search-input').value.replace(/[^0-9]/g,'').slice(0,4);$('card-search-input').value=searchQuery;renderCardGrid();if(searchQuery){const target=Number(searchQuery);if(target>=1&&target<=kimemRoundCardCapacity){const el=$('card-btn-'+target);if(el){const area=$('card-matrix');area.scrollTop=Math.max(0,el.offsetTop-area.offsetTop-area.clientHeight/2+el.offsetHeight/2)}}}}
 function clearSearch(){$('card-search-input').value='';searchQuery='';renderCardGrid()}
 function leaveToLobby(){window.location.href='./index.html'}
 function enterLiveGame(){
@@ -281,6 +284,8 @@ async function kimemSyncPoll(){
   // Financial figures are supplied only by the verified purchase endpoint.
   // Do not overwrite them with unrelated draw-service counters.
   kimemRefreshVerifiedMoney(r.gameId);
+  const capacity=kimemCapacityFromRound(r);
+  if(kimemRoundCardCapacity!==capacity){kimemRoundCardCapacity=capacity;renderCardGrid();const heading=$('card-matrix')?.closest('section')?.querySelector('h2');if(heading)heading.textContent='Choose cards (1 – '+capacity+')'}
   kimemSyncRound=r;
   kimemSyncGameId(r.gameId);
   kimemSyncRender();

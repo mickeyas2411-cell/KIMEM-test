@@ -1,0 +1,21 @@
+name: Bingo 10 Lobby Contract
+on:
+  push:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'bingo10-capacity-contract.test.mjs'
+      - '.github/workflows/bingo10-lobby-contract.yml'
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'bingo10-capacity-contract.test.mjs'
+      - '.github/workflows/bingo10-lobby-contract.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test bingo10-capacity-contract.test.mjs
