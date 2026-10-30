@@ -690,6 +690,13 @@ kimemBingoWinSound.preload='auto';kimemBingoWrongSound.preload='auto';
 function kimemPlayBingoSound(sound){try{sound.pause();sound.currentTime=0;sound.muted=false;sound.volume=1;const p=sound.play();if(p&&p.catch)p.catch(e=>console.warn('BINGO sound:',e))}catch(e){console.warn('BINGO sound:',e)}}
 function claimBingo(){
  if(new URLSearchParams(location.search).get('sync')!=='0'){
+  if(!selected.length){kimemSmallNotice('Select a card in Lobby first');return}
+  if(!kimemWinningCards().length){
+   kimemPlayBingoSound(kimemBingoWrongSound);
+   kimemSmallNotice('NO BINGO YET');
+   return;
+  }
+  // A valid winning line must still be settled by the authoritative server.
   kimemSmallNotice('BINGO is confirmed by the live server');
   return;
  }
