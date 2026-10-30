@@ -103,10 +103,14 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 #countdown-scene .countdown-balls{gap:clamp(4px,1.3vw,10px)!important;margin:8px 0!important}
 #countdown-scene .countdown-ball{max-width:62px!important;flex:0 1 62px!important}
 #countdown-scene .scene-footer{font-size:11px!important;margin-top:6px!important}
-.card-grid-item.other-locked{background:linear-gradient(180deg,#283650,#151e32)!important;border-color:#637085!important;color:#bec8d9!important;opacity:.72;cursor:not-allowed;box-shadow:none!important}
-.card-grid-item.other-locked .lock{font-size:9px;position:absolute;right:2px;top:1px}
+.card-grid-item.other-locked{background:linear-gradient(180deg,#ffe985,#d9961d)!important;border-color:#fff0a1!important;color:#4b3200!important;opacity:1;cursor:not-allowed;box-shadow:0 0 7px #ffbf427a,inset 0 1px 0 #fff9!important}
+.card-grid-item.other-locked .lock{font-size:9px;position:absolute;right:2px;top:1px;color:#704d08}
+.card-grid-item.selected{border-color:#fff!important}
+.card-grid-item.selected::after{content:"✓";position:absolute;right:1px;top:0;width:12px;height:12px;line-height:12px;border-radius:50%;text-align:center;color:#fff;background:#74500b;font-size:9px;font-weight:900;box-shadow:0 0 0 1px #fffa}
 #locked-cards{display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:thin}
-#locked-cards .q-lock-other{flex-shrink:0;border:1px solid #66758f;border-radius:7px;padding:4px 6px;font-size:10px;color:#aabbd3}
+#locked-cards .q-lock-other{flex-shrink:0;border:1px solid #f3d27b;border-radius:7px;padding:4px 6px;font-size:10px;color:#4b3200;background:linear-gradient(180deg,#ffe985,#d9961d);font-weight:800}
+#locked-cards .locked-chip{border-color:#fff0a1;background:linear-gradient(180deg,#ffe985,#d9961d);color:#4b3200}
+#locked-cards .locked-chip.active{border-color:#fff;box-shadow:0 0 0 1px #fff8}
 #locked-cards .q-lock-count{flex-shrink:0;font-size:10px;font-weight:800;color:#94a3b8}
 </style><link rel="prefetch" href="./KIMEM_BINGO_Live_Game.html" as="document"></head>
 <body class="h-[100dvh] flex items-center justify-center p-0 cosmic-bg"><div class="w-full min-h-0 h-[100dvh] w-full bg-[#020716] border-0 flex flex-col relative overflow-hidden">
@@ -212,8 +216,9 @@ window.addEventListener('message',event=>{
 });
 function renderLockedCards(){const row=$('locked-cards');row.replaceChildren();for(const id of selectedCards){const btn=document.createElement('button');btn.type='button';btn.className='locked-chip'+(id===activeCard?' active':'');btn.innerHTML='🔒 #'+String(id).padStart(4,'0')+' <span>×</span>';btn.title='Unmark card '+id;btn.addEventListener('click',()=>toggleCard(id));row.appendChild(btn)}
  const other=[...qimemOtherPlayerLocks].filter(n=>!selectedCards.includes(n)).sort((a,b)=>a-b);
- if(other.length){const count=document.createElement('span');count.className='q-lock-count';count.textContent=other.length+' OTHER LOCKED';row.appendChild(count);for(const id of other.slice(0,18)){const chip=document.createElement('span');chip.className='q-lock-other';chip.textContent='🔒 #'+String(id).padStart(4,'0');row.appendChild(chip)}}
- else if(!selectedCards.length){const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent=qimemLocksReady?'No cards locked':'Syncing card locks…';row.appendChild(msg)}
+ const lockedTotal=new Set([...qimemOtherPlayerLocks,...selectedCards]).size;
+ if(qimemLocksReady||selectedCards.length){const count=document.createElement('span');count.className='q-lock-count';count.textContent=lockedTotal+' LOCKED';row.appendChild(count);for(const id of other.slice(0,18)){const chip=document.createElement('span');chip.className='q-lock-other';chip.textContent='🔒 #'+String(id).padStart(4,'0');row.appendChild(chip)}}
+ else{const msg=document.createElement('span');msg.className='text-[10px] text-slate-500';msg.textContent='Syncing card locks…';row.appendChild(msg)}
 }
 function renderBingoPreview(){const hdr=$('bingo-header');if(!hdr.childElementCount){const colors=['#ffae4e','#60a5fa','#48d7a4','#cf83f7','#ff6484'];'BINGO'.split('').forEach((letter,i)=>{const div=document.createElement('div');div.className='bingo-hdr';div.style.color=colors[i];div.textContent=letter;hdr.appendChild(div)})}const board=$('bingo-board');const grid=activeCard?generateDeterministicCard(activeCard):Array.from({length:5},()=>Array(5).fill("-"));const frag=document.createDocumentFragment();for(let r=0;r<5;r++)for(let c=0;c<5;c++){const div=document.createElement('div');div.className='bingo-tile'+(grid[r][c]==='FREE'?' tile-free':'');div.textContent=grid[r][c];frag.appendChild(div)}board.replaceChildren(frag)}
 function updateUI(){renderCardGrid();renderLockedCards();renderBingoPreview();$('selected-badge').textContent=selectedCards.length+' / 3 SELECTED';$('preview-title').textContent=activeCard?'CARD #'+String(activeCard).padStart(4,'0'):'NO CARD SELECTED';$('preview-title').className='text-[9px] font-black tracking-wider uppercase '+(activeCard?'text-amber-400':'text-blue-400')}
