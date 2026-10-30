@@ -37,7 +37,7 @@ test('Bingo 10 Lobby, Live Game and 3000-card generation agree on all card numbe
   const marker='function '+name+'(id){';
   const start=source.indexOf(marker);
   assert.ok(start>=0,name+' function exists');
-  const end=source.indexOf('\\n',start);
+  const end=source.indexOf('\n',start);
   assert.ok(end>start,name+' stays self-contained');
   return vm.runInNewContext('('+source.slice(start,end)+')');
  };
