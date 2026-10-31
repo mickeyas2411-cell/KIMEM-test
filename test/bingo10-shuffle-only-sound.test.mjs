@@ -12,9 +12,9 @@ test('selected soundtrack uses exactly one dedicated local asset, not ball voice
  assert.match(html,/kimem-bingo-wrong\.wav/);
  assert.match(html,/kimemResultCountdownAudio/);
 });
-test('authoritative fresh live round and first shuffle phase only; never replay on returning to existing draw',()=>{
- assert.match(html,/round\.phase!=='live'/);
- assert.match(html,/round\.drawn\.length/);
+test('sound starts at first shuffle frame; authoritative ball stops it on re-entry or regular draw',()=>{
+ assert.ok(html.includes("if(r.phase!=='live'||(Array.isArray(r.drawn)&&r.drawn.length))kimemStopShuffleAudio();"));
+ assert.ok(html.includes('if(pending.length)kimemStopShuffleAudio();'));
  assert.match(html,/kimemShuffleAudioStarted=true/);
  assert.match(html,/spherePhase!=='shuffle'/);
  assert.ok(html.includes("sphereStart=performance.now();sphereLastSwap=0;\n kimemStartShuffleAudioNow();"));
