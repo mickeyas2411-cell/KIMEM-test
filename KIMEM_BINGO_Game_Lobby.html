@@ -484,7 +484,7 @@ window.addEventListener('pageshow',refreshLobbyBalance);
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
  const tg=window.Telegram?.WebApp;
- try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
+ try{if(tg){tg.ready();tg.expand();tg.onEvent('viewportChanged',syncTelegramViewport);tg.onEvent('safeAreaChanged',syncTelegramViewport);tg.onEvent('contentSafeAreaChanged',syncTelegramViewport);tg.onEvent('fullscreenChanged',syncTelegramViewport);if(tg.isFullscreen&&typeof tg.exitFullscreen==='function')tg.exitFullscreen();/* Avoid Telegram system overlay obscuring title; expand only. */}}catch(e){}
  syncTelegramViewport();window.addEventListener('resize',syncTelegramViewport);window.visualViewport?.addEventListener('resize',syncTelegramViewport);
  refreshLobbyBalance();updateUI();if(kimemSyncEnabled)kimemStartSyncedLobby();else{startTimer();kimemStartGameIdOnlySync();}
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
