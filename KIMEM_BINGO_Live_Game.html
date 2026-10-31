@@ -734,7 +734,7 @@ function kimemFinishAfterBall(ids,afterCallDelayMs=1000){
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
 function kimemFinishGame(ids){
  if(kimemFinished)return;
- kimemFinished=true;window.kimemBingoEnding=true;running=false;spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
+ kimemFinished=true;window.kimemBingoEnding=true;running=false;kimemStopShuffleAudio();spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
  if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
  const winners=Array.isArray(ids)?ids:(ids===null||ids===undefined?[]:[ids]);
  const overlay=document.getElementById('kimem-winner-overlay');
@@ -1078,7 +1078,7 @@ function digitalTick(now){
    if(t-sphereLastSwap>105&&sphereSamples.length){
     sphereSampleIndex=(sphereSampleIndex+1)%sphereSamples.length;sphereLastSwap=t;
    }
-  }else { $('machine').classList.remove('kimem-shuffling');if(new URLSearchParams(location.search).get('sync')!=='0'){spherePhase='idle';sphereAngle=0;spherePitch=0;$('shuffle-status').textContent='';digitalTick.serverStaticRendered=false;}else beginSphereReveal(now); }
+  }else { kimemStopShuffleAudio();$('machine').classList.remove('kimem-shuffling');if(new URLSearchParams(location.search).get('sync')!=='0'){spherePhase='idle';sphereAngle=0;spherePitch=0;$('shuffle-status').textContent='';digitalTick.serverStaticRendered=false;}else beginSphereReveal(now); }
  }else if(spherePhase==='reveal'){
   if(!kimemRevealVoiceStarted&&spherePending&&now-sphereStart>=0){kimemRevealVoiceStarted=true;kimemCallBallAmharic(spherePending)}
   const t=clamp3((now-sphereStart)/1100,0,1),e=ease3(t);
@@ -1127,6 +1127,40 @@ function resetGame(){
  board();cards();sphereRender(performance.now());
 }
 (function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
+
+// Bingo 10 shuffle-only soundtrack (selected clip #2). No effect on numbered-ball voices.
+const kimemShuffleAudio=new Audio(new URL('./kimem-shuffle-selected-2.ogg',location.href).href);
+kimemShuffleAudio.preload='auto';
+kimemShuffleAudio.volume=.72;
+let kimemShuffleAudioStarted=false;
+function kimemStopShuffleAudio(){
+ if(!kimemShuffleAudio.paused)kimemShuffleAudio.pause();
+}
+function kimemStartShuffleAudioIfVerified(round){
+ // Never replay on returning to an already drawing round.
+ if(kimemShuffleAudioStarted||spherePhase!=='shuffle'||round.phase!=='live'||
+    !Array.isArray(round.drawn)||round.drawn.length)return;
+ const elapsed=(performance.now()-sphereStart)/1000;
+ if(elapsed<0||elapsed>=3.9)return;
+ kimemShuffleAudioStarted=true;
+ try{
+  kimemShuffleAudio.currentTime=elapsed;
+  const play=kimemShuffleAudio.play();
+  if(play?.catch)play.catch(()=>{}); // Telegram/iOS may require a gesture.
+ }catch(e){console.warn('Bingo 10 shuffle sound:',e)}
+}
+function kimemShuffleGestureResume(){
+ if(!kimemShuffleAudioStarted||spherePhase!=='shuffle'||!kimemShuffleAudio.paused)return;
+ const elapsed=(performance.now()-sphereStart)/1000;
+ if(elapsed>=3.9)return;
+ try{
+  kimemShuffleAudio.currentTime=Math.max(0,elapsed);
+  const play=kimemShuffleAudio.play();
+  if(play?.catch)play.catch(()=>{});
+ }catch(e){}
+}
+document.addEventListener('pointerdown',kimemShuffleGestureResume,{passive:true});
+document.addEventListener('touchstart',kimemShuffleGestureResume,{passive:true});
 
 readCards();cards();board();initMachine();
 try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
@@ -1324,6 +1358,8 @@ async function kimemRefreshVerifiedMoney(roundCode){
    activeRound=r.roundNumber;
    showId(r.gameId);
    if(r.phase==='live'||r.phase==='finished')kimemRestorePaidCards(r.gameId);
+   if(r.phase==='live')kimemStartShuffleAudioIfVerified(r);
+   else kimemStopShuffleAudio();
    if(r.phase==='lobby'){
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1&returned=1&v=20261021r2')}
     return;
@@ -1333,7 +1369,10 @@ async function kimemRefreshVerifiedMoney(roundCode){
     const samePrefix=drawn.every((n,i)=>r.drawn[i]===n);
     if(!samePrefix){drawn=[];board();cards();}
     const pending=r.drawn.slice(drawn.length);
+    // Stop the shuffle-only sound before the first authoritative ball is spoken.
+    if(pending.length)kimemStopShuffleAudio();
     if(kimemFirstServerSync&&pending.length>0&&spherePhase==='shuffle'){
+     kimemStopShuffleAudio();
      spherePhase='idle';$('machine').classList.remove('kimem-shuffling');$('shuffle-status').textContent='';sphereAngle=0;spherePitch=0;
     }
     const isNewServerBall=!kimemFirstServerSync&&pending.length===1;
