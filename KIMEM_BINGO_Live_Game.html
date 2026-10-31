@@ -1136,17 +1136,14 @@ let kimemShuffleAudioStarted=false;
 function kimemStopShuffleAudio(){
  if(!kimemShuffleAudio.paused)kimemShuffleAudio.pause();
 }
-function kimemStartShuffleAudioIfVerified(round){
- // Never replay on returning to an already drawing round.
- if(kimemShuffleAudioStarted||spherePhase!=='shuffle'||round.phase!=='live'||
-    !Array.isArray(round.drawn)||round.drawn.length)return;
- const elapsed=(performance.now()-sphereStart)/1000;
- if(elapsed<0||elapsed>=3.9)return;
+function kimemStartShuffleAudioNow(){
+ // Begin at the very first frame of live shuffle, immediately after the 5-1 countdown.
+ if(kimemShuffleAudioStarted||spherePhase!=='shuffle')return;
  kimemShuffleAudioStarted=true;
  try{
-  kimemShuffleAudio.currentTime=elapsed;
+  kimemShuffleAudio.currentTime=0; // No 2-second seek: play all four seconds from the beginning.
   const play=kimemShuffleAudio.play();
-  if(play?.catch)play.catch(()=>{}); // Telegram/iOS may require a gesture.
+  if(play?.catch)play.catch(()=>{}); // iOS may require a user gesture.
  }catch(e){console.warn('Bingo 10 shuffle sound:',e)}
 }
 function kimemShuffleGestureResume(){
@@ -1154,7 +1151,7 @@ function kimemShuffleGestureResume(){
  const elapsed=(performance.now()-sphereStart)/1000;
  if(elapsed>=3.9)return;
  try{
-  kimemShuffleAudio.currentTime=Math.max(0,elapsed);
+  kimemShuffleAudio.currentTime=0; // Retry from start; never jump into the middle of the clip.
   const play=kimemShuffleAudio.play();
   if(play?.catch)play.catch(()=>{});
  }catch(e){}
@@ -1168,6 +1165,7 @@ try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(tg?.isFullscree
 (function autoStartLiveDraw(){
  const status=$('shuffle-status');
  spherePhase='shuffle';$('machine').classList.add('kimem-shuffling');sphereStart=performance.now();sphereLastSwap=0;
+ kimemStartShuffleAudioNow();
  sphereSamples=Array.from({length:75},(_,i)=>i+1);
  for(let i=sphereSamples.length-1;i>0;i--){
   const j=Math.floor(Math.random()*(i+1));
@@ -1359,8 +1357,7 @@ async function kimemRefreshVerifiedMoney(roundCode){
    activeRound=r.roundNumber;
    showId(r.gameId);
    if(r.phase==='live'||r.phase==='finished')kimemRestorePaidCards(r.gameId);
-   if(r.phase==='live')kimemStartShuffleAudioIfVerified(r);
-   else kimemStopShuffleAudio();
+   if(r.phase!=='live'||(Array.isArray(r.drawn)&&r.drawn.length))kimemStopShuffleAudio();
    if(r.phase==='lobby'){
     if(!redirecting){redirecting=true;location.replace('./KIMEM_BINGO_Game_Lobby.html?sync=1&returned=1&v=20261021r2')}
     return;

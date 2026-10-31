@@ -12,18 +12,20 @@ test('selected soundtrack uses exactly one dedicated local asset, not ball voice
  assert.match(html,/kimem-bingo-wrong\.wav/);
  assert.match(html,/kimemResultCountdownAudio/);
 });
-test('authoritative fresh live round and first shuffle phase only; never replay on returning to existing draw',()=>{
- assert.match(html,/round\.phase!=='live'/);
- assert.match(html,/round\.drawn\.length/);
+test('sound starts at first shuffle frame; authoritative ball stops it on re-entry or regular draw',()=>{
+ assert.ok(html.includes("if(r.phase!=='live'||(Array.isArray(r.drawn)&&r.drawn.length))kimemStopShuffleAudio();"));
+ assert.ok(html.includes('if(pending.length)kimemStopShuffleAudio();'));
  assert.match(html,/kimemShuffleAudioStarted=true/);
  assert.match(html,/spherePhase!=='shuffle'/);
- assert.match(html,/kimemStartShuffleAudioIfVerified\(r\)/);
+ assert.ok(html.includes("sphereStart=performance.now();sphereLastSwap=0;\n kimemStartShuffleAudioNow();"));
+ assert.ok(!html.includes('kimemStartShuffleAudioIfVerified(r)'));
+ assert.ok(html.includes('kimemShuffleAudio.currentTime=0;'));
 });
 test('one-time 4s shuffle ends on completion, server interruption, or winner finish',()=>{
  assert.match(html,/kimemStopShuffleAudio\(\);\$\('machine'\)\.classList\.remove\('kimem-shuffling'\)/);
  assert.match(html,/if\(kimemFirstServerSync&&pending\.length>0&&spherePhase==='shuffle'\)\{\s*kimemStopShuffleAudio\(\)/);
  assert.match(html,/kimemFinished=true;window\.kimemBingoEnding=true;running=false;kimemStopShuffleAudio\(\)/);
- assert.match(html,/if\(elapsed<0\|\|elapsed>=3\.9\)return/);
+ assert.match(html,/if\(elapsed>=3\.9\)return/);
  assert.match(html,/kimemShuffleAudio\.volume=\.72/);
  assert.ok(html.includes('if(pending.length)kimemStopShuffleAudio();'),'motor must silence when first server ball arrives');
 });
