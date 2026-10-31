@@ -11,10 +11,10 @@ const target=Object.fromEntries(kinds.map((k,i)=>[k,buttons[i]]));
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 const css=document.createElement('style');
 css.textContent=`
-@keyframes qRewardBeat{0%,100%{filter:brightness(1)}38%{filter:brightness(1.3)}54%{filter:brightness(1.04)}69%{filter:brightness(1.3)}}
+@keyframes qRewardBeat{0%,100%{filter:brightness(1);transform:scale(1);box-shadow:0 0 3px var(--reward-glow,#f5c45b80)}38%{filter:brightness(1.26);transform:scale(1.018);box-shadow:0 0 10px 2px var(--reward-glow,#f5c45b80)}54%{filter:brightness(1.04);transform:scale(1.002);box-shadow:0 0 5px var(--reward-glow,#f5c45b80)}69%{filter:brightness(1.32);transform:scale(1.022);box-shadow:0 0 16px 3px var(--reward-glow,#f5c45b80)}}
 @keyframes qRewardBurst{0%,100%{filter:brightness(1);transform:scale(1)}45%{filter:brightness(1.7);transform:scale(1.035)}}
 @keyframes qRewardSpark{0%{opacity:1;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.3)}}
-.q-reward-heartbeat{animation:qRewardBeat var(--beat,1s) ease-in-out infinite!important}
+.q-reward-heartbeat{animation:qRewardBeat var(--beat,1s) ease-in-out infinite!important;transform-origin:center center;position:relative;z-index:1;will-change:filter,transform}
 .q-reward-burst{animation:qRewardBurst .6s ease-in-out 4!important;position:relative!important}
 .q-reward-spark{position:absolute!important;left:50%;top:50%;width:5px;height:5px;background:#ffe9a6;border-radius:50%;box-shadow:0 0 8px #ffcf4b;z-index:10;pointer-events:none;animation:qRewardSpark 1s ease-out both!important}
 #q-reward-notice{position:fixed;z-index:2000;left:50%;top:calc(20px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:#302307f5;border:1px solid #e3b75e;border-radius:12px;color:#ffe3a6;max-width:90vw;padding:10px 16px;font:bold 13px system-ui;text-align:center;box-shadow:0 6px 30px #000b;pointer-events:none;opacity:0;transition:opacity .2s}
@@ -39,12 +39,12 @@ function pulse(){
     if(k==='jackpot'){if(balance>=min)speed='.52s';else if(balance>=min*.75)speed='.78s';else if(balance>=min*.5)speed='1.1s';}
     else if(balance>=min&&(k!=='weekly'||Number(r.weeklyDay)===t.day)){
      const match=/^([01]\d|2[0-3]):([0-5]\d)$/.exec(String(r.drawTime||''));
-     if(match){const diff=+match[1]*60+(+match[2])-t.minutes;if(diff>=0&&diff<=180)speed=diff<=5?'.42s':diff<=20?'.72s':'1.25s';}
+     if(match){const diff=+match[1]*60+(+match[2])-t.minutes;if(diff>=0&&diff<=10)speed=diff<=0?'.25s':diff<=1?'.36s':'.95s';}
     }
    }
   }
   button.classList.toggle('q-reward-heartbeat',!!speed);
-  if(speed)button.style.setProperty('--beat',speed);else button.style.removeProperty('--beat');
+  if(speed){button.style.setProperty('--beat',speed);button.style.setProperty('--reward-glow',k==='jackpot'?'#f5c45bb0':k==='weekly'?'#9d81ffb8':'#57cbffc4');}else{button.style.removeProperty('--beat');button.style.removeProperty('--reward-glow');}
  }
 }
 function celebrate(ev){
