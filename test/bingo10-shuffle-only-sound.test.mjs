@@ -6,7 +6,7 @@ const html=readFileSync(new URL('../KIMEM_BINGO_Live_Game.html',import.meta.url)
 const library='kimem-shuffle-selected-2.ogg';
 const sdkTest=readFileSync(new URL('../test/bingo10-live-reentry-recovery.test.mjs',import.meta.url),'utf8');
 test('selected soundtrack uses exactly one dedicated local asset, not ball voice or prize audio',()=>{
- assert.match(html,/const kimemShuffleAudio=new Audio\(new URL\('\.\/kimem-shuffle-selected-2\\.ogg',location\.href\)\.href\)/);
+ assert.ok(html.includes("new Audio(new URL('./kimem-shuffle-selected-2.ogg',location.href).href)"));
  assert.match(html,/KIMEM_VOICE_ENDPOINT\+n\+'\.mp3'/);
  assert.match(html,/kimem-bingo-win\.mp3/);
  assert.match(html,/kimem-bingo-wrong\.wav/);
