@@ -1129,7 +1129,7 @@ function resetGame(){
 (function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
 
 // Bingo 10 shuffle-only soundtrack (selected clip #2). No effect on numbered-ball voices.
-const kimemShuffleAudio=new Audio(new URL('./kimem-shuffle-selected-2.mp3',location.href).href);
+const kimemShuffleAudio=new Audio(new URL('./kimem-shuffle-selected-2.ogg',location.href).href);
 kimemShuffleAudio.preload='auto';
 kimemShuffleAudio.volume=.72;
 let kimemShuffleAudioStarted=false;
