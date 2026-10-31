@@ -25,6 +25,7 @@ test('one-time 4s shuffle ends on completion, server interruption, or winner fin
  assert.match(html,/kimemFinished=true;window\.kimemBingoEnding=true;running=false;kimemStopShuffleAudio\(\)/);
  assert.match(html,/if\(elapsed<0\|\|elapsed>=3\.9\)return/);
  assert.match(html,/kimemShuffleAudio\.volume=\.72/);
+ assert.ok(html.includes('if(pending.length)kimemStopShuffleAudio();'),'motor must silence when first server ball arrives');
 });
 test('existing Telegram paid-card recovery and 3k-card UX remain',()=>{
  assert.ok(sdkTest.includes('restores exactly the two paid cards'));
