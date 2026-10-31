@@ -1,0 +1,19 @@
+name: Bingo 10 existing reward box heartbeat safety checks
+on:
+  pull_request:
+    paths:
+      - 'qimem-bingo10-reward-fx.js'
+      - 'test/bingo10-box-heartbeat-glow.test.mjs'
+      - '.github/workflows/bingo10-box-heartbeat-glow.yml'
+permissions:
+  contents: read
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify reward animations and existing game
+        run: node --test test/bingo10-box-heartbeat-glow.test.mjs test/bingo10-shuffle-only-sound.test.mjs test/bingo10-telegram-safe-header.test.mjs test/bingo10-live-reentry-recovery.test.mjs test/bingo10-card-grid-perf.test.mjs
