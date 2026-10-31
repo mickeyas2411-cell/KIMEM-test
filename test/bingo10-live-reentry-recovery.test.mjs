@@ -23,12 +23,12 @@ function createHarness(){
    },cards(){renders.push([...context.selected])},console:{warn(...x){warnings.push(x)}},
    Set,Array,Number,String,Promise
  };
- runInNewContext(recoveryCode,context);
+ runInNewContext(recoveryCode+'\nfunction __setRoundForTest(n){activeRound=n;}',context);
  return {
    context,calls,renders,warnings,
    read:()=>[...context.selected],
    restore:round=>context.kimemRestorePaidCards(round),
-   setRound:n=>{context.activeRound=n},
+   setRound:n=>{context.__setRoundForTest(n)},
    setTelegramData:value=>{context.window.Telegram.WebApp.initData=value},
    mockReply:fn=>{context.fetch=async(url,options)=>{calls.push({url,options});return fn(url,options)}}
  };
