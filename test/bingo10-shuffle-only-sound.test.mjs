@@ -2,12 +2,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync,existsSync} from 'node:fs';
-import {runInNewContext} from 'node:vm';
 const html=readFileSync(new URL('../KIMEM_BINGO_Live_Game.html',import.meta.url),'utf8');
 const library='kimem-shuffle-selected-2.ogg';
 const sdkTest=readFileSync(new URL('../test/bingo10-live-reentry-recovery.test.mjs',import.meta.url),'utf8');
 test('selected soundtrack uses exactly one dedicated local asset, not ball voice or prize audio',()=>{
- assert.match(html,/const kimemShuffleAudio=new Audio\(new URL\('\.\/kimem-shuffle-selected-2\.mp3',location\.href\)\.href\)/);
+ assert.match(html,/const kimemShuffleAudio=new Audio\(new URL\('\.\/kimem-shuffle-selected-2\\.ogg',location\.href\)\.href\)/);
  assert.match(html,/KIMEM_VOICE_ENDPOINT\+n\+'\.mp3'/);
  assert.match(html,/kimem-bingo-win\.mp3/);
  assert.match(html,/kimem-bingo-wrong\.wav/);
@@ -34,5 +33,5 @@ test('existing Telegram paid-card recovery and 3k-card UX remain',()=>{
  assert.match(html,/function updateDraw\(n\)/);
 });
 test('selected soundtrack file exists in same directory for production deployment',()=>{
- assert.ok(existsSync(new URL('../'+library,import.meta.url)),'Required shuffle soundtrack MP3 is missing: do not deploy');
+ assert.ok(existsSync(new URL('../'+library,import.meta.url)),'Required chosen shuffle soundtrack OGG is missing: do not deploy');
 });
