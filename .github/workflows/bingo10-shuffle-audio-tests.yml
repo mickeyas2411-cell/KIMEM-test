@@ -1,0 +1,24 @@
+name: Bingo 10 selected shuffle-only audio safety checks
+on:
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Live_Game.html'
+      - 'kimem-shuffle-selected-2.ogg'
+      - 'test/bingo10-shuffle-only-sound.test.mjs'
+      - '.github/workflows/bingo10-shuffle-audio-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  shuffle-audio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify 4-second chosen audio file integrity
+        run: |
+          printf '%s  %s\n' bfa92018d393d172ece24d7d3365178a361a58ac25e3140c5156503f07cdb251 kimem-shuffle-selected-2.ogg | sha256sum -c -
+      - name: Test Bingo 10 shuffle audio and all existing live re-entry and grid regressions
+        run: node --test test/bingo10-shuffle-only-sound.test.mjs test/bingo10-live-reentry-recovery.test.mjs test/bingo10-card-grid-perf.test.mjs
