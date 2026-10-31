@@ -1126,7 +1126,7 @@ function resetGame(){
 
  board();cards();sphereRender(performance.now());
 }
-(function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync)}catch(e){}})();
+(function liveViewport(){const tg=window.Telegram?.WebApp;const sync=()=>{const h=tg?.viewportStableHeight>250?tg.viewportStableHeight:(window.visualViewport?.height||window.innerHeight);document.documentElement.style.setProperty('--live-height',Math.round(h)+'px')};sync();window.addEventListener('resize',sync);window.visualViewport?.addEventListener('resize',sync);try{tg?.onEvent('viewportChanged',sync);tg?.onEvent('fullscreenChanged',sync)}catch(e){}})();
 
 // Bingo 10 shuffle-only soundtrack (selected clip #2). No effect on numbered-ball voices.
 const kimemShuffleAudio=new Audio(new URL('./kimem-shuffle-selected-2.ogg',location.href).href);
@@ -1163,7 +1163,8 @@ document.addEventListener('pointerdown',kimemShuffleGestureResume,{passive:true}
 document.addEventListener('touchstart',kimemShuffleGestureResume,{passive:true});
 
 readCards();cards();board();initMachine();
-try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(typeof tg?.requestFullscreen==='function')tg.requestFullscreen()}catch(e){}
+// Preserve the approved Telegram header/safe area: avoid entering transparent fullscreen.
+try{const tg=window.Telegram?.WebApp;tg?.ready();tg?.expand();if(tg?.isFullscreen&&typeof tg.exitFullscreen==='function')tg.exitFullscreen()}catch(e){}
 (function autoStartLiveDraw(){
  const status=$('shuffle-status');
  spherePhase='shuffle';$('machine').classList.add('kimem-shuffling');sphereStart=performance.now();sphereLastSwap=0;
