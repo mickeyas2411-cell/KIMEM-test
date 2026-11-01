@@ -34,7 +34,7 @@
   if(active==="bonus_help"){
    add(view,"h3","ℹ️ How to Earn Bonus");
    text("🎉 Welcome Bonus","አዲስ ተጫዋች ሲመዘገብ 10 ብር አንድ ጊዜ ብቻ ወደ Main Wallet ይገባል።");
-   text("🤝 Referral Bonus","የጋበዝከው ተጫዋች የመጀመሪያውን የተረጋገጠ Deposit ሲያደርግ 10% ወደ አንተ Wallet ይገባል።");
+   text("🤝 Referral Bonus","Master Admin የሰጠህን Referral Code ለጓደኞችህ አጋራ። የጋበዝከው ተጫዋች የመጀመሪያውን Approved Deposit ሲያደርግ 10% ወደ Main Wallet ይገባል።");
    text("🔐 ጥበቃ","አንድ ተጫዋች አንድ ጋባዥ ብቻ ይኖረዋል። አልተረጋገጠም ወይም የተደጋገመ Deposit ቦነስ አያስገኝም።");
   }else if(active==="bonus_history"){
    add(view,"h3","📋 Bonus History","margin:0 0 14px");
@@ -50,6 +50,12 @@
   }else if(active==="referral"){
    add(view,"h3","🎟 My Referral Code","margin:0 0 14px");
    if(!profile){text("Status","መገናኘት አልተቻለም።");return}
+   if(!profile.code){
+    text("Referral Code",profile.codeStatus==="inactive"?"Pending Master Admin activation":"Not issued yet");
+    text("Access","Only QIMEM PAY Master Admin can issue or activate referral codes.");
+    text("Referral Bonus Paid",profile.earnedBirr+" ETB");
+    return;
+   }
    text("Your Code",profile.code);
    text("Invited Players",String(profile.invitedCount));
    text("Referral Bonus Paid",profile.earnedBirr+" ETB");
