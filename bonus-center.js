@@ -43,7 +43,7 @@
    text("Welcome Bonus",profile.welcomeReceived?"✅ 10.00 ETB credited":"Not yet credited");
    if(!list.length){text("History","ገና የተረጋገጠ ቦነስ መዝገብ የለም።");return}
    for(const item of list.slice(0,30)){
-    const name=item.type==="welcome"?"🎉 Welcome Bonus":"🤝 Referral Bonus";
+    const name=item.type==="welcome"?"🎉 Welcome Bonus":item.type==="manual"?"🎁 Player Bonus":"🤝 Referral Bonus";
     const date=Number.isFinite(Date.parse(item.date))?new Date(item.date).toLocaleString("en-GB"):"";
     text(name,item.amountBirr+" ETB · "+date);
    }
