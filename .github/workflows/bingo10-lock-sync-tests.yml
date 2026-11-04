@@ -1,0 +1,20 @@
+name: Bingo 10 safe queued lock-sync regression
+on:
+  pull_request:
+    paths:
+      - 'KIMEM_BINGO_Game_Lobby.html'
+      - 'test/bingo10-card-lock-sync.test.mjs'
+      - '.github/workflows/bingo10-lock-sync-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  lock-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify queued lock sync and unchanged card-grid rendering
+        run: node --test test/bingo10-card-lock-sync.test.mjs test/bingo10-card-grid-perf.test.mjs

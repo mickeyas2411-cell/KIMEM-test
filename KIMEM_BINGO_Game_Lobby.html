@@ -129,6 +129,8 @@ body>div:first-child>div:has(.footer-actions){position:relative!important;inset:
 const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const qimemOtherPlayerLocks=new Set();let qimemLockRound=null,qimemLocksReady=false,qimemLockLoading=false,qimemLockCheckedAt=0;
 let qimemOwnedRound=null,qimemOwnedLastRequestedAt=0,qimemOwnedReady=false;
+// One pending forced refresh is retained when an earlier lock snapshot is in flight.
+let qimemLockQueuedRound=null;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=(Math.imul(id,2654435761)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
 
@@ -137,10 +139,17 @@ function kimemOnRoundCardChange(roundCode){
  if(qimemLockRound===roundCode)return;
  qimemLockRound=roundCode;qimemLocksReady=false;qimemOtherPlayerLocks.clear();
  qimemLockCheckedAt=0;qimemOwnedRound=null;qimemOwnedReady=false;qimemOwnedLastRequestedAt=0;
+ // A previous round's in-flight response must not delay the new round's first locks.
+ qimemLockQueuedRound=qimemLockLoading?roundCode:null;
  selectedCards.length=0;activeCard=null;updateUI();
 }
 async function kimemRefreshGlobalCardLocks(roundCode,force=false){
- if(!/^AA[0-9]{6}$/.test(roundCode||'')||qimemLockRound!==roundCode||qimemLockLoading||document.hidden)return;
+ if(!/^AA[0-9]{6}$/.test(roundCode||'')||qimemLockRound!==roundCode||document.hidden)return;
+ if(qimemLockLoading){
+  // A purchase/refund or fresh round must not lose its authoritative recheck.
+  if(force)qimemLockQueuedRound=roundCode;
+  return;
+ }
  const now=Date.now();
  if(!force&&now-qimemLockCheckedAt<3000)return;
  qimemLockCheckedAt=now;qimemLockLoading=true;
@@ -153,7 +162,7 @@ async function kimemRefreshGlobalCardLocks(roundCode,force=false){
    !Array.isArray(data.lockedCards)||data.lockedCards.length>3000||
    data.lockedCards.some(n=>!Number.isSafeInteger(n)||n<1||n>3000)||
    new Set(data.lockedCards).size!==data.lockedCards.length)throw Error('Invalid lock snapshot');
-  if(qimemLockRound!==roundCode)return;
+  if(qimemLockRound!==roundCode||qimemLockQueuedRound===roundCode)return;
   const updated=new Set(data.lockedCards);
   const changed=!qimemLocksReady||updated.size!==qimemOtherPlayerLocks.size||
    [...updated].some(n=>!qimemOtherPlayerLocks.has(n));
@@ -162,7 +171,15 @@ async function kimemRefreshGlobalCardLocks(roundCode,force=false){
   if(changed)updateUI();
  }catch(e){console.warn('Verified Bingo card locks unavailable',e);
   if(qimemLockRound===roundCode&&!qimemLocksReady)renderLockedCards();
- }finally{qimemLockLoading=false}
+ }finally{
+  qimemLockLoading=false;
+  const nextRound=qimemLockQueuedRound;
+  qimemLockQueuedRound=null;
+  if(nextRound&&nextRound===qimemLockRound&&!document.hidden){
+   // Coalesce any number of overlapping force requests into ONE extra read.
+   void kimemRefreshGlobalCardLocks(nextRound,true);
+  }
+ }
 }
 function kimemRequestOwnedCards(roundCode){
  if(!/^AA[0-9]{6}$/.test(roundCode||'')||roundCode!==qimemLockRound||
