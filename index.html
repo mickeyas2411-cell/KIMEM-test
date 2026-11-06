@@ -401,7 +401,7 @@ function openQimemPay(mode){
 
  }
 }
-if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay_deposit'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemDeposit()}else if((window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam'))==='qimempay'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemWallet()}
+const qimemStartParam=window.Telegram?.WebApp?.initDataUnsafe?.start_param||new URLSearchParams(location.search).get('tgWebAppStartParam');if(qimemStartParam==='qimempay_deposit'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemDeposit()}else if(qimemStartParam==='qimempay_withdraw'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemWithdraw()}else if(qimemStartParam==='qimempay'){document.documentElement.setAttribute('data-qimem-deposit','1');openQimemWallet()}
 </script><style id="kimem-bingo10-history-only">
 #kimemAccountPanel #kimemGameHistory{margin:0 0 22px;font:inherit}
 #kimemAccountPanel .kh-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;font-weight:850;letter-spacing:.7px;color:#e8cc87;margin-bottom:12px}
