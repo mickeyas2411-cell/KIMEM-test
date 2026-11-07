@@ -6,7 +6,7 @@
  if(!auth)return;
  const p=new URLSearchParams(location.search);
  const start=tg?.initDataUnsafe?.start_param||p.get("tgWebAppStartParam")||"";
- const bonusLaunch=["bonus","bonus_history","referral","ref_enter","bonus_help","invite"].includes(start)||/^ref_[a-f0-9]{16}$/.test(start);
+ const bonusLaunch=["bonus","bonus_history","referral","ref_enter","bonus_help"].includes(start)||/^ref_[a-f0-9]{16}$/.test(start);
  const endpoint="https://qimem-pay.mickeyas2411.workers.dev/api/v1/customer/bonus-center";
  const signup=fetch("https://kimem-bingo-backend.mickeyas2411.workers.dev/api/player/register",{
   method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({initData:auth})
@@ -23,10 +23,10 @@
  close.onclick=()=>overlay.remove();
  const status=add(card,"p","የቦነስ መረጃ እየተጫነ ነው…","color:#adbbd1;line-height:1.7");
  const nav=add(card,"div",null,"display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0");
- if(start==="invite")nav.style.display="none";
+ 
  const tabs=[["bonus_history","📋 Bonus History"],["referral","🎟 My Referral Code"],["ref_enter","✍️ Enter Code"],["bonus_help","ℹ️ How to Earn"]];
  const view=add(card,"section",null,"background:#0a192f;border:1px solid #2b4564;border-radius:14px;padding:14px;min-height:130px");
- let active=start==="invite"?"invite":tabs.some(x=>x[0]===start)?start:start==="bonus"?"bonus_history":/^ref_/.test(start)?"referral":"bonus_history";
+ let active=tabs.some(x=>x[0]===start)?start:start==="bonus"?"bonus_history":/^ref_/.test(start)?"referral":"bonus_history";
  let profile=null,starting=null;
  const text=(label,value)=>{const line=add(view,"p",null,"margin:12px 0;line-height:1.65");add(line,"strong",label,"color:#e9d096");line.append(document.createTextNode(" "+value));return line};
  const action=(parent,label,handler)=>{const b=add(parent,"button",label,"display:block;width:100%;padding:12px;margin-top:12px;border:0;border-radius:10px;color:#091324;background:#e2ba65;font-weight:700;cursor:pointer");b.onclick=handler;return b};
@@ -68,20 +68,6 @@
    action(view,"🤝 Share Invite Link",()=>{
     const message="🎮 KIMEM GAMES ይቀላቀሉ! በዚህ ሊንክ ይግቡ፦";
     const share="https://t.me/share/url?url="+encodeURIComponent(input.value)+"&text="+encodeURIComponent(message);
-    const webapp=window.Telegram?.WebApp;
-    if(webapp?.openTelegramLink)webapp.openTelegramLink(share);else window.open(share,"_blank","noopener");
-   });
-  }else if(active==="invite"){
-   add(view,"h3","🤝 Invite Friends","margin:0 0 14px");
-   if(!profile){text("Status","የግብዣ መረጃ አልተገኘም።");return}
-   if(!profile.code){text("Status","የግብዣ ሊንክ ለጊዜው አልተዘጋጀም።");return}
-   const botLink="https://t.me/Kimemtest_bot?start=ref_"+profile.code;
-   text("Bot Link","ይህን ሊንክ ለጓደኞችህ ላክ።");
-   const input=add(view,"input",null,"width:100%;box-sizing:border-box;border-radius:10px;border:1px solid #577090;background:#0c2239;color:#fff;padding:12px");
-   input.value=botLink;input.readOnly=true;
-   action(view,"📤 Share",()=>{
-    const message="🎮 KIMEM GAMES ይቀላቀሉ! በዚህ የግብዣ ሊንክ ይግቡ፦";
-    const share="https://t.me/share/url?url="+encodeURIComponent(botLink)+"&text="+encodeURIComponent(message);
     const webapp=window.Telegram?.WebApp;
     if(webapp?.openTelegramLink)webapp.openTelegramLink(share);else window.open(share,"_blank","noopener");
    });
