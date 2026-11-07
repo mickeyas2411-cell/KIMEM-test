@@ -64,6 +64,12 @@
    action(view,"📋 Copy Invite Link",async()=>{
     try{await navigator.clipboard.writeText(input.value);status.textContent="✅ Invite Link copied"}catch{input.select();status.textContent="ሊንኩን ኮፒ አድርግ።"}
    });
+   action(view,"🤝 Share Invite Link",()=>{
+    const message="🎮 KIMEM GAMES ይቀላቀሉ! በዚህ ሊንክ ይግቡ፦";
+    const share="https://t.me/share/url?url="+encodeURIComponent(input.value)+"&text="+encodeURIComponent(message);
+    const webapp=window.Telegram?.WebApp;
+    if(webapp?.openTelegramLink)webapp.openTelegramLink(share);else window.open(share,"_blank","noopener");
+   });
   }else if(active==="ref_enter"){
    add(view,"h3","✍️ Enter Referral Code","margin:0 0 14px");
    text("Instruction","የጋበዘህን ሰው 16-ፊደል Referral Code ከመጀመሪያ Deposit በፊት አስገባ።");
