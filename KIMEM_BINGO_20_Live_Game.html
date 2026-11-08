@@ -712,7 +712,7 @@ function kimemFinishAfterBall(ids){
  },50);
 }
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
-function kimemFinishGame(ids,settlement){
+function kimemFinishGame(ids,settlement,myResult){
  if(kimemFinished)return;
  kimemFinished=true;window.kimemBingoEnding=true;running=false;spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
  if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
@@ -739,7 +739,11 @@ function kimemFinishGame(ids,settlement){
   const status=String(settlement?.status||'');
   const confirmed=settlement?.ok===true&&['settled','already_settled'].includes(status);
   const result=document.createElement('div');
-  result.textContent=confirmed?'Prize settlement confirmed':'Prize confirmation pending';
+  const ownWins=Array.isArray(myResult?.winnings)?myResult.winnings:[];
+  const ownTotal=Number(myResult?.totalBirr);
+  result.textContent=ownWins.length&&myResult?.settled===true&&Number.isFinite(ownTotal)
+   ?'YOUR PRIZE: '+ownTotal.toFixed(2)+' ETB · '+ownWins.map(x=>'#'+x.card+' '+Number(x.amountBirr).toFixed(2)+' ETB').join(' · ')
+   :(confirmed?'Settlement confirmed · No personal prize recorded':'Your prize confirmation is pending');
   result.style.cssText='width:100%;margin:8px auto;padding:9px;border:1px solid #8a6b35;border-radius:10px;color:#f5d58a;font-size:12px;text-align:center';
   host.append(result);
  }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
@@ -1225,7 +1229,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    running=false;
    if(r.phase==='finished'){
     $('draw-status').textContent='ROUND FINISHED';
-    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[],r.settlementBingo20)}
+    if(!finished){
+     finished=true;window.kimemBingoEnding=true;
+     let ownResult=null;
+     try{
+      const initData=window.Telegram?.WebApp?.initData||'';
+      const ownResponse=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/customer/bingo20/my-result',{
+       method:'POST',headers:{'content-type':'application/json'},cache:'no-store',
+       body:JSON.stringify({initData,roundCode:r.gameId})
+      });
+      if(ownResponse.ok){const data=await ownResponse.json();if(data?.ok===true&&data.roundCode===r.gameId)ownResult=data}
+     }catch(e){}
+     kimemFinishGame(Array.isArray(r.winners)?r.winners:[],r.settlementBingo20,ownResult);
+    }
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
