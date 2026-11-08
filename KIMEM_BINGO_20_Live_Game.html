@@ -712,7 +712,7 @@ function kimemFinishAfterBall(ids){
  },50);
 }
 function kimemWinningCard(){return kimemWinningCards()[0]??null}
-function kimemFinishGame(ids){
+function kimemFinishGame(ids,settlement){
  if(kimemFinished)return;
  kimemFinished=true;window.kimemBingoEnding=true;running=false;spherePhase='idle';kimemVoiceQueue.length=0;kimemVoicePlayer.pause();kimemVoiceBusy=false;
  if(Array.isArray(ids)?ids.length:ids!==null&&ids!==undefined)kimemPlayBingoSound(kimemBingoWinSound);
@@ -735,6 +735,28 @@ function kimemFinishGame(ids){
    const winningNumbers=new Set(candidateLines.filter(line=>line.every(isHit)).flat());
    const grid=document.createElement('div');grid.className='play-numbers';
    cardFor(id).forEach(row=>row.forEach(n=>{const cell=document.createElement('div');cell.className='play-cell'+(n===0?' free':drawn.includes(n)?' marked':'');cell.textContent=n||'FREE';if(n&&winningNumbers.has(n))cell.style.cssText='background:linear-gradient(145deg,#ffe59b,#e3a62c)!important;color:#2b1a05!important;border:2px solid #fff0b8!important;box-shadow:0 0 10px #ffd36a88!important;font-weight:900!important';grid.append(cell)}));temp.append(grid);host.append(temp);
+  }
+  const paidCredits=Array.isArray(settlement?.credits)?settlement.credits:[];
+  const paidTotal=paidCredits.reduce((sum,item)=>sum+(Number.isFinite(Number(item.amountBirr))&&Number(item.amountBirr)>0?Number(item.amountBirr):0),0);
+  if(paidCredits.length){
+   const payout=document.createElement('div');
+   payout.className='kimem-settlement-payout';
+   payout.style.cssText='width:100%;margin:8px auto 2px;padding:10px 12px;border:1px solid #c99a42;border-radius:12px;background:linear-gradient(145deg,#172d4b,#09172c);color:#f8d783;text-align:center;font-weight:900;box-sizing:border-box';
+   const title=document.createElement('div');title.textContent='VERIFIED PRIZE PAID';title.style.cssText='font-size:11px;letter-spacing:.08em;color:#c6d9f5';
+   const total=document.createElement('div');total.textContent=paidTotal.toFixed(2)+' ETB';total.style.cssText='font-size:25px;margin-top:3px';
+   payout.append(title,total);
+   for(const credit of paidCredits){
+    const row=document.createElement('div');
+    row.textContent='Card #'+String(Number(credit.card)).padStart(4,'0')+'  ·  '+Number(credit.amountBirr).toFixed(2)+' ETB';
+    row.style.cssText='font-size:12px;color:#fff;margin-top:5px';
+    payout.append(row);
+   }
+   host.append(payout);
+  }else if(winners.length){
+   const pending=document.createElement('div');
+   pending.textContent='Prize confirmation pending';
+   pending.style.cssText='width:100%;margin:8px auto;padding:9px;border:1px solid #8a6b35;border-radius:10px;color:#f5d58a;font-size:12px;text-align:center';
+   host.append(pending);
   }
  }else{const note=document.createElement('div');note.className='kimem-no-win-message';note.textContent='No Bingo This Round';host.append(note)}
  const username=window.Telegram?.WebApp?.initDataUnsafe?.user?.username;
@@ -1219,7 +1241,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    running=false;
    if(r.phase==='finished'){
     $('draw-status').textContent='ROUND FINISHED';
-    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[])}
+    if(!finished){finished=true;window.kimemBingoEnding=true;kimemFinishGame(Array.isArray(r.winners)?r.winners:[],r.settlementBingo20)}
    }else $('draw-status').textContent='LIVE · SERVER SYNC';
   }catch(e){$('draw-status').textContent='WAITING FOR SERVER'}
   finally{syncBusy=false}
