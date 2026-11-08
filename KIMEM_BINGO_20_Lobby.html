@@ -129,8 +129,8 @@ body>div{background:transparent!important}
 const selectedCards=[];let searchQuery='';let activeCard=null;let toastTimer;
 const $=id=>document.getElementById(id);
 function generateDeterministicCard(id){let seed=((Math.imul(id,2654435761)^0x20B1A60)>>>0);const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};const columns=[];for(let c=0;c<5;c++){const pool=Array.from({length:15},(_,i)=>c*15+i+1);for(let i=14;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}columns.push(pool.slice(0,5))}return Array.from({length:5},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===2?'FREE':columns[c][r]))}
-function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=3000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;btn.className='card-grid-item'+(selectedCards.includes(i)?' selected':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(selectedCards.includes(i)));btn.innerHTML=String(i)+(selectedCards.includes(i)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
-let kimemBingo20CardBusy=false,kimemBingo20Locked=new Set();
+function renderCardGrid(){const container=$('card-matrix');const scrollTop=container.scrollTop;const frag=document.createDocumentFragment();for(let i=1;i<=3000;i++){const btn=document.createElement('button');btn.type='button';btn.id='card-btn-'+i;const owned=selectedCards.includes(i),locked=kimemBingo20Locked.has(i);btn.className='card-grid-item'+(owned?' selected':'')+(locked&&!owned?' opacity-40':'')+(searchQuery&&String(i)===String(Number(searchQuery))?' soft-match':'');btn.setAttribute('aria-pressed',String(owned));btn.disabled=locked&&!owned;btn.innerHTML=String(i)+((owned||locked)?'<span class="lock" aria-label="locked">🔒</span>':'');btn.addEventListener('click',()=>toggleCard(i));frag.appendChild(btn)}container.replaceChildren(frag);container.scrollTop=scrollTop}
+let kimemBingo20CardBusy=false,kimemBingo20Locked=new Set(),kimemBingo20RestoredRound='';
 const qimemPayApi='https://qimem-pay.mickeyas2411.workers.dev/api/v1';
 async function kimemBingo20Post(path,body){
  const response=await fetch(qimemPayApi+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),cache:'no-store'});
@@ -241,8 +241,11 @@ async function kimemSyncPoll(){
   const verifiedStats=Number.isSafeInteger(r.cardsSold)&&r.cardsSold>=0&&Number.isSafeInteger(r.totalSales)&&r.totalSales>=0&&r.players===r.cardsSold&&r.totalSales===r.cardsSold*Number(r.stake);
   if(playersNode)playersNode.textContent=verifiedStats?r.cardsSold.toLocaleString('en-US'):'—';
   if(salesNode)salesNode.textContent=verifiedStats?r.totalSales.toLocaleString('en-US')+' ETB':'— ETB';
+  const changedRound=kimemSyncRound?.gameId!==r.gameId;
   kimemSyncRound=r;
   kimemSyncGameId(r.gameId);
+  if(changedRound){kimemBingo20RestoredRound='';kimemBingo20RefreshCards();}
+  if(kimemBingo20RestoredRound!==r.gameId){kimemBingo20RestoredRound=r.gameId;kimemBingo20RestoreCards();}
   kimemSyncRender();
  }catch(e){
   // Keep the last authoritative round visible during transient network errors.
