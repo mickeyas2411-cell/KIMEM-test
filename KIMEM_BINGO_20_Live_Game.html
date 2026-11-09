@@ -1151,7 +1151,7 @@ const qimemPayApi='https://qimem-pay.mickeyas2411.workers.dev/api/v1';
 let kimemB20FinanceBusy=false,kimemB20FinanceLast=0;
 async function kimemBingo20RefreshFinance(roundCode){
  const tg=window.Telegram?.WebApp;
- if(!tg?.initData||!/^AA\\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||Date.now()-kimemB20FinanceLast<7000)return;
+ if(!tg?.initData||!/^AA\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||Date.now()-kimemB20FinanceLast<7000)return;
  kimemB20FinanceBusy=true;kimemB20FinanceLast=Date.now();
  try{
   const response=await fetch(qimemPayApi+'/customer/bingo20/live-finance',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({initData:tg.initData,roundCode}),cache:'no-store'});
