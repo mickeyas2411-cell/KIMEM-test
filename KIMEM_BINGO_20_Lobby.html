@@ -138,9 +138,9 @@ async function kimemBingo20Post(path,body){
 }
 
 let kimemB20FinanceBusy=false,kimemB20FinanceLast=0;
-async function kimemBingo20RefreshFinance(roundCode){
+async function kimemBingo20RefreshFinance(roundCode,force=false){
  const tg=window.Telegram?.WebApp;
- if(!tg?.initData||!/^AA\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||Date.now()-kimemB20FinanceLast<7000)return;
+ if(!tg?.initData||!/^AA\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||(!force&&Date.now()-kimemB20FinanceLast<7000))return;
  kimemB20FinanceBusy=true;kimemB20FinanceLast=Date.now();
  try{
   const data=await kimemBingo20Post('/customer/bingo20/live-finance',{initData:tg.initData,roundCode});
@@ -312,7 +312,7 @@ function syncTelegramViewport(){
 let kimemVerifiedLobbyBalance = null;
 async function refreshLobbyBalance(){
  // Reuse the authenticated finance response for wallet and shared totals.
- await kimemBingo20RefreshFinance(kimemBingo20RoundCode());
+ await kimemBingo20RefreshFinance(kimemBingo20RoundCode(),true);
 }
 window.addEventListener('storage',refreshLobbyBalance);
 function init(){
