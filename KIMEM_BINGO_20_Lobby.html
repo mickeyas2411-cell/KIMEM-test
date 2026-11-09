@@ -140,7 +140,7 @@ async function kimemBingo20Post(path,body){
 let kimemB20FinanceBusy=false,kimemB20FinanceLast=0;
 async function kimemBingo20RefreshFinance(roundCode){
  const tg=window.Telegram?.WebApp;
- if(!tg?.initData||!/^AA\\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||Date.now()-kimemB20FinanceLast<7000)return;
+ if(!tg?.initData||!/^AA\d{6}$/.test(roundCode||'')||kimemB20FinanceBusy||Date.now()-kimemB20FinanceLast<7000)return;
  kimemB20FinanceBusy=true;kimemB20FinanceLast=Date.now();
  try{
   const data=await kimemBingo20Post('/customer/bingo20/live-finance',{initData:tg.initData,roundCode});
