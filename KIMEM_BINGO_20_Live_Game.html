@@ -941,7 +941,8 @@ function updateDraw(n){
   const history=$('last-five');history.replaceChildren();
   drawn.slice(-5).reverse().forEach(num=>history.append(makeBall(num,'history-ball')));
  }
- if(!window.kimemServerDrawBatch&&!window.kimemDeferServerBallVisual)cards();
+ // Card marks update immediately; board/history visuals may remain deferred for animation.
+  cards();
 }
 function pickDrawNumber(){
  const available=Array.from({length:75},(_,i)=>i+1).filter(n=>!drawn.includes(n));
