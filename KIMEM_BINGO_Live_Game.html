@@ -1260,8 +1260,17 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  if(new URLSearchParams(location.search).get('sync')==='0')return;
  const endpoint='https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/round?stake=10';
 
+let kimemVerifiedMoneyLastAt=0,kimemVerifiedMoneyLastRound='',kimemVerifiedMoneyBusy=false;
 async function kimemRefreshVerifiedMoney(roundCode){
  if(!/^AA[0-9]{6}$/.test(roundCode||''))return;
+ const now=Date.now();
+ // Finance figures are secondary to the live draw: refresh at most once per 7s,
+ // but refresh immediately when the authoritative round changes.
+ if(kimemVerifiedMoneyBusy)return;
+ if(roundCode===kimemVerifiedMoneyLastRound&&now-kimemVerifiedMoneyLastAt<7000)return;
+ kimemVerifiedMoneyBusy=true;
+ kimemVerifiedMoneyLastAt=now;
+ kimemVerifiedMoneyLastRound=roundCode;
  try{
   const response=await fetch('https://qimem-pay.mickeyas2411.workers.dev/api/v1/public/bingo10/stats?round='+encodeURIComponent(roundCode),{cache:'no-store'});
   if(!response.ok)return;
@@ -1291,6 +1300,7 @@ async function kimemRefreshVerifiedMoney(roundCode){
    }
   }
  }catch(e){console.warn('Bingo verified money unavailable',e)}
+ finally{kimemVerifiedMoneyBusy=false}
 }
 
  let activeRound=null,redirecting=false,finished=false,syncBusy=false,kimemFirstServerSync=true,kimemShuffleTimeout=null;
