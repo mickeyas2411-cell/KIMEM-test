@@ -13,7 +13,8 @@ async function refreshBingo10Leaderboard(){
     if(!rows.length){list.innerHTML='<div class="bl-leaderboard-state">No weekly points yet.</div>';return}
     list.innerHTML=rows.slice(0,100).map((p,i)=>{
       const rank=Number(p.rank)||i+1;
-      const name=String(p.display_name||p.username||p.telegram_user_id||'Player');
+      const username=String(p.username||'').replace(/^@/,'');
+      const name=username?'@'+username:String(p.display_name||p.telegram_user_id||'Player');
       const id=String(p.telegram_user_id||'');
       const points=Number(p.total_points??p.points??0);
       return '<div class="bl-leaderboard-row"><div class="bl-leaderboard-rank">#'+rank+'</div><div class="bl-leaderboard-name">'+escapeLeaderboardText(name)+'<span class="bl-leaderboard-id">'+escapeLeaderboardText(id?'ID '+id:'')+'</span></div><div class="bl-leaderboard-points">'+(Number.isFinite(points)?points:0)+' pts</div></div>';
