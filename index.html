@@ -589,4 +589,47 @@ async function kimemHistoryLoad(){
  }catch(e){if(request===kimemHistoryRequest)status.textContent='Could not load game history. Please reopen History to retry.'}
 }
 </script><script src="./bonus-center.js" defer></script>
+
+<script>
+/* Isolated Bingo 10 leaderboard tap handler; keeps all other game code unchanged. */
+(function(){
+  function openBoard(){
+    const overlay=document.getElementById('bingo10LeaderboardOverlay');
+    const list=document.getElementById('bingo10LeaderboardList');
+    if(!overlay||!list)return;
+    overlay.style.setProperty('display','flex','important');
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+    list.innerHTML='<div class="bl-leaderboard-state">Loading leaderboard…</div>';
+    fetch('https://kimem-bingo-backend.mickeyas2411.workers.dev/api/bingo/10/leaderboard',{headers:{accept:'application/json'},cache:'no-store'})
+      .then(async response=>{const data=await response.json();if(!response.ok||data.ok===false)throw new Error('unavailable');return data;})
+      .then(data=>{
+        const rows=Array.isArray(data.players)?data.players:(Array.isArray(data.leaderboard)?data.leaderboard:[]);
+        const week=document.getElementById('bingo10LeaderboardWeek');
+        if(week&&data.week_start)week.textContent='Week starting '+data.week_start+' · Live weekly ranking';
+        list.innerHTML=rows.length?rows.slice(0,100).map((p,i)=>{
+          const rank=Number(p.rank)||i+1, username=String(p.username||'').replace(/^@/,'');
+          const name=username?'@'+username:String(p.display_name||p.telegram_user_id||'Player');
+          const id=String(p.telegram_user_id||''), points=Number(p.total_points??p.points??0);
+          const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+          return '<div class="bl-leaderboard-row"><div class="bl-leaderboard-rank">#'+rank+'</div><div class="bl-leaderboard-name">'+esc(name)+'<span class="bl-leaderboard-id">'+esc(id?'ID '+id:'')+'</span></div><div class="bl-leaderboard-points">'+(Number.isFinite(points)?points:0)+' pts</div></div>';
+        }).join(''):'<div class="bl-leaderboard-state">No weekly points yet.</div>';
+      })
+      .catch(()=>{list.innerHTML='<div class="bl-leaderboard-state">Leaderboard data is temporarily unavailable.<br>Please try again shortly.</div>';});
+  }
+  function closeBoard(){
+    const overlay=document.getElementById('bingo10LeaderboardOverlay');
+    if(overlay){overlay.classList.remove('open');overlay.style.removeProperty('display');}
+    document.body.style.overflow='';
+  }
+  function qimemLeaderboardTapFallback(event){
+    const button=event.target.closest&&event.target.closest('.bl-leaderboard-btn');
+    if(button){event.preventDefault();openBoard();return;}
+    if(event.target.closest&&event.target.closest('.bl-leaderboard-close')){event.preventDefault();closeBoard();return;}
+    const overlay=document.getElementById('bingo10LeaderboardOverlay');
+    if(overlay&&event.target===overlay)closeBoard();
+  }
+  document.addEventListener('click',qimemLeaderboardTapFallback,true);
+})();
+</script>
 </body></html>
