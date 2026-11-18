@@ -401,52 +401,55 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 @keyframes kimemLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.78)}}
 @media(max-width:390px){#lobby .game.crash .crash-jet{width:88%;max-height:108px}#lobby .game.crash .crash-odds{gap:5px;padding:4px 7px}#lobby .game.crash .crash-odds-copy b{font-size:5px}#lobby .game.crash .crash-odds-copy strong{font-size:13px}#lobby .game.crash .crash-odds-trend{font-size:15px}}
 @media(prefers-reduced-motion:reduce){#lobby .game.crash .crash-live-dot{animation:none}}
-</style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 520 250" role="presentation" aria-hidden="true">
+
+/* KIMEM X layout correction: keep multiplier completely off the aircraft */
+#lobby .game.crash .crash-flight{flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:1px 0}
+#lobby .game.crash .crash-jet{flex:1 1 auto;width:min(76%,330px);height:auto;max-height:82px;min-height:0;object-fit:contain;transform:none;filter:drop-shadow(0 8px 7px #000b) drop-shadow(0 0 13px #62baff66)}
+#lobby .game.crash .crash-odds{position:relative;inset:auto;align-self:center;flex:0 0 auto;max-width:max-content;gap:7px;margin:0;padding:4px 10px}
+#lobby .game.crash .crash-odds-copy b{font-size:6px;letter-spacing:1.1px}
+#lobby .game.crash .crash-odds-copy strong{font-size:13px}
+@media(max-width:390px){
+ #lobby .game.crash .crash-flight{gap:2px}
+ #lobby .game.crash .crash-jet{width:78%;max-height:76px}
+ #lobby .game.crash .crash-odds{gap:5px;padding:3px 8px}
+ #lobby .game.crash .crash-odds-copy b{font-size:5px}
+ #lobby .game.crash .crash-odds-copy strong{font-size:12px}
+}
+</style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 560 260" role="presentation" aria-hidden="true">
 <defs>
- <linearGradient id="xTitanium" x1="0" y1="0" x2="0.85" y2="1"><stop stop-color="#ffffff"/><stop offset=".18" stop-color="#cbd9e6"/><stop offset=".43" stop-color="#718ba4"/><stop offset=".72" stop-color="#304b68"/><stop offset="1" stop-color="#101f34"/></linearGradient>
- <linearGradient id="xWing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edf5fc"/><stop offset=".32" stop-color="#8fa8bf"/><stop offset=".68" stop-color="#3e5a76"/><stop offset="1" stop-color="#172b43"/></linearGradient>
- <linearGradient id="xGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ffff"/><stop offset=".28" stop-color="#9de5ff"/><stop offset=".62" stop-color="#276b98"/><stop offset="1" stop-color="#10243d"/></linearGradient>
- <linearGradient id="xFlame" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#fff" stop-opacity="0"/><stop offset=".35" stop-color="#8de5ff"/><stop offset=".72" stop-color="#ffd98b"/><stop offset="1" stop-color="#ff7a31" stop-opacity="0"/></linearGradient>
- <linearGradient id="xGold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0bd"/><stop offset=".5" stop-color="#d7a84f"/><stop offset="1" stop-color="#79501e"/></linearGradient>
- <filter id="xGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+ <linearGradient id="jetBody" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fcff"/><stop offset=".2" stop-color="#b8c9d9"/><stop offset=".48" stop-color="#607b98"/><stop offset=".72" stop-color="#263e59"/><stop offset="1" stop-color="#101d30"/></linearGradient>
+ <linearGradient id="jetWing" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e9f2fa"/><stop offset=".4" stop-color="#809ab3"/><stop offset="1" stop-color="#243c58"/></linearGradient>
+ <linearGradient id="jetCanopy" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eaffff"/><stop offset=".3" stop-color="#80d8fa"/><stop offset=".75" stop-color="#24577f"/><stop offset="1" stop-color="#12283f"/></linearGradient>
+ <linearGradient id="jetFlame"><stop stop-color="#52c9ff" stop-opacity="0"/><stop offset=".55" stop-color="#8be5ff"/><stop offset="1" stop-color="#ffd38a" stop-opacity="0"/></linearGradient>
+ <filter id="jetBlur" x="-40%" y="-80%" width="180%" height="260%"><feGaussianBlur stdDeviation="7"/></filter>
 </defs>
-<!-- afterburner glow -->
-<path d="M128 158 Q68 132 8 156 Q62 163 8 179 Q79 187 132 171Z" fill="#5bcaff" opacity=".65" filter="url(#xGlow)"/>
-<path d="M130 161 Q73 151 22 163 Q76 170 22 175 Q80 181 130 170Z" fill="url(#xFlame)"/>
-<!-- far tailplanes -->
-<path d="M176 137 L126 75 L164 73 L226 119 L212 151Z" fill="#263f5a" stroke="#b7cadd" stroke-width="2"/>
-<path d="M210 124 L152 29 L195 23 L296 105 L270 147Z" fill="url(#xWing)" stroke="#e8f1f8" stroke-width="2.2"/>
-<path d="M169 36 L193 30 L273 104 L249 99Z" fill="#fff" opacity=".3"/>
-<!-- near swept delta wing -->
-<path d="M235 124 L364 119 L495 211 L458 229 L278 166 L205 153Z" fill="url(#xWing)" stroke="#e4edf6" stroke-width="2.5"/>
-<path d="M267 137 L369 129 L468 207 L437 207Z" fill="#f5fbff" opacity=".22"/>
-<path d="M315 153 L453 215" stroke="#d8e6f1" stroke-width="2" opacity=".7"/>
-<!-- vertical tail -->
-<path d="M150 155 L104 111 L120 102 L184 133 L193 157Z" fill="#405c78" stroke="#c8d8e7" stroke-width="1.8"/>
-<!-- central fuselage -->
-<path d="M105 177 Q147 145 204 111 Q278 68 365 24 Q405 5 446 9 Q433 47 404 82 Q343 153 268 190 Q191 226 137 218 Q111 211 105 193Z" fill="url(#xTitanium)" stroke="#f1f6fb" stroke-width="2.5"/>
-<path d="M119 190 Q205 155 280 112 Q373 60 439 13 Q404 91 337 151 Q247 216 155 220Z" fill="#0c1e32" opacity=".48"/>
-<path d="M132 177 Q234 111 327 62 Q398 25 444 12" fill="none" stroke="#fff" stroke-width="3" opacity=".8"/>
-<!-- nose cone -->
-<path d="M365 24 Q414 2 446 9 Q433 47 404 82 Q387 91 365 100 Q387 54 365 24Z" fill="#dbe6ef" stroke="#fff" stroke-width="1.6"/>
-<path d="M396 31 Q422 15 439 14" stroke="#fff" stroke-width="2" opacity=".75"/>
-<!-- large reflective cockpit -->
-<path d="M292 91 Q321 59 361 43 Q383 38 397 52 Q380 85 345 110 Q317 119 292 108Z" fill="url(#xGlass)" stroke="#f0fcff" stroke-width="2.5"/>
-<path d="M310 91 Q337 61 370 49 Q381 48 389 54 Q365 83 339 101Z" fill="#fff" opacity=".42"/>
-<path d="M351 45 Q350 78 315 111" fill="none" stroke="#dff8ff" stroke-width="2" opacity=".8"/>
-<path d="M290 111 Q326 126 354 109" fill="none" stroke="#10243a" stroke-width="4"/>
-<!-- intake and dark engine housing -->
-<path d="M103 171 L142 147 L160 174 L127 211 Q109 208 103 192Z" fill="#263e57" stroke="#c5d5e4" stroke-width="2"/>
-<ellipse cx="125" cy="184" rx="13" ry="19" transform="rotate(35 125 184)" fill="#071525" stroke="#dbe6ef" stroke-width="2.5"/>
-<ellipse cx="126" cy="184" rx="6" ry="11" transform="rotate(35 126 184)" fill="#f7c36b"/>
-<!-- wingtip gold recognition marks -->
-<path d="M375 126 L484 204" stroke="url(#xGold)" stroke-width="3" opacity=".95"/>
-<path d="M178 42 L258 111" stroke="#f1d28d" stroke-width="2" opacity=".75"/>
-<!-- panel lines and fasteners -->
-<g fill="none" stroke="#172d45" stroke-width="1.7" opacity=".82"><path d="M184 55 L250 119 M204 45 L270 111 M283 145 L438 218 M264 159 L420 218 M151 164 L177 174 L154 197 M331 127 L376 159"/></g>
-<g fill="#f7fbff" opacity=".9"><circle cx="205" cy="141" r="2"/><circle cx="219" cy="132" r="1.7"/><circle cx="233" cy="123" r="1.6"/></g>
-<!-- subtle wing insignia -->
-<path d="M394 174 l16 10 -16 2 -16 -10Z" fill="#d7ad61" opacity=".9"/>
+<!-- afterburner -->
+<path d="M142 177 C92 160 48 166 12 184 C64 181 94 198 143 191Z" fill="#51c9ff" opacity=".55" filter="url(#jetBlur)"/>
+<path d="M145 180 Q82 174 25 185 Q88 188 145 190Z" fill="url(#jetFlame)"/>
+<!-- swept main wings -->
+<path d="M236 128 L92 74 L54 82 L168 171 L224 184Z" fill="url(#jetWing)" stroke="#e6f1fa" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M248 139 L365 155 L492 229 L450 239 L267 184 L211 169Z" fill="url(#jetWing)" stroke="#e6f1fa" stroke-width="2.4" stroke-linejoin="round"/>
+<path d="M105 83 L202 143 L178 145Z" fill="#fff" opacity=".22"/>
+<path d="M377 166 L469 224 L444 221Z" fill="#fff" opacity=".2"/>
+<!-- tail fins -->
+<path d="M166 172 L111 132 L127 119 L205 153Z" fill="#526e89" stroke="#c6d8e8" stroke-width="2"/>
+<path d="M189 158 L150 92 L181 91 L242 143Z" fill="#334e6b" stroke="#c6d8e8" stroke-width="2"/>
+<!-- fuselage -->
+<path d="M126 198 Q171 153 244 105 Q333 47 443 12 Q475 3 510 8 Q492 44 460 76 Q381 151 292 198 Q211 241 155 230 Q132 222 126 207Z" fill="url(#jetBody)" stroke="#f3f8fc" stroke-width="3" stroke-linejoin="round"/>
+<path d="M143 208 Q241 160 324 106 Q416 47 500 12 Q456 93 382 154 Q274 226 173 231Z" fill="#10243a" opacity=".45"/>
+<path d="M157 194 Q268 123 367 65 Q443 22 501 11" fill="none" stroke="#fff" stroke-width="3.2" opacity=".78"/>
+<!-- nose highlight -->
+<path d="M443 12 Q479 2 510 8 Q492 44 460 76 Q438 86 414 98 Q447 49 443 12Z" fill="#e5eef6" stroke="#fff" stroke-width="1.5"/>
+<!-- canopy -->
+<path d="M326 105 Q365 66 413 44 Q435 39 451 53 Q425 91 380 121 Q349 130 326 119Z" fill="url(#jetCanopy)" stroke="#dff8ff" stroke-width="2.5"/>
+<path d="M344 105 Q381 68 425 49 Q436 49 444 56 Q408 99 371 116Z" fill="#fff" opacity=".38"/>
+<path d="M405 47 Q403 82 350 119" fill="none" stroke="#dff8ff" stroke-width="2" opacity=".7"/>
+<!-- engine and panel details -->
+<ellipse cx="145" cy="202" rx="14" ry="20" transform="rotate(35 145 202)" fill="#091727" stroke="#d7e5f0" stroke-width="3"/>
+<ellipse cx="147" cy="202" rx="6" ry="11" transform="rotate(35 147 202)" fill="#f5bd65"/>
+<g fill="none" stroke="#1a3048" stroke-width="2" opacity=".7"><path d="M190 174 L250 190 L211 220 M224 149 L278 171 L254 202 M300 169 L442 229 M282 185 L411 230"/></g>
+<path d="M375 157 L472 218" stroke="#e8c47e" stroke-width="3" opacity=".9"/>
+<path d="M183 103 L231 145" stroke="#e8c47e" stroke-width="2" opacity=".8"/>
 </svg><div class="crash-odds" aria-label="Live multiplier preview">
  <span class="crash-live-dot" aria-hidden="true"></span>
  <span class="crash-odds-copy"><b>LIVE MULTIPLIER</b><strong>1.00<span>×</span></strong></span>
