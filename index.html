@@ -789,94 +789,14 @@ async function kimemHistoryLoad(){
 @media(max-width:365px){#lobby .game.bingo,#lobby .game.sport{min-height:255px}}
 </style>
 
-<style id="qimem-sport-card-premium-enhancement">
-/* QIMEM SPORT card polish only — no other game, navigation or gameplay changes */
-#lobby .game.sport{
-  border-color:#ffd58a;
-  box-shadow:0 12px 30px #000b,0 0 0 1px #ffd58a30,0 0 25px #f28a4a26;
-  background:#211323;
-}
-#lobby .game.sport:before{
-  background:
-    radial-gradient(ellipse at 53% 65%,#a83a27 0%,#67212b 37%,#32152c 70%,#120e20 100%);
-}
-#lobby .game.sport .g-title{letter-spacing:.8px;text-shadow:0 2px 8px #000c,0 0 16px #ffb45a55}
-#lobby .game.sport .g-sub{color:#ffe6cb;font-weight:600;text-shadow:0 1px 5px #0009}
-#lobby .game.sport .art{
-  margin-top:3px;
-  filter:drop-shadow(0 14px 16px #0009);
-}
-#lobby .game.sport .stadium{
-  inset:8px -10px 22px;
-  border-radius:50%;
-  background:
-    linear-gradient(90deg,transparent 49.5%,#ffffff30 50%,transparent 50.5%),
-    radial-gradient(ellipse at 50% 100%,#45c87980 0%,#18784755 34%,transparent 67%),
-    repeating-radial-gradient(ellipse at 50% 100%,transparent 0 15px,#fff1d72c 16px 17px),
-    linear-gradient(155deg,#ffd18b30,transparent 58%);
-  box-shadow:inset 0 -22px 28px #061c1680,0 0 22px #f6a45b22;
-}
-#lobby .game.sport .sport-lights{
-  opacity:.95;
-  background:
-    linear-gradient(145deg,transparent 25%,#fff0c52a 34%,transparent 46%),
-    radial-gradient(circle at 13% 12%,#fff6d9 0 2px,#ffd18b 3px,transparent 18px),
-    radial-gradient(circle at 86% 10%,#fff6d9 0 2px,#ffd18b 3px,transparent 18px);
-}
-#lobby .game.sport .football{
-  font-size:clamp(78px,16vw,112px);
-  transform:rotate(-17deg) scale(1.08);
-  filter:drop-shadow(0 9px 7px #000b) drop-shadow(0 0 17px #ffc078a6);
-}
-#lobby .game.sport .odds{
-  bottom:0;
-  gap:7px;
-  align-items:stretch;
-  padding:0 5px;
-}
-#lobby .game.sport .odds span{
-  flex:1;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:2px;
-  padding:6px 4px;
-  border:1px solid #ffd58b9c;
-  border-radius:9px;
-  background:linear-gradient(155deg,#351b28f2,#160f20f5);
-  color:#ffe3ad;
-  font-size:12px;
-  line-height:1.05;
-  box-shadow:inset 0 1px #ffffff22,0 4px 10px #0007;
-}
-#lobby .game.sport .odds b{
-  margin:0;
-  color:#ffca79;
-  font-size:9px;
-  letter-spacing:1px;
-}
-#lobby .game.sport .g-action{
-  min-height:41px;
-  margin-top:4px;
-  background:linear-gradient(100deg,#bd7628 0%,#ffe4a0 48%,#c58a35 100%);
-  border:1px solid #fff0c5;
-  color:#28170b;
-  box-shadow:inset 0 1px #fff9d8,0 5px 17px #0008,0 0 14px #ffc56b28;
-  font-weight:900;
-  letter-spacing:.45px;
-}
-#lobby .game.sport:active{box-shadow:0 7px 18px #000b,0 0 0 1px #ffd58a66}
-@media(min-width:700px){
-  #lobby .game.sport .football{font-size:130px}
-  #lobby .game.sport .odds span{padding:8px 6px;font-size:13px}
-}
-@media(max-width:365px){
-  #lobby .game.sport .football{font-size:68px}
-  #lobby .game.sport .odds{gap:4px;padding:0 1px}
-  #lobby .game.sport .odds span{padding:5px 2px;font-size:10px}
-  #lobby .game.sport .g-action{min-height:37px}
-}
+<style id="qimem-sport-card-original-artwork-restored">
+/* Sports card artwork only — preserve all other game cards and behavior */
+#lobby .game.sport .art{position:relative;isolation:isolate;overflow:hidden}
+#lobby .game.sport .stadium{inset:0 0 4px!important;border-radius:10px;background:linear-gradient(180deg,#07152b00 0%,#07152b12 48%,#061b25a8 100%),repeating-linear-gradient(90deg,transparent 0 24px,#ffffff0b 25px 26px),radial-gradient(ellipse at 50% 100%,#31b66b 0%,#137342 43%,#0b3a35 78%);box-shadow:inset 0 0 0 1px #ffffff24,inset 0 -24px 30px #031a17a8}
+#lobby .game.sport .stadium:before{content:"";position:absolute;inset:12% 12% 8%;border:1px solid #d6ffe65c;border-bottom:0;background:linear-gradient(90deg,transparent 49.7%,#e5fff044 50%,transparent 50.3%)}
+#lobby .game.sport .stadium:after{content:"";position:absolute;left:35%;right:35%;top:12%;bottom:8%;border:1px solid #d6ffe64a;border-radius:0 0 50% 50%}
+#lobby .game.sport .sport-lights{background:radial-gradient(ellipse at 12% 12%,#fff8d9 0 2px,#ffd28b88 4px,transparent 25px),radial-gradient(ellipse at 88% 12%,#fff8d9 0 2px,#ffd28b88 4px,transparent 25px),linear-gradient(180deg,#fff0c51a,transparent 48%)}
+#lobby .game.sport .football{position:absolute;z-index:2;left:50%;top:48%;width:clamp(76px,22vw,112px);height:auto;transform:translate(-50%,-50%) rotate(-12deg);filter:drop-shadow(0 12px 9px #000b) drop-shadow(0 0 15px #ffd28b66)}
+#lobby .game.sport .football svg{display:block;width:100%;height:auto;overflow:visible}
 </style>
 </body></html>
