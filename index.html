@@ -402,18 +402,15 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 @media(max-width:390px){#lobby .game.crash .crash-jet{width:88%;max-height:108px}#lobby .game.crash .crash-odds{gap:5px;padding:4px 7px}#lobby .game.crash .crash-odds-copy b{font-size:5px}#lobby .game.crash .crash-odds-copy strong{font-size:13px}#lobby .game.crash .crash-odds-trend{font-size:15px}}
 @media(prefers-reduced-motion:reduce){#lobby .game.crash .crash-live-dot{animation:none}}
 
-/* KIMEM X layout correction: keep multiplier completely off the aircraft */
-#lobby .game.crash .crash-flight{flex-direction:column;justify-content:center;align-items:center;gap:3px;padding:1px 0}
-#lobby .game.crash .crash-jet{flex:1 1 auto;width:min(76%,330px);height:auto;max-height:82px;min-height:0;object-fit:contain;transform:none;filter:drop-shadow(0 8px 7px #000b) drop-shadow(0 0 13px #62baff66)}
-#lobby .game.crash .crash-odds{position:relative;inset:auto;align-self:center;flex:0 0 auto;max-width:max-content;gap:7px;margin:0;padding:4px 10px}
-#lobby .game.crash .crash-odds-copy b{font-size:6px;letter-spacing:1.1px}
-#lobby .game.crash .crash-odds-copy strong{font-size:13px}
+
+/* Final KIMEM X geometry: four distinct grid rows; no overlap */
+#lobby .game.crash .crash-inner{grid-template-rows:auto minmax(0,1fr) auto auto;gap:3px}
+#lobby .game.crash .crash-flight{min-height:0;height:100%;padding:0;overflow:hidden}
+#lobby .game.crash .crash-jet{width:64%;max-width:270px;height:auto;max-height:64px;flex:0 1 auto;object-fit:contain;transform:none}
+#lobby .game.crash .crash-odds{position:relative;top:auto;right:auto;bottom:auto;left:auto;z-index:3;justify-self:center;align-self:center;display:flex;width:max-content;max-width:100%;margin:0;transform:none}
 @media(max-width:390px){
- #lobby .game.crash .crash-flight{gap:2px}
- #lobby .game.crash .crash-jet{width:78%;max-height:76px}
- #lobby .game.crash .crash-odds{gap:5px;padding:3px 8px}
- #lobby .game.crash .crash-odds-copy b{font-size:5px}
- #lobby .game.crash .crash-odds-copy strong{font-size:12px}
+ #lobby .game.crash .crash-inner{gap:2px}
+ #lobby .game.crash .crash-jet{width:62%;max-width:230px;max-height:56px}
 }
 </style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 560 260" role="presentation" aria-hidden="true">
 <defs>
@@ -450,11 +447,11 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 <g fill="none" stroke="#1a3048" stroke-width="2" opacity=".7"><path d="M190 174 L250 190 L211 220 M224 149 L278 171 L254 202 M300 169 L442 229 M282 185 L411 230"/></g>
 <path d="M375 157 L472 218" stroke="#e8c47e" stroke-width="3" opacity=".9"/>
 <path d="M183 103 L231 145" stroke="#e8c47e" stroke-width="2" opacity=".8"/>
-</svg><div class="crash-odds" aria-label="Live multiplier preview">
+</svg></div><div class="crash-odds" aria-label="Live multiplier preview">
  <span class="crash-live-dot" aria-hidden="true"></span>
  <span class="crash-odds-copy"><b>LIVE MULTIPLIER</b><strong>1.00<span>×</span></strong></span>
  <span class="crash-odds-trend" aria-hidden="true">↗</span>
-</div></div><div class="crash-coming">COMING SOON</div></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b></footer></section><section class="screen bingo-redesign" id="bingo">
+</div><div class="crash-coming">COMING SOON</div></div></article></div><footer class="foot">Powered by <b>Kodov Softwares</b></footer></section><section class="screen bingo-redesign" id="bingo">
 <div class="bl-top"><button class="bl-back" onclick="showScreen('lobby')" aria-label="Back to games">‹</button><div class="bl-head"><small>QIMEM GAME ARENA</small><strong>QIMEM <em>BINGO</em></strong></div><div class="bl-live">LIVE</div></div>
 <div class="bl-credit"><div class="bl-credit-left"><span class="bl-wallet-icon">▣</span><div><small>YOUR GAME CREDIT</small><b id="qimemLobbyBalance">— ETB</b></div></div><button class="bl-leaderboard-btn" type="button" onclick="openBingo10Leaderboard()">LEADERBOARD 🏆</button></div>
 <div class="bl-arena"><small>PREMIUM LIVE ARENA</small><h2>Choose Your Game</h2><p>Choose a game mode below</p></div>
