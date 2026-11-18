@@ -398,6 +398,34 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 #lobby .crash-flight{min-height:116px}
 @keyframes kimemJetFloat{0%,100%{translate:0 2px;rotate:-1deg}50%{translate:0 -3px;rotate:1deg}}
 @media(max-width:390px){#lobby .crash-jet{width:91%;max-height:132px}#lobby .crash-flight{min-height:104px}}
+
+/* Final KIMEM X spacing and typography correction — this card only */
+#lobby .game.crash{box-sizing:border-box;height:236px;min-height:236px;max-height:236px;overflow:hidden}
+#lobby .game.crash .crash-inner{box-sizing:border-box;width:100%;height:100%;min-height:0;padding:10px 14px 11px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;align-items:center;justify-items:center;gap:5px;text-align:center}
+#lobby .game.crash .crash-brand{position:relative;z-index:2;width:100%;min-width:0;margin:0;text-align:center;line-height:1.15}
+#lobby .game.crash .crash-kicker{display:block;margin:0 0 3px;font-size:11px;line-height:1.25;letter-spacing:1.8px;white-space:nowrap}
+#lobby .game.crash .crash-title{display:block;margin:0;font-size:24px;line-height:1.05;letter-spacing:2px;white-space:nowrap}
+#lobby .game.crash .crash-caption{display:block;margin:4px 0 0;font-size:8px;line-height:1.2;letter-spacing:2px;white-space:nowrap}
+#lobby .game.crash .crash-flight{position:relative;box-sizing:border-box;width:100%;height:100%;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#lobby .game.crash .crash-jet{display:block;flex:0 1 auto;width:min(82%,350px);height:auto;max-height:116px;object-fit:contain;transform:rotate(-2deg);animation:kimemJetFloat 4.8s ease-in-out infinite}
+#lobby .game.crash .crash-trajectory{width:68%;left:16%;top:62%;z-index:0}
+#lobby .game.crash .crash-odds{position:absolute;z-index:2;right:2px;top:2px;bottom:auto;left:auto;transform:none;display:flex;align-items:center;gap:6px;padding:4px 7px;max-width:48%;white-space:nowrap;border-radius:6px;background:#07172deF;border:1px solid #d5b36c66}
+#lobby .game.crash .crash-odds b{font-size:7px;line-height:1.2;letter-spacing:.7px}
+#lobby .game.crash .crash-odds span{font-size:11px;line-height:1.2}
+#lobby .game.crash .crash-coming{position:relative;z-index:2;justify-self:center;align-self:center;box-sizing:border-box;min-width:148px;max-width:90%;margin:0;padding:6px 18px;font-size:9px;line-height:1.2;letter-spacing:1.8px;white-space:nowrap}
+@media(max-width:390px){
+ #lobby .game.crash{height:220px;min-height:220px;max-height:220px}
+ #lobby .game.crash .crash-inner{padding:9px 10px 10px;gap:4px}
+ #lobby .game.crash .crash-title{font-size:22px;letter-spacing:1.5px}
+ #lobby .game.crash .crash-kicker{font-size:10px;letter-spacing:1.4px}
+ #lobby .game.crash .crash-caption{font-size:7px;letter-spacing:1.6px}
+ #lobby .game.crash .crash-jet{width:86%;max-height:105px}
+ #lobby .game.crash .crash-odds{right:0;top:0;padding:3px 5px;gap:4px}
+ #lobby .game.crash .crash-odds b{font-size:6px}
+ #lobby .game.crash .crash-odds span{font-size:10px}
+ #lobby .game.crash .crash-coming{min-width:138px;padding:6px 14px;font-size:8px}
+}
+
 </style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 420 230" role="presentation" aria-hidden="true">
 <defs>
 <linearGradient id="fighterBody" x1=".1" y1="0" x2=".8" y2="1"><stop stop-color="#f4f8fc"/><stop offset=".25" stop-color="#aebfd0"/><stop offset=".58" stop-color="#536d87"/><stop offset="1" stop-color="#172a40"/></linearGradient>
