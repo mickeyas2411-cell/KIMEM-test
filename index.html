@@ -389,28 +389,59 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 }
 @media(prefers-reduced-motion:reduce){#lobby .game.crash .crash-jet{animation:none}}
 
-/* KIMEM X aircraft + multiplier visual polish */
-#lobby .game.crash .crash-jet{width:min(88%,390px);max-height:116px;filter:drop-shadow(0 10px 9px #000b) drop-shadow(0 0 15px #62baff66)}
-#lobby .game.crash .crash-odds{gap:7px;max-width:none;padding:5px 9px;border-color:#e3bd6e99;background:linear-gradient(135deg,#07172df5,#102b49f2);box-shadow:0 4px 14px #0007,inset 0 1px #ffffff20}
-#lobby .game.crash .crash-live-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#55e6b0;box-shadow:0 0 8px #55e6b0;animation:kimemLivePulse 1.4s ease-in-out infinite}
-#lobby .game.crash .crash-odds-copy{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
-#lobby .game.crash .crash-odds-copy b{font-size:6px;letter-spacing:1.1px;color:#a9c3e2}
-#lobby .game.crash .crash-odds-copy strong{font-size:15px;line-height:1;font-weight:950;letter-spacing:.2px;color:#ffe0a0;text-shadow:0 0 10px #e4b55a55}
-#lobby .game.crash .crash-odds-copy strong span{font-size:10px;color:#f3d08b}
-#lobby .game.crash .crash-odds-trend{font-size:17px;line-height:1;color:#65e3b6;text-shadow:0 0 8px #65e3b655}
-@keyframes kimemLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.78)}}
-@media(max-width:390px){#lobby .game.crash .crash-jet{width:88%;max-height:108px}#lobby .game.crash .crash-odds{gap:5px;padding:4px 7px}#lobby .game.crash .crash-odds-copy b{font-size:5px}#lobby .game.crash .crash-odds-copy strong{font-size:13px}#lobby .game.crash .crash-odds-trend{font-size:15px}}
-@media(prefers-reduced-motion:reduce){#lobby .game.crash .crash-live-dot{animation:none}}
-
-
-/* Final KIMEM X geometry: four distinct grid rows; no overlap */
-#lobby .game.crash .crash-inner{grid-template-rows:auto minmax(0,1fr) auto auto;gap:3px}
-#lobby .game.crash .crash-flight{min-height:0;height:100%;padding:0;overflow:hidden}
-#lobby .game.crash .crash-jet{width:64%;max-width:270px;height:auto;max-height:64px;flex:0 1 auto;object-fit:contain;transform:none}
-#lobby .game.crash .crash-odds{position:relative;top:auto;right:auto;bottom:auto;left:auto;z-index:3;justify-self:center;align-self:center;display:flex;width:max-content;max-width:100%;margin:0;transform:none}
+/* KIMEM X — single authoritative layout; isolated from the other four games */
+#lobby .game.crash .crash-inner{
+  grid-template-columns:minmax(0,1fr)!important;
+  grid-template-rows:auto minmax(0,1fr) auto auto!important;
+  gap:3px!important;
+  align-items:center!important;
+  justify-items:center!important;
+  min-height:0!important;
+}
+#lobby .game.crash .crash-flight{
+  position:relative!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+#lobby .game.crash .crash-jet{
+  position:relative!important;
+  display:block!important;
+  width:64%!important;
+  max-width:250px!important;
+  height:auto!important;
+  max-height:58px!important;
+  flex:0 1 auto!important;
+  object-fit:contain!important;
+  transform:none!important;
+}
+#lobby .game.crash .crash-odds{
+  position:relative!important;
+  inset:auto!important;
+  z-index:3!important;
+  display:flex!important;
+  justify-self:center!important;
+  align-self:center!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin:0!important;
+  transform:none!important;
+}
+#lobby .game.crash .crash-coming{
+  position:relative!important;
+  justify-self:center!important;
+  align-self:center!important;
+}
 @media(max-width:390px){
- #lobby .game.crash .crash-inner{gap:2px}
- #lobby .game.crash .crash-jet{width:62%;max-width:230px;max-height:56px}
+  #lobby .game.crash .crash-jet{
+    width:62%!important;
+    max-width:220px!important;
+    max-height:52px!important;
+  }
 }
 </style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 520 220" role="presentation" aria-hidden="true">
 <defs>
