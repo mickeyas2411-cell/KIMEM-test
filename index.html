@@ -335,97 +335,59 @@ html,body{height:100%;height:100dvh;overflow:hidden}body{overscroll-behavior:non
 @media(max-height:650px){#bingo.kimem-account-fullscreen #kimemAccountPanel.visible{padding:14px 16px}}
 </style>
 <style id="kimem-crash-coming-soon-card">
-/* QIMEM CRASH / KIMEM X — lobby-only preview, intentionally disabled */
+/* KIMEM X — single, consolidated style block; isolated to the coming-soon card */
 #lobby.active{overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#b88b4d transparent}
 #lobby .games{flex:0 0 auto;grid-template-rows:none;gap:14px;padding-bottom:8px}
-#lobby .game.crash{grid-column:auto;min-height:290px;height:auto;border:1px solid #c69b55;border-radius:20px;background:linear-gradient(145deg,#08172f 0%,#102d55 48%,#171b46 100%);box-shadow:0 9px 26px #0008,0 0 22px #d8a94a18;cursor:default}
-#lobby .game.crash:before{background:radial-gradient(ellipse at 66% 50%,#2369b9a8 0%,#152b58 37%,transparent 72%)}
-#lobby .game.crash:after{box-shadow:inset 0 1px 0 #ffffff2b,inset 0 -20px 35px #02091b88}
-#lobby .crash-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,1.05fr) auto;align-items:center;gap:10px;padding:8px 13px}
-#lobby .crash-brand{min-width:0;z-index:1}
-#lobby .crash-kicker{color:#f1d49b;font-size:clamp(10px,1.6dvh,14px);font-weight:850;letter-spacing:.8px}
-#lobby .crash-title{font-size:clamp(18px,3.1dvh,27px);font-weight:950;letter-spacing:1px;line-height:1.05;color:#fff;text-shadow:0 2px 12px #0009;white-space:nowrap}
-#lobby .crash-title b{color:#f2c76e}
-#lobby .crash-caption{font-size:8px;letter-spacing:1.7px;color:#a9c7f3;margin-top:3px;font-weight:800}
-#lobby .crash-flight{position:relative;height:100%;min-height:55px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#lobby .crash-streak{position:absolute;width:115%;height:2px;left:-4%;top:58%;transform:rotate(-13deg);background:linear-gradient(90deg,transparent,#3c8fff,#f6c66d,transparent);box-shadow:0 0 12px #3998ff}
-#lobby .crash-plane{position:relative;z-index:1;font-size:clamp(38px,7dvh,62px);line-height:1;color:#e9f4ff;text-shadow:0 0 10px #6bb7ff,0 5px 15px #000b;transform:rotate(-12deg)}
-#lobby .crash-odds{position:absolute;bottom:0;left:50%;transform:translateX(-50%);display:flex;gap:4px;white-space:nowrap}
-#lobby .crash-odds b{font-size:8px;color:#f8d99a;background:#08152bd9;border:1px solid #b88b4d88;border-radius:5px;padding:3px 5px}
-#lobby .crash-coming{z-index:1;white-space:nowrap;border:1px solid #e2bd73;background:linear-gradient(110deg,#c18c3c,#f1d99e,#bd8b42);color:#14213a;border-radius:8px;padding:8px 10px;font-size:clamp(9px,1.5dvh,12px);font-weight:950;letter-spacing:1px;box-shadow:0 4px 13px #0005}
-@media(max-width:390px){#lobby .crash-inner{grid-template-columns:minmax(0,1fr) minmax(82px,.8fr) auto;gap:5px;padding:7px 9px}#lobby .crash-coming{padding:7px 6px;font-size:8px;letter-spacing:.5px}#lobby .crash-caption{letter-spacing:1px}#lobby .crash-odds{gap:2px}#lobby .crash-odds b{font-size:7px;padding:2px 3px}}
-@media(max-height:610px){#lobby .game.crash{min-height:250px}#lobby .crash-flight{min-height:45px}}
-
-/* Refined QIMEM X premium full-width lobby frame */
-#lobby .game.crash{grid-column:1/-1;min-height:220px;height:220px;border-radius:20px;border:1px solid #b99050;background:radial-gradient(ellipse at 50% 48%,#1c4d83 0%,#102b50 42%,#08172e 78%);box-shadow:0 12px 30px #0006,inset 0 1px #ffffff20}
-#lobby .crash-inner{position:relative;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:5px;padding:13px 14px 12px;text-align:center}
-#lobby .crash-brand{width:100%;text-align:center}
-#lobby .crash-kicker{font-size:12px;letter-spacing:2px;color:#f3d49a}
-#lobby .crash-title{font-size:25px;letter-spacing:2px;margin-top:2px}
-#lobby .crash-caption{font-size:8px;letter-spacing:3px}
-#lobby .crash-flight{width:min(100%,300px);height:88px;min-height:88px;flex:1}
-#lobby .crash-streak{width:90%;left:5%;top:56%;height:3px;transform:rotate(-15deg);opacity:.9}
-#lobby .crash-plane{font-size:66px;filter:drop-shadow(0 0 9px #65baff);transform:rotate(-13deg)}
-#lobby .crash-odds{bottom:1px;gap:7px}
-#lobby .crash-odds b{font-size:9px;padding:4px 8px;border-radius:7px}
-#lobby .crash-coming{padding:7px 20px;font-size:10px;letter-spacing:2px;border-radius:7px}
-@media(max-width:390px){#lobby .game.crash{min-height:205px;height:205px}#lobby .crash-title{font-size:23px}#lobby .crash-plane{font-size:58px}#lobby .crash-flight{min-height:78px}}
-@media(max-height:610px){#lobby .game.crash{min-height:190px;height:190px}}
-
-/* KIMEM X — cinematic aircraft hero frame */
-#lobby .game.crash{position:relative;grid-column:1/-1;height:236px;min-height:236px;border:1px solid #b99458;border-radius:18px;overflow:hidden;background:linear-gradient(115deg,#061329 0%,#0b2345 48%,#101a38 100%);box-shadow:0 14px 32px #0008,inset 0 1px #ffffff22}
-#lobby .game.crash:before{background:radial-gradient(ellipse at 53% 57%,#2766a966 0%,#15365c55 37%,transparent 72%),linear-gradient(135deg,transparent 42%,#d8ad5b12 43%,transparent 44%)}
-#lobby .game.crash:after{box-shadow:inset 0 0 0 1px #ffffff08,inset 0 -35px 55px #02081788}
-#lobby .crash-inner{height:100%;padding:13px 16px 12px;display:grid;grid-template-rows:auto 1fr auto;gap:4px;text-align:center;align-items:center}
-#lobby .crash-brand{z-index:2}
-#lobby .crash-kicker{font-size:11px;letter-spacing:2.5px;color:#e8c987;font-weight:800}
-#lobby .crash-title{font-size:25px;letter-spacing:3px;line-height:1.05;color:#f5f7ff;font-weight:950}
-#lobby .crash-title b{color:#edc778}
-#lobby .crash-caption{font-size:8px;letter-spacing:3px;color:#9db8da;margin-top:4px}
-#lobby .crash-flight{position:relative;width:100%;height:100%;min-height:95px;display:grid;place-items:center;overflow:hidden;filter:none}
-#lobby .crash-skyline{position:absolute;inset:10% 0 0;background:repeating-linear-gradient(105deg,transparent 0 26px,#75baff0a 27px 28px);mask-image:linear-gradient(transparent,#000)}
-#lobby .crash-trajectory{position:absolute;width:78%;height:2px;left:11%;top:62%;transform:rotate(-13deg);background:linear-gradient(90deg,transparent,#55aaff,#f5d18a,transparent);box-shadow:0 0 15px #58aaff}
-#lobby .crash-jet{position:relative;z-index:1;width:min(62%,260px);height:100%;max-height:115px;overflow:visible;filter:drop-shadow(0 7px 10px #0009) drop-shadow(0 0 12px #75baff66);transform:rotate(-7deg)}
-#lobby .crash-odds{position:absolute;right:0;bottom:0;display:flex;align-items:center;gap:9px;border:1px solid #d5b36c55;background:#07172ddd;border-radius:7px;padding:5px 9px;color:#d8e7fa}
-#lobby .crash-odds b{font-size:7px;letter-spacing:1.2px;color:#a9c3e2}
-#lobby .crash-odds span{font-size:12px;font-weight:900;color:#f2d18c}
-#lobby .crash-odds i{font-style:normal;color:#6ee0bc}
-#lobby .crash-coming{justify-self:center;min-width:160px;padding:7px 20px;border:1px solid #e2c17e;border-radius:6px;background:linear-gradient(100deg,#9a7136,#f0d69b 50%,#a77b3d);color:#111f35;font-size:10px;font-weight:950;letter-spacing:2.4px;box-shadow:0 4px 16px #0007}
-@media(max-width:390px){#lobby .game.crash{height:220px;min-height:220px}#lobby .crash-title{font-size:23px}#lobby .crash-flight{min-height:85px}#lobby .crash-coming{min-width:145px}}
-
-/* KIMEM X aircraft illustration refinement — scoped to this card */
-#lobby .crash-jet{width:min(86%,370px);max-height:148px;overflow:visible;transform:rotate(-2deg);filter:drop-shadow(0 12px 10px #000b) drop-shadow(0 0 13px #79baff55);animation:kimemJetFloat 4.8s ease-in-out infinite}
-#lobby .crash-flight{min-height:116px}
-@keyframes kimemJetFloat{0%,100%{translate:0 2px;rotate:-1deg}50%{translate:0 -3px;rotate:1deg}}
-@media(max-width:390px){#lobby .crash-jet{width:91%;max-height:132px}#lobby .crash-flight{min-height:104px}}
-
-/* Final KIMEM X spacing and typography correction — this card only */
-#lobby .game.crash{box-sizing:border-box;height:236px;min-height:236px;max-height:236px;overflow:hidden}
-#lobby .game.crash .crash-inner{box-sizing:border-box;width:100%;height:100%;min-height:0;padding:10px 14px 11px;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;align-items:center;justify-items:center;gap:5px;text-align:center}
-#lobby .game.crash .crash-brand{position:relative;z-index:2;width:100%;min-width:0;margin:0;text-align:center;line-height:1.15}
-#lobby .game.crash .crash-kicker{display:block;margin:0 0 3px;font-size:11px;line-height:1.25;letter-spacing:1.8px;white-space:nowrap}
-#lobby .game.crash .crash-title{display:block;margin:0;font-size:24px;line-height:1.05;letter-spacing:2px;white-space:nowrap}
-#lobby .game.crash .crash-caption{display:block;margin:4px 0 0;font-size:8px;line-height:1.2;letter-spacing:2px;white-space:nowrap}
-#lobby .game.crash .crash-flight{position:relative;box-sizing:border-box;width:100%;height:100%;min-height:0;min-width:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#lobby .game.crash .crash-jet{display:block;flex:0 1 auto;width:min(82%,350px);height:auto;max-height:116px;object-fit:contain;transform:rotate(-2deg);animation:kimemJetFloat 4.8s ease-in-out infinite}
-#lobby .game.crash .crash-trajectory{width:68%;left:16%;top:62%;z-index:0}
-#lobby .game.crash .crash-odds{position:absolute;z-index:2;right:2px;top:2px;bottom:auto;left:auto;transform:none;display:flex;align-items:center;gap:6px;padding:4px 7px;max-width:48%;white-space:nowrap;border-radius:6px;background:#07172deF;border:1px solid #d5b36c66}
-#lobby .game.crash .crash-odds b{font-size:7px;line-height:1.2;letter-spacing:.7px}
-#lobby .game.crash .crash-odds span{font-size:11px;line-height:1.2}
-#lobby .game.crash .crash-coming{position:relative;z-index:2;justify-self:center;align-self:center;box-sizing:border-box;min-width:148px;max-width:90%;margin:0;padding:6px 18px;font-size:9px;line-height:1.2;letter-spacing:1.8px;white-space:nowrap}
-@media(max-width:390px){
- #lobby .game.crash{height:220px;min-height:220px;max-height:220px}
- #lobby .game.crash .crash-inner{padding:9px 10px 10px;gap:4px}
- #lobby .game.crash .crash-title{font-size:22px;letter-spacing:1.5px}
- #lobby .game.crash .crash-kicker{font-size:10px;letter-spacing:1.4px}
- #lobby .game.crash .crash-caption{font-size:7px;letter-spacing:1.6px}
- #lobby .game.crash .crash-jet{width:86%;max-height:105px}
- #lobby .game.crash .crash-odds{right:0;top:0;padding:3px 5px;gap:4px}
- #lobby .game.crash .crash-odds b{font-size:6px}
- #lobby .game.crash .crash-odds span{font-size:10px}
- #lobby .game.crash .crash-coming{min-width:138px;padding:6px 14px;font-size:8px}
+#lobby .game.crash{
+  position:relative;isolation:isolate;grid-column:1/-1;box-sizing:border-box;
+  width:100%;height:236px;min-height:236px;max-height:236px;overflow:hidden;
+  border:1px solid #b99458;border-radius:18px;cursor:default;
+  background:radial-gradient(ellipse at 50% 48%,#1c4d83 0%,#102b50 43%,#08172e 80%);
+  box-shadow:0 14px 32px #0008,inset 0 1px #ffffff22
 }
-
+#lobby .game.crash:before{
+  background:radial-gradient(ellipse at 53% 57%,#2766a966 0%,#15365c55 37%,transparent 72%),
+  linear-gradient(135deg,transparent 42%,#d8ad5b12 43%,transparent 44%)
+}
+#lobby .game.crash:after{box-shadow:inset 0 0 0 1px #ffffff08,inset 0 -35px 55px #02081788}
+#lobby .game.crash .crash-inner{
+  position:relative;z-index:1;box-sizing:border-box;width:100%;height:100%;min-height:0;
+  padding:10px 14px 11px;display:grid;
+  grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;
+  align-items:center;justify-items:center;gap:4px;text-align:center
+}
+#lobby .game.crash .crash-brand{position:relative;z-index:2;width:100%;min-width:0;margin:0;text-align:center;line-height:1.12}
+#lobby .game.crash .crash-kicker{display:block;margin:0 0 3px;color:#e8c987;font-size:11px;line-height:1.25;font-weight:850;letter-spacing:1.8px;white-space:nowrap}
+#lobby .game.crash .crash-title{display:block;margin:0;color:#f5f7ff;font-size:24px;line-height:1.05;font-weight:950;letter-spacing:2px;text-shadow:0 2px 12px #0009;white-space:nowrap}
+#lobby .game.crash .crash-title b{color:#edc778}
+#lobby .game.crash .crash-caption{display:block;margin:4px 0 0;color:#9db8da;font-size:8px;line-height:1.2;font-weight:800;letter-spacing:2px;white-space:nowrap}
+#lobby .game.crash .crash-flight{position:relative;box-sizing:border-box;width:100%;height:100%;min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#lobby .game.crash .crash-skyline{position:absolute;inset:8% 0 0;background:repeating-linear-gradient(105deg,transparent 0 26px,#75baff0a 27px 28px);mask-image:linear-gradient(transparent,#000);pointer-events:none}
+#lobby .game.crash .crash-trajectory{position:absolute;z-index:0;width:72%;height:2px;left:14%;top:64%;transform:rotate(-13deg);background:linear-gradient(90deg,transparent,#55aaff,#f5d18a,transparent);box-shadow:0 0 15px #58aaff;pointer-events:none}
+#lobby .game.crash .crash-jet{position:relative;z-index:1;display:block;flex:0 1 auto;width:min(82%,350px);height:auto;max-height:112px;object-fit:contain;overflow:visible;transform:rotate(-2deg);filter:drop-shadow(0 9px 9px #000b) drop-shadow(0 0 12px #79baff55);animation:kimemJetFloat 4.8s ease-in-out infinite}
+#lobby .game.crash .crash-odds{position:absolute;z-index:2;top:2px;right:2px;bottom:auto;left:auto;transform:none;display:flex;align-items:center;gap:6px;max-width:48%;padding:4px 7px;white-space:nowrap;border:1px solid #d5b36c66;border-radius:6px;background:#07172def;color:#d8e7fa}
+#lobby .game.crash .crash-odds b{font-size:7px;line-height:1.2;letter-spacing:.7px;color:#a9c3e2}
+#lobby .game.crash .crash-odds span{font-size:11px;line-height:1.2;font-weight:900;color:#f2d18c}
+#lobby .game.crash .crash-odds i{font-style:normal;color:#6ee0bc}
+#lobby .game.crash .crash-coming{position:relative;z-index:2;justify-self:center;align-self:center;box-sizing:border-box;min-width:148px;max-width:90%;margin:0;padding:6px 18px;border:1px solid #e2c17e;border-radius:6px;background:linear-gradient(100deg,#9a7136,#f0d69b 50%,#a77b3d);color:#111f35;font-size:9px;line-height:1.2;font-weight:950;letter-spacing:1.8px;white-space:nowrap;box-shadow:0 4px 16px #0007}
+@keyframes kimemJetFloat{0%,100%{translate:0 2px;rotate:-1deg}50%{translate:0 -3px;rotate:1deg}}
+@media(max-width:390px){
+  #lobby .game.crash{height:220px;min-height:220px;max-height:220px}
+  #lobby .game.crash .crash-inner{padding:9px 10px 10px;gap:4px}
+  #lobby .game.crash .crash-kicker{font-size:10px;letter-spacing:1.4px}
+  #lobby .game.crash .crash-title{font-size:22px;letter-spacing:1.5px}
+  #lobby .game.crash .crash-caption{font-size:7px;letter-spacing:1.6px}
+  #lobby .game.crash .crash-jet{width:86%;max-height:104px}
+  #lobby .game.crash .crash-odds{top:1px;right:1px;gap:4px;padding:3px 5px}
+  #lobby .game.crash .crash-odds b{font-size:6px}
+  #lobby .game.crash .crash-odds span{font-size:10px}
+  #lobby .game.crash .crash-coming{min-width:138px;padding:6px 14px;font-size:8px}
+}
+@media(max-height:610px) and (min-width:391px){
+  #lobby .game.crash{height:216px;min-height:216px;max-height:216px}
+  #lobby .game.crash .crash-jet{max-height:100px}
+}
+@media(prefers-reduced-motion:reduce){#lobby .game.crash .crash-jet{animation:none}}
 </style></head><body><main class="app"><header class="top"><div class="brand"><div class="mark">K</div><div><strong>ቅመም ጌምስ</strong><small>GAME ARENA</small></div></div></header><section id="lobby" class="screen active"><div class="welcome"><div class="eyebrow">እንኳን ወደ ቅመም ጌምስ በደህና መጡ</div><h1 id="greeting">Welcome, Player</h1><p>የእርስዎ ጨዋታ፣ የእርስዎ ምርጫ።</p><div class="identity"><div class="avatar" id="avatar">P</div><span id="username">Open in Telegram to see your profile</span></div></div><div class="section-head"><div><div class="eyebrow">የቅመም ጌሞች</div><h2>ጨዋታዎን ይምረጡ</h2></div><p>5 ጨዋታዎች</p></div><div class="games"><article class="game bingo"><div class="g-inner"><div class="watermark">75</div><div class="g-title"><small>ቅመም ORIGINAL</small>BINGO</div><div class="g-sub">የ75 ቁጥሮች ቢንጎ</div><div class="art"><div class="ticket" id="miniTicket"></div><div class="ball b1">7</div><div class="ball b2">18</div><div class="ball b3">32</div></div><button class="g-action" onclick="showScreen('bingo')">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game sport"><div class="g-inner"><div class="watermark">1X2</div><div class="g-title"><small>ቅመም SPORTS</small>SPORT BETTING</div><div class="g-sub">የቀጥታ ጨዋታ እና የውርርድ መጠን</div><div class="art"><div class="stadium"></div><div class="sport-lights"></div><div class="football">⚽</div><div class="odds"><span><b>1</b>1.85</span><span><b>X</b>3.20</span><span><b>2</b>4.10</span></div></div><button class="g-action alt" onclick="window.location.href='https://whimsical-malabi-da030e.netlify.app/'">አሁን ይጫወቱ &nbsp; →</button></div></article><article class="game spin"><div class="g-inner"><div class="watermark">SPIN</div><div class="g-title"><small>ቅመም LUCKY</small>SPIN</div><div class="g-sub">የዕድል መንኮራኩር</div><div class="art"><div class="pointer"></div><div class="wheel"></div><div class="spin-stand"></div></div><button class="g-action alt" onclick="showScreen('spin')">EXPLORE &nbsp; ↗</button></div></article><article class="game keno"><div class="g-inner"><div class="watermark">80</div><div class="g-title"><small>ቅመም ORIGINAL</small>KENO</div><div class="g-sub">የቁጥር ምርጫ እና የቀጥታ ዕጣ</div><div class="art"><div class="keno-board" id="kenoBoard"></div><div class="keno-drum" aria-hidden="true"><span>●</span><span>●</span><span>●</span></div><div class="keno-ball kb1">5</div><div class="keno-ball kb2">24</div><div class="keno-ball kb3">37</div></div><button class="g-action alt" onclick="showScreen('keno')">EXPLORE &nbsp; ↗</button></div></article><article class="game crash" aria-label="QIMEM Crash KIMEM X coming soon"><div class="g-inner crash-inner"><div class="crash-brand"><div class="crash-kicker">ቅመም ክራሽ</div><div class="crash-title">KIMEM <b>X</b></div><div class="crash-caption">JET X · CRASH GAME</div></div><div class="crash-flight" aria-hidden="true"><div class="crash-skyline"></div><div class="crash-trajectory"></div><svg class="crash-jet" viewBox="0 0 420 230" role="presentation" aria-hidden="true">
 <defs>
 <linearGradient id="fighterBody" x1=".1" y1="0" x2=".8" y2="1"><stop stop-color="#f4f8fc"/><stop offset=".25" stop-color="#aebfd0"/><stop offset=".58" stop-color="#536d87"/><stop offset="1" stop-color="#172a40"/></linearGradient>
