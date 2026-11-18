@@ -781,4 +781,11 @@ async function kimemHistoryLoad(){
   document.addEventListener('click',qimemLeaderboardTapFallback,true);
 })();
 </script>
+
+<style id="restore-bingo-sport-card-size-only">
+/* Restore only the original lobby card dimensions for Bingo and Sports. */
+#lobby .game.bingo,#lobby .game.sport{height:auto;min-height:290px;max-height:none}
+@media(min-width:700px){#lobby .game.bingo,#lobby .game.sport{min-height:360px}}
+@media(max-width:365px){#lobby .game.bingo,#lobby .game.sport{min-height:255px}}
+</style>
 </body></html>
